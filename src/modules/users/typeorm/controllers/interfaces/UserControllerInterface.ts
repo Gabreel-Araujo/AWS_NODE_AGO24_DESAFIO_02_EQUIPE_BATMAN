@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 export default interface UserControllerInterface {
-  createUser(req: Request, res: Response): void;
+  createUser(req: Request, res: Response, next: NextFunction): void;
 }
