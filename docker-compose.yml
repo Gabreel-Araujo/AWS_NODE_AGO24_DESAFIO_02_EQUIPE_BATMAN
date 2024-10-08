@@ -6,4 +6,4 @@ services:
     environment:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=apicompasscar 
+      - POSTGRESQL_DATABASE=apicompasscar
