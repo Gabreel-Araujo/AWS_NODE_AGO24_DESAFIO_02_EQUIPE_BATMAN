@@ -1,14 +1,13 @@
-import {
-  CreateUserInterface,
-  UserDetailsInterface,
-} from "../entities/interfaces/UserInterface";
-import UserRepositoryInterface from "../repositories/interfaces/UserRepositoryInterface";
-import UserServiceInterface from "./interfaces/UserServiceInterface";
+import type { CreateUserInterface } from "../entities/interfaces/UserInterface";
+import type UserRepositoryInterface from "../repositories/interfaces/UserRepositoryInterface";
+import type UserServiceInterface from "./interfaces/UserServiceInterface";
+import bcrypt from "bcryptjs";
 
 export default class UserService implements UserServiceInterface {
   constructor(private repository: UserRepositoryInterface) {}
 
-  save(user: CreateUserInterface) {
+  async save(user: CreateUserInterface) {
+    user.password = await bcrypt.hash(user.password, 10);
     return this.repository.save(user);
   }
 }
