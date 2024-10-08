@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { env } from '@/env';
 import { DataSource } from 'typeorm';
 
@@ -10,6 +11,6 @@ export const dbConnection = new DataSource({
 	database: env.DB_NAME,
 	entities: ['src/modules/*/typeorm/entities/*.ts'],
 	logging: true,
-	synchronize: false,
+	synchronize: true,
 	migrations: ['./migrations/'],
 });
