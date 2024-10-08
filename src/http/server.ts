@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import 'express-async-errors';
 import { env } from '@/env';
 import { app } from '@/app';
 import { dbConnection } from '@/lib/typeorm';
