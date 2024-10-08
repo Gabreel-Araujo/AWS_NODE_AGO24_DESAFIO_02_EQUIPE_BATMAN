@@ -1,0 +1,31 @@
+{
+  "name": "aws_node_ago24_desafio_02_equipe_batman",
+  "version": "1.0.0",
+  "description": "API COMPASS CAR",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src --out-dir build",
+    "lint": "npx @biomejs/biome check --write ./src"
+  },
+  "keywords": [
+    "api",
+    "uol",
+    "compass"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@types/express": "5.0.0",
+    "@types/node": "22.7.5",
+    "tsup": "8.3.0",
+    "tsx": "4.19.1",
+    "typescript": "5.6.2"
+  },
+  "dependencies": {
+    "dotenv": "16.4.5",
+    "express": "4.21.0",
+    "zod": "3.23.8"
+  }
+}
