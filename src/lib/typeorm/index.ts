@@ -1,5 +1,4 @@
-import "reflect-metadata"
-import { env } from '@/env';
+import { env } from '../../env';
 import { DataSource } from 'typeorm';
 
 export const dbConnection = new DataSource({
