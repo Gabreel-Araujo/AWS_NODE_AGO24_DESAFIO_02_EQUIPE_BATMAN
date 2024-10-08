@@ -1,15 +1,15 @@
-import "reflect-metadata";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { UserDetailsInterface } from "./interfaces/UserInterface";
 
-@Entity()
-export default class User {
+@Entity("users")
+export default class User implements UserDetailsInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({ type: "varchar" })
   fullName: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", unique: true })
   email: string;
 
   @Column({ type: "varchar" })
