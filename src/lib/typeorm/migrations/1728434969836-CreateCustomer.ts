@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableUnique } from 'typeorm';
 
 export class CreateCustomer1728434969836 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
@@ -53,9 +53,25 @@ export class CreateCustomer1728434969836 implements MigrationInterface {
 				],
 			}),
 		);
+		await queryRunner.createUniqueConstraint(
+			'customers',
+			new TableUnique({
+				name: 'UQ_cpf',
+				columnNames: ['cpf'],
+			}),
+		);
+		await queryRunner.createUniqueConstraint(
+			'customers',
+			new TableUnique({
+				name: 'UQ_email',
+				columnNames: ['email'],
+			}),
+		);
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.dropUniqueConstraints('customers', 'UQ_cpf');
+		await queryRunner.dropUniqueConstraints('customers', 'UQ_email');
 		await queryRunner.dropTable('customers');
 	}
 }
