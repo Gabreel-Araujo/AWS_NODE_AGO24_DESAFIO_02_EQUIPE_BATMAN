@@ -5,7 +5,8 @@ import { env } from "@/env";
 
 export function authenticate(req: Request, res: Response, next: NextFunction) {
   try {
-    const token = req.get("Authorization")?.split(" ")[1];
+    const auth = req.get("Authorization");
+    const token = auth?.startsWith("Bearer") ? auth.split(" ")[1] : null;
 
     if (!token) throw new ApiError("invalid token", 403);
 
