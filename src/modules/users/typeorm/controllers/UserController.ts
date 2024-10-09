@@ -18,7 +18,7 @@ export default class UserController implements UserControllerInterface {
 
       const createdUser = await this.service.save(validatedUser);
 
-      if(!createdUser) return
+      if (!createdUser) throw new Error("internal server error");
 
       res.status(201).json({ id: createdUser.id });
     } catch (e: unknown) {

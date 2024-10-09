@@ -4,5 +4,5 @@ export default interface AuthRepositoryInterface {
   authenticate: (
     email: string,
     password: string
-  ) => Promise<UserDetailsInterface>;
+  ) => Promise<UserDetailsInterface | null>;
 }

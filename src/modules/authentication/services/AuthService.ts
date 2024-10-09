@@ -1,4 +1,3 @@
-import UnauthorizedError from "@/http/errors/unauthorized-error";
 import type AuthServiceInterface from "./interfaces/AuthServiceInterface";
 import type UserServiceInterface from "@/modules/users/typeorm/services/interfaces/UserServiceInterface";
 import bcrypt from "bcryptjs";
@@ -9,14 +8,10 @@ export default class AuthService implements AuthServiceInterface {
   authenticate = async (email: string, password: string) => {
     const user = await this.service.findActiveUserByEmail(email);
 
-    if (!user) throw new UnauthorizedError("invalid email or password");
+    if (!user) return null;
 
     const comparePasswords = await bcrypt.compare(password, user.password);
 
-    if (!comparePasswords) {
-      throw new UnauthorizedError("invalid email or password");
-    }
-
-    return user;
+    return comparePasswords ? user : null;
   };
 }
