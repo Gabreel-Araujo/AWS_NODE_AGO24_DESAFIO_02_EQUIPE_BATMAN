@@ -4,6 +4,7 @@ import UserService from "../services/UserService";
 import { dbConnection } from "@/lib/typeorm";
 import UserRepository from "../repositories/UserRepository";
 import User from "../entities/User";
+import { authenticate } from "@/modules/authentication/middlewares/AuthMiddleware";
 
 const route = Router();
 
@@ -11,6 +12,6 @@ const userRepository = new UserRepository(dbConnection.getRepository(User));
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
-route.post("/api/v1/users", userController.createUser);
+route.post("/users", authenticate, userController.createUser);
 
 export default route;

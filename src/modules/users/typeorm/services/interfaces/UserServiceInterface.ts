@@ -1,5 +1,9 @@
-import type { CreateUserInterface, UserDetailsInterface } from "../../entities/interfaces/UserInterface";
+import type {
+  CreateUserInterface,
+  UserDetailsInterface,
+} from "../../entities/interfaces/UserInterface";
 
 export default interface UserServiceInterface {
-    save(user: CreateUserInterface): Promise<UserDetailsInterface>
+  save(user: CreateUserInterface): Promise<UserDetailsInterface | undefined>;
+  findActiveUserByEmail(email: string): Promise<UserDetailsInterface | null>;
 }

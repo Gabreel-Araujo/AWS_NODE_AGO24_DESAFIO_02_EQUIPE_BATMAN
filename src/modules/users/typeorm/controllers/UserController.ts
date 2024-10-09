@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import type UserControllerInterface from "./interfaces/UserControllerInterface";
 import type UserServiceInterface from "../services/interfaces/UserServiceInterface";
-import { z } from "zod";
 import { postUserSchema } from "./validators/UserValidators";
 
 export default class UserController implements UserControllerInterface {
@@ -18,6 +17,9 @@ export default class UserController implements UserControllerInterface {
       });
 
       const createdUser = await this.service.save(validatedUser);
+
+      if(!createdUser) return
+
       res.status(201).json({ id: createdUser.id });
     } catch (e: unknown) {
       next(e);
