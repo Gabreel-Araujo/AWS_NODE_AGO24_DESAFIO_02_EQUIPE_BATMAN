@@ -33,10 +33,17 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 						type: 'decimal',
 						precision: 10,
 						scale: 2,
+						default: 0,
 					},
 					{
 						name: 'year',
 						type: 'varchar',
+					},
+					{
+						name: 'status',
+						type: 'enum',
+						enum: ['ativo', 'inativo', 'excluído'],
+						default: "'ativo'",
 					},
 					{
 						name: 'created_at',
