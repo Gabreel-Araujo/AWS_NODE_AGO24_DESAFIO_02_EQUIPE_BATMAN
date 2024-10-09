@@ -22,4 +22,15 @@ export default class UserRepository implements UserRepositoryInterface {
   async findById(id: string): Promise<UserDetailsInterface | null> {
     return this.repository.findOne({ where: { id } });
   }
+
+  async softDeleteUser(id: string): Promise<UserDetailsInterface | null> {
+    const user = await this.repository.findOne({ where: { id } });
+    if (!user) {
+      return null;
+    }
+    user.deletedAt = new Date();
+
+    await this.repository.save(user);
+    return user;
+  }
 }

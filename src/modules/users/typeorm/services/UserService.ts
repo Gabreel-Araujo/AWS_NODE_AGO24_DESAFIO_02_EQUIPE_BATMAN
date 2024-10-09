@@ -24,4 +24,9 @@ export default class UserService implements UserServiceInterface {
   async findById(id: string): Promise<UserDetailsInterface | null> {
     return this.repository.findById(id);
   }
+
+  async softDeleteUser(id: string): Promise<UserDetailsInterface | null> {
+    const user = await this.repository.softDeleteUser(id);
+    return user;
+  }
 }

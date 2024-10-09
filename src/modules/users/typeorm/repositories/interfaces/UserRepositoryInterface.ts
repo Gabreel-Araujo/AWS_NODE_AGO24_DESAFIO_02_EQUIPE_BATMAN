@@ -10,4 +10,6 @@ export default interface UserRepositoryInterface {
   ) => Promise<UserDetailsInterface | null>;
 
   findById: (id: string) => Promise<UserDetailsInterface | null>;
+
+  softDeleteUser: (id: string) => Promise<UserDetailsInterface | null>;
 }

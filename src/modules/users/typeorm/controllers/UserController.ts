@@ -26,7 +26,7 @@ export default class UserController implements UserControllerInterface {
     }
   };
 
-  getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  getUserById = async (req: Request, res: Response) => {
     const userId = req.params.id;
 
     if (!userId) {
@@ -38,6 +38,16 @@ export default class UserController implements UserControllerInterface {
       res.status(201).json(user);
     } catch (error) {
       res.status(500).json(error);
+    }
+  };
+
+  deleteUserById = async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    try {
+      await this.service.softDeleteUser(userId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(404).json({ message: "User not found" });
     }
   };
 }
