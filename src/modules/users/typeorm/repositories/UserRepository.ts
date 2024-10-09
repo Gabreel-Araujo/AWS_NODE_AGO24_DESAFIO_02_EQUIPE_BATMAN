@@ -8,14 +8,14 @@ import type UserRepositoryInterface from "./interfaces/UserRepositoryInterface";
 export default class UserRepository implements UserRepositoryInterface {
   constructor(private repository: Repository<UserDetailsInterface>) {}
 
-  save(user: CreateUserInterface): Promise<UserDetailsInterface> {
+  async save(user: CreateUserInterface): Promise<UserDetailsInterface> {
     const newUser = this.repository.create(user);
-    return this.repository.save(newUser);
+    return await this.repository.save(newUser);
   }
 
-  findActiveUserByEmail = (
+  findActiveUserByEmail = async (
     email: string
   ): Promise<UserDetailsInterface | null> => {
-    return this.repository.findOne({ where: { email, deletedAt: IsNull() } });
+    return await this.repository.findOne({ where: { email, deletedAt: IsNull() } });
   };
 }

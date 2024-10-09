@@ -8,7 +8,7 @@ export default class UserService implements UserServiceInterface {
 
   async save(user: CreateUserInterface) {
     user.password = await bcrypt.hash(user.password, 10);
-    return this.repository.save(user);
+    return await this.repository.save(user);
   }
 
   async findActiveUserByEmail(email: string) {
