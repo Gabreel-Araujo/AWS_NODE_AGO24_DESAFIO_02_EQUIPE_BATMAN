@@ -1,4 +1,4 @@
-import { authenticate } from '@/http/middleware/AuthMiddleware';
+import { authenticate } from '@/http/middleware/auth';
 import { dbConnection } from '@/lib/typeorm';
 import { Router } from 'express';
 import UserController from '../controllers/user.controller';
