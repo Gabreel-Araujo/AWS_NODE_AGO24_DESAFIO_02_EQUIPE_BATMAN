@@ -3,6 +3,7 @@ import type AuthControllerInterface from "./interfaces/AuthControllerInterface";
 import type AuthService from "../services/AuthService";
 import jwt from "jsonwebtoken";
 import { env } from "@/env";
+import UnauthorizedError from "@/http/errors/unauthorized-error";
 
 export default class AuthController implements AuthControllerInterface {
   constructor(private service: AuthService) {}
@@ -12,7 +13,7 @@ export default class AuthController implements AuthControllerInterface {
       const { email, password } = req.body;
       const user = await this.service.authenticate(email, password);
 
-      if (!user) return;
+      if (!user) throw new UnauthorizedError("invalid email or password");
 
       const accessToken = jwt.sign(
         { id: user.id, fullName: user.fullName, email: user.email },
