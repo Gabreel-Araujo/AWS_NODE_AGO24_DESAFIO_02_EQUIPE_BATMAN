@@ -1,4 +1,4 @@
-import { authenticate } from '@/http/middleware/AuthMiddleware';
+import { authenticate } from '@/http/middleware/auth';
 import { dbConnection } from '@/lib/typeorm';
 import { Router } from 'express';
 import UserController from '../controllers/user.controller';
@@ -12,6 +12,6 @@ const userRepository = new UserRepository(dbConnection.getRepository(User));
 const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
-userRoute.post('/users', authenticate, userController.createUser);
+userRoute.post('/', authenticate, userController.createUser);
 
 export default userRoute;
