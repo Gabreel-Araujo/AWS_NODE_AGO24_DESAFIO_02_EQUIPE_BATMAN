@@ -1,18 +1,41 @@
-import { dbConnection } from '@/lib/typeorm';
-import AuthController from '@/modules/users/controllers/auth.controller';
-import UserService from '@/modules/users/services/UserService';
-import User from '@/modules/users/typeorm/entities/User';
-import UserRepository from '@/modules/users/typeorm/repositories/UserRepository';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import AuthService from '../services/AuthService';
+import ValidationError from '@/http/errors/validation-error';
+import UnauthorizedError from '@/http/errors/unauthorized-error';
+import jwt from 'jsonwebtoken';
+import { env } from '@/env';
 
 const authRoute = Router();
 
-const userRepository = new UserRepository(dbConnection.getRepository(User));
-const userService = new UserService(userRepository);
-const authService = new AuthService(userService);
-const authController = new AuthController(authService);
+const authService = new AuthService();
 
-authRoute.post('/login', authController.login);
+authRoute.post('/login', async (req: Request, res: Response) => {
+	const { email, password } = req.body;
+
+	if (!email) {
+		throw new ValidationError('email is required');
+	}
+
+	if (!password) {
+		throw new ValidationError('password is required');
+	}
+
+	const user = await authService.authenticate(email, password);
+
+	if (!user) {
+		throw new UnauthorizedError('invalid email or password');
+	}
+
+	const expiresIn = '10m';
+	const accessToken = jwt.sign(
+		{ id: user.id, fullName: user.fullName, email: user.email },
+		env.SECRET_KEY,
+		{
+			expiresIn,
+		},
+	);
+
+	res.status(200).json({ accessToken, expiresIn });
+});
 
 export default authRoute;

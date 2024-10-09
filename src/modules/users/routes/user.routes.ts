@@ -1,17 +1,29 @@
 import { authenticate } from '@/http/middleware/auth';
-import { dbConnection } from '@/lib/typeorm';
-import { Router } from 'express';
-import UserController from '../controllers/user.controller';
+import { Request, Response, Router } from 'express';
 import UserService from '../services/UserService';
-import User from '../typeorm/entities/User';
-import UserRepository from '../typeorm/repositories/UserRepository';
+import { postUserSchema } from './validators/UserValidators';
+import UnauthorizedError from '@/http/errors/unauthorized-error';
 
 const userRoute = Router();
 
-const userRepository = new UserRepository(dbConnection.getRepository(User));
-const userService = new UserService(userRepository);
-const userController = new UserController(userService);
+const userService = new UserService();
 
-userRoute.post('/', authenticate, userController.createUser);
+userRoute.post('/', authenticate, async (req: Request, res: Response) => {
+	const { email, fullName, password } = req.body;
+
+	const validatedUser = postUserSchema.parse({
+		email,
+		fullName,
+		password,
+	});
+
+	const createdUser = await userService.save(validatedUser);
+
+	if (!createdUser) {
+		throw new UnauthorizedError('unauthorized');
+	}
+
+	res.status(201).json({ id: createdUser.id });
+});
 
 export default userRoute;
