@@ -7,8 +7,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   try {
     const auth = req.get("Authorization");
     const token = auth?.startsWith("Bearer") ? auth.split(" ")[1] : null;
-    console.log(auth)
-
+    
     if (!token) throw new ApiError("invalid token", 403);
 
     jwt.verify(token, env.SECRET_KEY, (error) => {

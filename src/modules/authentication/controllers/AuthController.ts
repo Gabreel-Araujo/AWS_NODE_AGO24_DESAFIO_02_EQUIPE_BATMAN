@@ -13,8 +13,6 @@ export default class AuthController implements AuthControllerInterface {
       const { email, password } = req.body;
       const user = await this.service.authenticate(email, password);
 
-      if (!user) throw new UnauthorizedError("invalid email or password");
-
       const accessToken = jwt.sign(
         { id: user.id, fullName: user.fullName, email: user.email },
         env.SECRET_KEY,
