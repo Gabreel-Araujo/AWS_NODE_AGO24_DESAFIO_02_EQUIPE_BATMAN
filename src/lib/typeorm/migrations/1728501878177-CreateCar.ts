@@ -19,14 +19,17 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 						type: 'varchar',
 						length: '7',
 						isUnique: true,
+						isNullable: false,
 					},
 					{
 						name: 'brand',
 						type: 'varchar',
+						isNullable: false,
 					},
 					{
 						name: 'model',
 						type: 'varchar',
+						isNullable: false,
 					},
 					{
 						name: 'km',
@@ -37,13 +40,15 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 					},
 					{
 						name: 'year',
-						type: 'varchar',
+						type: 'int',
+						isNullable: false,
 					},
 					{
 						name: 'status',
 						type: 'enum',
 						enum: ['ativo', 'inativo', 'excluído'],
 						default: "'ativo'",
+						isNullable: false,
 					},
 					{
 						name: 'created_at',
@@ -76,6 +81,7 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 					{
 						name: 'item',
 						type: 'varchar',
+						isNullable: false,
 					},
 				],
 				foreignKeys: [
