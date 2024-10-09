@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import 'express-async-errors';
-import { env } from '@/env';
 import { app } from '@/app';
+import { env } from '@/env';
 import { dbConnection } from '@/lib/typeorm';
 
 async function startServer() {
