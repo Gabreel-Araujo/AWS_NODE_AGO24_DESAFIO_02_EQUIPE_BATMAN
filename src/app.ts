@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import routes from './http/routes';
 import errorMiddleware from './http/middleware/error';
+import CreateDefaultUser from './modules/users/typeorm/seed/CreateDefaultUser';
 
 export const app = express();
 

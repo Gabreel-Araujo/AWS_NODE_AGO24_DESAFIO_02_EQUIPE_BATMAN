@@ -13,7 +13,9 @@ export default class UserRepository implements UserRepositoryInterface {
     return this.repository.save(newUser);
   }
 
-  findActiveUserByEmail(email: string): Promise<UserDetailsInterface | null> {
+  findActiveUserByEmail = (
+    email: string
+  ): Promise<UserDetailsInterface | null> => {
     return this.repository.findOne({ where: { email, deletedAt: IsNull() } });
-  }
+  };
 }

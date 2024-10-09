@@ -10,9 +10,6 @@ const envSchema = z.object({
 	DB_PASSWORD: z.string().default('docker'),
 	DB_NAME: z.string().default('apicompasscar'),
 	SECRET_KEY: z.string().default('secret'),
-	DEFAULT_USER_NAME: z.string(),
-	DEFAULT_USER_EMAIL: z.string(),
-	DEFAULT_USER_PASSWORD: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

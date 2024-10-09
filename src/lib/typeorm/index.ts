@@ -1,3 +1,4 @@
+import CreateDefaultUser from '@/modules/users/typeorm/seed/CreateDefaultUser';
 import { env } from '../../env';
 import { DataSource } from 'typeorm';
 
