@@ -1,12 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	OneToMany,
+	CreateDateColumn,
+	UpdateDateColumn,
+} from 'typeorm';
 import { Item } from './Items';
 
+export enum CarStatus {
+	ACTIVE = 'ativo',
+	INACTIVE = 'inativo',
+	ERASED = 'excluído',
+}
 @Entity('cars')
 export class Cars {
 	@PrimaryGeneratedColumn('uuid')
 	id!: string;
 
-	@Column('varchar')
+	@Column({ type: 'varchar', length: 7, unique: true })
 	plate!: string;
 
 	@Column('varchar')
@@ -15,7 +27,7 @@ export class Cars {
 	@Column('varchar')
 	model!: string;
 
-	@Column('decimal')
+	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
 	km!: number;
 
 	@Column('int')
@@ -23,15 +35,15 @@ export class Cars {
 
 	@Column({
 		type: 'enum',
-		enum: ['ativo', 'inativo', 'excluído'],
-		default: 'ativo',
+		enum: CarStatus,
+		default: CarStatus.ACTIVE,
 	})
-	status!: string;
+	status!: CarStatus;
 
-	@Column('timestamp')
+	@CreateDateColumn()
 	created_at!: Date;
 
-	@Column('timestamp')
+	@UpdateDateColumn()
 	updated_at!: Date;
 
 	@OneToMany(

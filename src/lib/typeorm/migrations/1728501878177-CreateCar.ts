@@ -3,6 +3,7 @@ import { type MigrationInterface, type QueryRunner, Table } from 'typeorm';
 export class CreateProduct1728428244601 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
 		await queryRunner.createTable(
 			new Table({
 				name: 'cars',
@@ -63,6 +64,7 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 				],
 			}),
 		);
+
 		await queryRunner.createTable(
 			new Table({
 				name: 'items',
@@ -86,7 +88,7 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 				],
 				foreignKeys: [
 					{
-						name: 'Car_Items',
+						name: 'FK_Car_Items',
 						referencedTableName: 'cars',
 						referencedColumnNames: ['id'],
 						columnNames: ['car_id'],
@@ -99,7 +101,8 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.dropTable('cars');
+		await queryRunner.dropForeignKey('items', 'FK_Car_Items');
 		await queryRunner.dropTable('items');
+		await queryRunner.dropTable('cars');
 	}
 }
