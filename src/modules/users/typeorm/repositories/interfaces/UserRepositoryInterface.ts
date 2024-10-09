@@ -12,4 +12,8 @@ export default interface UserRepositoryInterface {
   findById: (id: string) => Promise<UserDetailsInterface | null>;
 
   softDeleteUser: (id: string) => Promise<UserDetailsInterface | null>;
+  updateUser(
+    id: string,
+    data: Partial<CreateUserInterface>
+  ): Promise<UserDetailsInterface | null>;
 }

@@ -50,4 +50,20 @@ export default class UserController implements UserControllerInterface {
       res.status(404).json({ message: "User not found" });
     }
   };
+
+  updateUser = async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const updateData = req.body;
+    try {
+      const updateUser = await this.service.updateUser(userId, updateData);
+      if (!updateUser) {
+        res.status(404).json({ message: "User Not found" });
+      }
+      res.status(200).json(updateUser);
+    } catch (error) {
+      if (error) {
+        res.status(500);
+      }
+    }
+  };
 }

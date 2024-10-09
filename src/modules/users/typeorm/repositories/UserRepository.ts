@@ -33,4 +33,20 @@ export default class UserRepository implements UserRepositoryInterface {
     await this.repository.save(user);
     return user;
   }
+
+  async updateUser(
+    id: string,
+    data: Partial<CreateUserInterface>
+  ): Promise<UserDetailsInterface | null> {
+    const user = await this.findById(id);
+
+    if (!user || user.deletedAt) {
+      return null;
+    }
+
+    const updateUser = { ...user, ...data };
+    await this.repository.save(updateUser);
+
+    return updateUser;
+  }
 }

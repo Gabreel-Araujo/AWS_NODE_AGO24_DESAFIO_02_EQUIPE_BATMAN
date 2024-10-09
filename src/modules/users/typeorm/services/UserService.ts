@@ -29,4 +29,12 @@ export default class UserService implements UserServiceInterface {
     const user = await this.repository.softDeleteUser(id);
     return user;
   }
+
+  async updateUser(
+    id: string,
+    data: Partial<CreateUserInterface>
+  ): Promise<UserDetailsInterface | null> {
+    const user = await this.repository.updateUser(id, data);
+    return user;
+  }
 }
