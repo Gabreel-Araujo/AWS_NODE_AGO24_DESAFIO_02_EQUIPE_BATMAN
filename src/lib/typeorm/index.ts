@@ -11,5 +11,5 @@ export const dbConnection = new DataSource({
 	entities: ['src/modules/*/typeorm/entities/*.ts'],
 	logging: true,
 	synchronize: false,
-	migrations: ['src/lib/typeorm/migrations/1728428244601-CreateProduct.ts'],
+	migrations: ['src/lib/typeorm/migrations/*.ts'],
 });
