@@ -3,9 +3,14 @@ import bcrypt from 'bcryptjs';
 import type { CreateUserInterface } from '../typeorm/entities/interfaces/UserInterface';
 import type UserRepositoryInterface from '../typeorm/repositories/interfaces/UserRepositoryInterface';
 import type UserServiceInterface from './interfaces/UserServiceInterface';
+import UserRepository from '../typeorm/repositories/UserRepository';
 
 export default class UserService implements UserServiceInterface {
-	constructor(private repository: UserRepositoryInterface) {}
+	private repository: UserRepositoryInterface;
+
+	constructor() {
+		this.repository = new UserRepository();
+	}
 
 	async save(user: CreateUserInterface) {
 		const existingUser = await this.repository.findActiveUserByEmail(
