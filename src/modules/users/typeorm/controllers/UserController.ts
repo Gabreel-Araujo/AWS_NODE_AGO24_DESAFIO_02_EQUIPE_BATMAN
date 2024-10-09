@@ -18,11 +18,26 @@ export default class UserController implements UserControllerInterface {
 
       const createdUser = await this.service.save(validatedUser);
 
-      if(!createdUser) return
+      if (!createdUser) return;
 
       res.status(201).json({ id: createdUser.id });
     } catch (e: unknown) {
       next(e);
+    }
+  };
+
+  getUserById = async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+      throw new Error("User not found");
+    }
+
+    try {
+      const user = await this.service.findById(userId);
+      res.status(201).json(user);
+    } catch (error) {
+      res.status(500).json(error);
     }
   };
 }

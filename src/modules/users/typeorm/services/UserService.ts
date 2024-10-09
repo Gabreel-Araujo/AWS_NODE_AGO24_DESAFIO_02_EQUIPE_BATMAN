@@ -1,4 +1,7 @@
-import type { CreateUserInterface } from "../entities/interfaces/UserInterface";
+import type {
+  CreateUserInterface,
+  UserDetailsInterface,
+} from "../entities/interfaces/UserInterface";
 import type UserRepositoryInterface from "../repositories/interfaces/UserRepositoryInterface";
 import type UserServiceInterface from "./interfaces/UserServiceInterface";
 import bcrypt from "bcryptjs";
@@ -16,5 +19,9 @@ export default class UserService implements UserServiceInterface {
     const user = await this.repository.findActiveUserByEmail(email);
     if (!user) throw new UnauthorizedError("invalid email or password");
     return user;
+  }
+
+  async findById(id: string): Promise<UserDetailsInterface | null> {
+    return this.repository.findById(id);
   }
 }

@@ -18,4 +18,8 @@ export default class UserRepository implements UserRepositoryInterface {
   ): Promise<UserDetailsInterface | null> => {
     return this.repository.findOne({ where: { email, deletedAt: IsNull() } });
   };
+
+  async findById(id: string): Promise<UserDetailsInterface | null> {
+    return this.repository.findOne({ where: { id } });
+  }
 }

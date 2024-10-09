@@ -13,5 +13,6 @@ const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
 route.post("/users", authenticate, userController.createUser);
+route.get("/users/:id", userController.getUserById);
 
 export default route;
