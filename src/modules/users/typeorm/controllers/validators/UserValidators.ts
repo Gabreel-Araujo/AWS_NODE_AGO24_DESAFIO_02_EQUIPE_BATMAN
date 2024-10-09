@@ -22,5 +22,8 @@ export const postUserSchema = z.object({
       required_error: "password is required",
       invalid_type_error: "password must be a string",
     })
-    .min(8, "password must be at least 8 characters long'"),
+    .min(8, "password must be at least 8 characters long'")
+    .refine((password) => password.trim() !== "", {
+      message: "password cannot be null",
+    }),
 });

@@ -1,23 +1,29 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { UserDetailsInterface } from "./interfaces/UserInterface";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import type { UserDetailsInterface } from "./interfaces/UserInterface";
 
 @Entity("users")
 export default class User implements UserDetailsInterface {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   fullName: string;
 
-  @Column({ type: "varchar", unique: true })
+  @Column({ type: "varchar", unique: true, nullable: false })
   email: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   password: string;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ type: "timestamp", nullable: true, default: null })
+  @DeleteDateColumn({ nullable: true, default: null })
   deletedAt: Date | null;
 }

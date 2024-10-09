@@ -10,6 +10,6 @@ export const dbConnection = new DataSource({
 	database: env.DB_NAME,
 	entities: ['src/modules/*/typeorm/entities/*.ts'],
 	logging: true,
-	synchronize: true,
-	migrations: ['./migrations/'],
+	synchronize: false,
+	migrations: ['src/lib/typeorm/migrations/*.ts'],
 });
