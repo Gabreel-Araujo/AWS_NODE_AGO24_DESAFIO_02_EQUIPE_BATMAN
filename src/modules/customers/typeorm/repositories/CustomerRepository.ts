@@ -23,6 +23,18 @@ class CustomersRepository implements ICustomersRepository {
 
 		return customer;
 	}
+	public async delete(id: string): Promise<Customer | null> {
+        const customer = await this.ormRepository.findOneBy({
+            id
+        })
+       if(!customer) {
+        return null
+       }
+       customer.deleted_at = new Date()
+       const updatedCustomer = await this.ormRepository.save(customer)
+       return updatedCustomer
+    }
+
 }
 
 export default CustomersRepository;
