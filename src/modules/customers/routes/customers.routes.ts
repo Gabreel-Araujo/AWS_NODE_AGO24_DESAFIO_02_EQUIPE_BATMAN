@@ -3,6 +3,8 @@ import CustomerService from '../services/CustomerService';
 import validation from '@/http/middleware/validation';
 import {
 	getCustomerSchema,
+	patchCustomerBodySchema,
+	patchCustomerParamsSchema,
 	postCustomerSchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
@@ -43,25 +45,30 @@ customersRouter.post(
 	},
 );
 
-customersRouter.patch('/:id', async (req: Request, res: Response) => {
-	const { name, birth, email, cpf, phone_number } = req.body;
+customersRouter.patch(
+	'/:id',
+	validation(patchCustomerParamsSchema, "params"),
+	validation(patchCustomerBodySchema, 'body'),
+	async (req: Request, res: Response) => {
+		const { name, birth, email, cpf, phone_number } = req.body;
 
-	const customer: IUpdateCustomer = {};
-	if (name) customer.name = name;
-	if (birth) customer.birth = birth;
-	if (email) customer.email = email;
-	if (cpf) customer.cpf = cpf;
-	if (phone_number) customer.phone_number = phone_number;
+		const customer: IUpdateCustomer = {};
+		if (name) customer.name = name;
+		if (birth) customer.birth = birth;
+		if (email) customer.email = email;
+		if (cpf) customer.cpf = cpf;
+		if (phone_number) customer.phone_number = phone_number;
 
-	const id = req.params.id;
+		const id = req.params.id;
 
-	if (Object.keys(customer).length === 0) {
-		throw new ValidationError('one field at least is required for update');
-	}
+		if (Object.keys(customer).length === 0) {
+			throw new ValidationError('one field at least is required for update');
+		}
 
-	await customersService.update(id, customer);
-	res.status(204).send();
-});
+		await customersService.update(id, customer);
+		res.status(204).send();
+	},
+);
 
 customersRouter.delete('/:id');
 
