@@ -1,5 +1,5 @@
-import { env } from '../../env';
 import { DataSource } from 'typeorm';
+import { env } from '../../env';
 
 export const dbConnection = new DataSource({
 	type: 'postgres',

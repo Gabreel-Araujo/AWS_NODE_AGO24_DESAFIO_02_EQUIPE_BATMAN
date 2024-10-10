@@ -7,7 +7,10 @@
     "dev": "tsx watch src/http/server.ts",
     "build": "tsup src --out-dir build",
     "lint": "npx @biomejs/biome check --write ./src",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migrate:run": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:run",
+    "migrate:show": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:show",
+    "migrate:revert": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:revert"
   },
   "keywords": [
     "api",
@@ -15,7 +18,7 @@
     "compass"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
     "@types/bcryptjs": "2.4.6",
@@ -29,6 +32,9 @@
     "typescript": "5.6.2"
   },
   "dependencies": {
+    "@types/bcrypt": "5.0.2",
+    "@types/jsonwebtoken": "9.0.7",
+    "bcrypt": "5.1.1",
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
     "dotenv": "16.4.5",
@@ -36,6 +42,7 @@
     "express-async-errors": "3.1.1",
     "jsonwebtoken": "9.0.2",
     "pg": "8.13.0",
+    "postgres": "3.4.4",
     "reflect-metadata": "0.2.2",
     "tsconfig-paths": "4.2.0",
     "typeorm": "0.3.20",
