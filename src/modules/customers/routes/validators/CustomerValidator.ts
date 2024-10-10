@@ -6,8 +6,22 @@ export const getCustomerSchema = z
 	.min(1);
 
 export const postCustomerSchema = z.object({
+	name: z
+		.string({
+			required_error: 'name is required',
+			invalid_type_error: 'name must be a string',
+		})
+		.refine(
+			(name) => {
+				return !(name.trim() === '');
+			},
+			{ message: 'name cannot be a empty value' },
+		),
 	birth: z
-		.string()
+		.string({
+			required_error: 'birth is required',
+			invalid_type_error: 'birth must be a string',
+		})
 		.refine(
 			(value) => {
 				const regex = /^\d{4}-\d{2}-\d{2}$/;
