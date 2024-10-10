@@ -5,7 +5,7 @@ import userRoutes from '../../modules/users/routes/user.routes';
 
 const routes = Router();
 const path = '/api/v1';
-// Adicionar arquivo de rotas posteriormente
+
 routes.use('/api/v1', authRoutes);
 routes.use(`${path}/users`, userRoutes);
 routes.use(`${path}/customers`, customersRouter);
