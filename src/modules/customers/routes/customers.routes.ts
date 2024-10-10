@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
-import { z } from 'zod';
 import validation from '@/http/middleware/validation';
-import { getUserSchema } from './validators/CustomerValidator';
+import { getCustomerSchema } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
+import { ICreateCustomer } from '../typeorm/entities/interfaces/CustomerInterface';
 
 const customersRouter = Router();
 
@@ -13,7 +13,7 @@ customersRouter.get('/');
 
 customersRouter.get(
 	'/:id',
-	validation(getUserSchema, 'params'),
+	validation(getCustomerSchema, 'params'),
 	authenticate,
 	async (req, res) => {
 		const { id } = req.params;
@@ -23,7 +23,18 @@ customersRouter.get(
 	},
 );
 
-customersRouter.post('/');
+customersRouter.post(
+	'/',
+	authenticate,
+	async (req: Request, res: Response) => {
+		const { name, birth, cpf, email, phone_number } = req.body;
+		const customer: ICreateCustomer = { name, birth, cpf, email, phone_number };
+
+		const createdCustomer = await customersService.save(customer);
+		res.status(201).json({ id: createdCustomer.id });
+	},
+);
+
 customersRouter.put('/:id');
 customersRouter.delete('/:id');
 
