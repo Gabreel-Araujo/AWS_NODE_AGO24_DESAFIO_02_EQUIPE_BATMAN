@@ -1,3 +1,4 @@
+import phone from 'phone';
 import { z } from 'zod';
 
 export const getCustomerSchema = z
@@ -74,8 +75,15 @@ export const postCustomerSchema = z.object({
 			invalid_type_error: 'email must be a string',
 		})
 		.email('email is invalid'),
-	phone_number: z.string({
-		required_error: 'phone_number is required',
-		invalid_type_error: 'phone_number must be a string',
-	}),
+	phone_number: z
+		.string({
+			required_error: 'phone_number is required',
+			invalid_type_error: 'phone_number must be a string',
+		})
+		.refine(
+			(phone_number) => {
+				return phone(phone_number, { country: 'BR' }).isValid;
+			},
+			{ message: 'invalid phone number' },
+		),
 });
