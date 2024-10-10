@@ -1,3 +1,4 @@
+import { cpf } from 'cpf-cnpj-validator';
 import phone from 'phone';
 import { z } from 'zod';
 
@@ -68,6 +69,12 @@ export const postCustomerSchema = z.object({
 				return !(cpf.trim() === '');
 			},
 			{ message: 'cpf cannot be a empty value' },
+		)
+		.refine(
+			(value) => {
+				return cpf.isValid(value);
+			},
+			{ message: 'invalid cpf' },
 		),
 	email: z
 		.string({
@@ -84,6 +91,6 @@ export const postCustomerSchema = z.object({
 			(phone_number) => {
 				return phone(phone_number, { country: 'BR' }).isValid;
 			},
-			{ message: 'invalid phone number' },
+			{ message: 'phone_number must be a valid brazilian phone number' },
 		),
 });
