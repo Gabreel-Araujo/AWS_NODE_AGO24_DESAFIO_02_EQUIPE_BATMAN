@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import CustomerService from '../services/CustomerService';
-import { z } from 'zod';
 import validation from '@/http/middleware/validation';
 import { getUserSchema } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';

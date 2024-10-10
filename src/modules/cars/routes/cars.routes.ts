@@ -2,7 +2,7 @@ import { Router } from 'express';
 import CarService from '../services/CarService';
 import { authenticate } from '@/http/middleware/auth';
 import validation from '@/http/middleware/validation';
-import { idCarSchema } from './validators/carValidator';
+import { idCarSchema } from './validators/CarValidator';
 
 const carsRouter = Router();
 

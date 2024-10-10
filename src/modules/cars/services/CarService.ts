@@ -1,4 +1,3 @@
-import CustomersRepository from '@/modules/customers/typeorm/repositories/CustomerRepository';
 import { ICarService } from './interfaces/ICarService';
 import {
 	ICar,
