@@ -57,4 +57,25 @@ export const postCustomerSchema = z.object({
 			const [year, month, day] = value.split('-').map(Number);
 			return new Date(year, month - 1, day);
 		}),
+	cpf: z
+		.string({
+			required_error: 'cpf is required',
+			invalid_type_error: 'cpf must be a string',
+		})
+		.refine(
+			(cpf) => {
+				return !(cpf.trim() === '');
+			},
+			{ message: 'cpf cannot be a empty value' },
+		),
+	email: z
+		.string({
+			required_error: 'email is required',
+			invalid_type_error: 'email must be a string',
+		})
+		.email('email is invalid'),
+	phone_number: z.string({
+		required_error: 'phone_number is required',
+		invalid_type_error: 'phone_number must be a string',
+	}),
 });
