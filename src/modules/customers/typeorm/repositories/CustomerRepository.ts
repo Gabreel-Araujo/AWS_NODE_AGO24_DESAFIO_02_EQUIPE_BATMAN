@@ -1,6 +1,6 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import { SearchParams } from './interfaces/ICustomersRepository';
 import { ICustomerPagination } from './interfaces/ICustomerPagination';
@@ -41,10 +41,12 @@ class CustomersRepository implements ICustomersRepository {
 		if (email)
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
 		if (cpf) query.andWhere('customer.cpf = :cpf', { cpf });
-		// if (deleted === 'false')
-		// 	query.andWhere('customers.deleted_at == null');
-		// if (deleted === 'true')
-		// 	query.andWhere('customers.deleted_at !== null');
+
+		query.withDeleted();
+
+		if (deleted === 'false') {
+			query.andWhere('customer.deleted_at IS NOT NULL');
+		}
 
 		const [customers, count] = await query
 			.skip(skip)
@@ -60,7 +62,8 @@ class CustomersRepository implements ICustomersRepository {
 
 		return result;
 	}
-	public async delete(id: string): Promise<Customer | null> {
+
+	public async delete(id: string): Promise<UpdateResult | null> {
 		const customer = await this.ormRepository.findOneBy({
 			id,
 		});
@@ -68,8 +71,7 @@ class CustomersRepository implements ICustomersRepository {
 			return null;
 		}
 		customer.deleted_at = new Date();
-		const updatedCustomer = await this.ormRepository.save(customer);
-		return updatedCustomer;
+		return await this.ormRepository.update(id, customer);
 	}
 }
 

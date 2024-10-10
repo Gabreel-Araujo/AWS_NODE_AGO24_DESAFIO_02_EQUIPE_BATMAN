@@ -1,3 +1,4 @@
+import { UpdateResult } from 'typeorm';
 import { ICustomer } from '../../entities/interfaces/CustomerInterface';
 import { ICustomerPagination } from './ICustomerPagination';
 
@@ -13,5 +14,5 @@ export type SearchParams = {
 export interface ICustomersRepository {
 	findAll({ page, skip, take }: SearchParams): Promise<ICustomerPagination>;
 	findById(id: string): Promise<ICustomer | null>;
-	delete(id: string): Promise<ICustomer | null>;
+	delete(id: string): Promise<UpdateResult | null>;
 }

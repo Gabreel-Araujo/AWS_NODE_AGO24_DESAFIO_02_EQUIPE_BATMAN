@@ -29,7 +29,7 @@ export default class CustomerService implements ICustomerService {
 		name,
 		email,
 		cpf,
-		deleted
+		deleted,
 	}: SearchParamsInterface): Promise<ICustomerPagination> {
 		const take = limit;
 		const skip = Number(page - 1) * take;
@@ -39,19 +39,19 @@ export default class CustomerService implements ICustomerService {
 			skip,
 			take,
 			name,
-			email, 
+			email,
 			cpf,
-			deleted
+			deleted,
 		});
 		return customers;
 	}
 
-	public async delete(id: string): Promise<ICustomer | null> {
+	public async delete(id: string): Promise<void> {
 		const customer = await this.repository.findById(id);
 		if (!customer) {
 			throw new NotFoundError('Customer not found.');
 		}
 		customer.deleted_at = null;
-		return await this.repository.delete(id);
+		await this.repository.delete(id);
 	}
 }
