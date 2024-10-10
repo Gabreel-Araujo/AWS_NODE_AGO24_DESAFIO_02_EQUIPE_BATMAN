@@ -12,17 +12,15 @@ export default class UserService implements UserServiceInterface {
 		this.repository = new UserRepository();
 	}
 
-	async save(user: CreateUserInterface) {
-		const existingUser = await this.repository.findActiveUserByEmail(
-			user.email,
-		);
+	async save({ email, fullName, password }: CreateUserInterface) {
+		const existingUser = await this.repository.findActiveUserByEmail(email);
 
 		if (existingUser) {
 			throw new ConflictError('Email already registered');
 		}
 
-		user.password = await bcrypt.hash(user.password, 10);
-		return await this.repository.save(user);
+		password = await bcrypt.hash(password, 10);
+		return await this.repository.save({ email, fullName, password });
 	}
 
 	async findActiveUserByEmail(email: string) {
