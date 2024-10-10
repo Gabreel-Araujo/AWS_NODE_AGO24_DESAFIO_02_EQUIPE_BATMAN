@@ -1,6 +1,6 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { DataSource, IsNull, Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
 	ICreateCustomer,
@@ -36,15 +36,35 @@ class CustomersRepository implements ICustomersRepository {
 	public async findActiveCustomerByEmail(
 		email: string,
 	): Promise<ICustomer | null> {
-		return await this.ormRepository.findOne({
+		const user = await this.ormRepository.findOne({
 			where: { email, deleted_at: IsNull() },
 		});
+
+		return user;
 	}
 
 	public async findCustomerByCPF(cpf: string): Promise<ICustomer | null> {
-		return await this.ormRepository.findOne({
+		const user = await this.ormRepository.findOne({
 			where: { cpf },
 		});
+
+		return user;
+	}
+
+	public async delete(id: string): Promise<Customer | null> {
+		const customer = await this.ormRepository.findOneBy({
+			id,
+		});
+
+		if (!customer) {
+			return null;
+		}
+
+		customer.deleted_at = new Date();
+
+		const updatedCustomer = await this.ormRepository.save(customer);
+
+		return updatedCustomer;
 	}
 }
 
