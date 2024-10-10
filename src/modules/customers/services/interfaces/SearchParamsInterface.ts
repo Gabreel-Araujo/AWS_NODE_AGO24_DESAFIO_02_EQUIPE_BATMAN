@@ -5,4 +5,6 @@ export interface SearchParamsInterface {
 	email?: string;
 	cpf?: string;
 	deleted?: 'true' | 'false';
+	orderBy?: string[] | null;
+	order?: 'ASC' | 'DESC' | null;
 }

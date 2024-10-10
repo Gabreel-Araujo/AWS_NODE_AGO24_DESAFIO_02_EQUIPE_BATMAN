@@ -12,13 +12,16 @@ customersRouter.get('/', async (req: Request, res: Response) => {
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
 	const valuesParams: SearchParamsInterface = { page, limit };
-	const { name, cpf, email, deleted } = req.query;
+	const { name, cpf, email, deleted, orderBy, order } = req.query;
 
 	if (name) valuesParams.name = name.toString();
 	if (cpf) valuesParams.cpf = cpf.toString();
 	if (email) valuesParams.email = email.toString();
 	if (deleted && (deleted === 'true' || deleted === 'false'))
 		valuesParams.deleted = deleted;
+
+	if (orderBy) valuesParams.orderBy = orderBy.toString().split(',');
+	if (order === 'ASC' || order === 'DESC') valuesParams.order = order;
 
 	const listCustomers = await customersService.listAll(valuesParams);
 	return res.json(listCustomers);

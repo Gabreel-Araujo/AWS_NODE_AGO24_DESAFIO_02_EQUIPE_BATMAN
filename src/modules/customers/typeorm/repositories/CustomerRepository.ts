@@ -34,6 +34,8 @@ class CustomersRepository implements ICustomersRepository {
 		email,
 		cpf,
 		deleted,
+		orderBy,
+		order,
 	}: SearchParams): Promise<ICustomerPagination> {
 		const query = this.ormRepository.createQueryBuilder('customer');
 
@@ -47,6 +49,9 @@ class CustomersRepository implements ICustomersRepository {
 			query
 				.withDeleted()
 				.andWhere('customer.deleted_at IS NOT NULL', { deleted: 'true' });
+
+		if (orderBy)
+			orderBy.map((param) => query.addOrderBy(param, order ? order : 'ASC'));
 
 		const [customers, count] = await query
 			.skip(skip)

@@ -30,6 +30,8 @@ export default class CustomerService implements ICustomerService {
 		email,
 		cpf,
 		deleted,
+		orderBy,
+		order
 	}: SearchParamsInterface): Promise<ICustomerPagination> {
 		const take = limit;
 		const skip = Number(page - 1) * take;
@@ -42,6 +44,8 @@ export default class CustomerService implements ICustomerService {
 			email,
 			cpf,
 			deleted,
+			orderBy,
+			order
 		});
 		return customers;
 	}

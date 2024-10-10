@@ -10,7 +10,10 @@ export type SearchParams = {
 	cpf?: string;
 	name?: string;
 	deleted?: 'true' | 'false';
+	orderBy?: string[] | null;
+	order?: 'ASC' | 'DESC' | null;
 };
+
 export interface ICustomersRepository {
 	findAll({ page, skip, take }: SearchParams): Promise<ICustomerPagination>;
 	findById(id: string): Promise<ICustomer | null>;
