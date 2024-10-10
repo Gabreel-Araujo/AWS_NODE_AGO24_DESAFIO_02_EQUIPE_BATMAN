@@ -1,7 +1,10 @@
 import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import validation from '@/http/middleware/validation';
-import { getCustomerSchema } from './validators/CustomerValidator';
+import {
+	getCustomerSchema,
+	postCustomerSchema,
+} from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
 import { ICreateCustomer } from '../typeorm/entities/interfaces/CustomerInterface';
 
@@ -26,6 +29,7 @@ customersRouter.get(
 customersRouter.post(
 	'/',
 	authenticate,
+	validation(postCustomerSchema, "body"),
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
 		const customer: ICreateCustomer = { name, birth, cpf, email, phone_number };
