@@ -40,13 +40,13 @@ class CustomersRepository implements ICustomersRepository {
 		if (name) query.andWhere('customer.name LIKE :name', { name: `%${name}%` });
 		if (email)
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
-		if (cpf) query.andWhere('customer.cpf = :cpf', { cpf });
-
-		query.withDeleted();
-
-		if (deleted === 'false') {
-			query.andWhere('customer.deleted_at IS NOT NULL');
-		}
+		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: { cpf } });
+		if (deleted === 'false')
+			query.andWhere('customer.deleted_at IS NULL', { deleted: 'false' });
+		if (deleted === 'true')
+			query
+				.withDeleted()
+				.andWhere('customer.deleted_at IS NOT NULL', { deleted: 'true' });
 
 		const [customers, count] = await query
 			.skip(skip)
