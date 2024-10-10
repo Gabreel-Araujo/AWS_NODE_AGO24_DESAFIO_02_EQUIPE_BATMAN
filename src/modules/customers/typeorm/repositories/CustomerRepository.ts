@@ -1,7 +1,9 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import Customer from '../entities/Customer';
+import { SearchParams } from './interfaces/ICustomersRepository';
+import { ICustomerPagination } from './interfaces/ICustomerPagination';
 
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
@@ -23,18 +25,38 @@ class CustomersRepository implements ICustomersRepository {
 
 		return customer;
 	}
-	public async delete(id: string): Promise<Customer | null> {
-        const customer = await this.ormRepository.findOneBy({
-            id
-        })
-       if(!customer) {
-        return null
-       }
-       customer.deleted_at = new Date()
-       const updatedCustomer = await this.ormRepository.save(customer)
-       return updatedCustomer
-    }
+	
+	public async findAll({
+		page,
+		skip,
+		take,
+	}: SearchParams): Promise<ICustomerPagination> {
+		const [customers, count,] = await this.ormRepository
+			.createQueryBuilder()
+			.skip(skip)
+			.take(take)
+			.getManyAndCount();
 
+		const result = {
+			per_page: take,
+    		total: count,
+    		current_page: page,
+    		data: customers,
+		}
+
+		return result;
+	}
+	public async delete(id: string): Promise<Customer | null> {
+		const customer = await this.ormRepository.findOneBy({
+			id,
+		});
+		if (!customer) {
+			return null;
+		}
+		customer.deleted_at = new Date();
+		const updatedCustomer = await this.ormRepository.save(customer);
+		return updatedCustomer;
+	}
 }
 
 export default CustomersRepository;

@@ -6,5 +6,5 @@ export interface ICustomer {
 	email: string;
 	phone_number: string;
 	created_at: Date;
-	deleted_at?: Date | null;
+	deleted_at?: Date | null ;
 }

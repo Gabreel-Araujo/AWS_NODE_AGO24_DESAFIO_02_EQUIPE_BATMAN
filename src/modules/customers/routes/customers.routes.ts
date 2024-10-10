@@ -2,11 +2,18 @@ import { Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import { z } from 'zod';
 
+
 const customersRouter = Router();
 
 const customersService = new CustomerService();
 
-customersRouter.get('/');
+customersRouter.get('/', async (req, res) => {
+	const page = req.query.page ? Number(req.query.page) : 1
+	const limit = req.query.limit ? Number(req.query.limit) : 10
+
+	const listCustomers = await customersService.listAll({ page, limit})
+	return res.json(listCustomers)
+});
 
 customersRouter.get('/:id', async (req, res) => {
 	const idSchema = z.string().uuid();

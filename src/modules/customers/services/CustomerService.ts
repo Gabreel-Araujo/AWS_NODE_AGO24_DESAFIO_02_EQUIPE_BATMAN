@@ -3,6 +3,8 @@ import { ICustomerService } from './interfaces/CustomerServiceInterface';
 import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
+import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
+import { ICustomerPagination } from '../typeorm/repositories/interfaces/ICustomerPagination';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;
@@ -19,6 +21,20 @@ export default class CustomerService implements ICustomerService {
 		}
 
 		return customer;
+	}
+
+	public async listAll({
+		page,
+		limit,
+	}: SearchParamsInterface): Promise<ICustomerPagination> {
+		const take = limit;
+		const skip = Number(page - 1) * take;
+		const customers = await this.repository.findAll({
+			page,
+			skip,
+			take,
+		});
+		return customers;
 	}
 
 	public async delete(id: string): Promise<ICustomer | null> {
