@@ -7,6 +7,7 @@ import type {
 import type UserRepositoryInterface from '../typeorm/repositories/interfaces/UserRepositoryInterface';
 import type UserServiceInterface from './interfaces/UserServiceInterface';
 import UserRepository from '../typeorm/repositories/UserRepository';
+import NotFoundError from '@/http/errors/not-found-error';
 
 export default class UserService implements UserServiceInterface {
 	private repository: UserRepositoryInterface;
@@ -27,10 +28,28 @@ export default class UserService implements UserServiceInterface {
 	}
 
 	async findActiveUserByEmail(email: string) {
-		return await this.repository.findActiveUserByEmail(email);
+		const user = await this.repository.findActiveUserByEmail(email);
+
+		if (!user) {
+			throw new NotFoundError('User not found');
+		}
+		return user;
 	}
 
 	async findById(id: string): Promise<UserDetailsInterface | null> {
-		return await this.repository.findById(id);
+		const user = await this.repository.findById(id);
+
+		if (!user) {
+			throw new NotFoundError('User not found');
+		}
+		return user;
+	}
+
+	async softDeleteUser(id: string): Promise<UserDetailsInterface | null> {
+		const user = await this.repository.softDeleteUser(id);
+		if (!user) {
+			throw new NotFoundError('User not found');
+		}
+		return user;
 	}
 }

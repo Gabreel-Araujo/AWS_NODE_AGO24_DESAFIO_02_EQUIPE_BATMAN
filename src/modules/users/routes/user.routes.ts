@@ -48,4 +48,16 @@ userRoute.get(
 	},
 );
 
+userRoute.delete(
+	'/:id',
+	authenticate,
+	validation(idUserSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		await userService.softDeleteUser(id);
+		res.status(204).send();
+	},
+);
+
 export default userRoute;
