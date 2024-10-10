@@ -8,4 +8,5 @@ export default interface UserRepositoryInterface {
 	findActiveUserByEmail: (
 		email: string,
 	) => Promise<UserDetailsInterface | null>;
+	findById: (id: string) => Promise<UserDetailsInterface | null>;
 }

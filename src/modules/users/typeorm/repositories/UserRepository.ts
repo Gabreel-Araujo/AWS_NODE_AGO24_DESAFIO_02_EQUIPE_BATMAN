@@ -14,16 +14,17 @@ export default class UserRepository implements UserRepositoryInterface {
 		this.ormRepository = dbConnection.getRepository(User);
 	}
 
-	async save(user: CreateUserInterface): Promise<UserDetailsInterface> {
-		const newUser = this.ormRepository.create(user);
-		return await this.ormRepository.save(newUser);
-	}
+	save: (user: CreateUserInterface) => Promise<UserDetailsInterface>;
 
 	findActiveUserByEmail = async (
 		email: string,
 	): Promise<UserDetailsInterface | null> => {
-		return await this.ormRepository.findOne({
+		return this.ormRepository.findOne({
 			where: { email, deletedAt: IsNull() },
 		});
 	};
+
+	async findById(id: string): Promise<UserDetailsInterface | null> {
+		return this.ormRepository.findOne({ where: { id } });
+	}
 }
