@@ -20,7 +20,6 @@ customersRouter.get('/', async (req: Request, res: Response) => {
 	if (deleted && (deleted === 'true' || deleted === 'false'))
 		valuesParams.deleted = deleted;
 
-	console.log(deleted);
 	const listCustomers = await customersService.listAll(valuesParams);
 	return res.json(listCustomers);
 });

@@ -1,6 +1,6 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import Customer from '../entities/Customer';
 import { SearchParams } from './interfaces/ICustomersRepository';
 import { ICustomerPagination } from './interfaces/ICustomerPagination';
@@ -40,11 +40,11 @@ class CustomersRepository implements ICustomersRepository {
 		if (name) query.andWhere('customer.name LIKE :name', { name: `%${name}%` });
 		if (email)
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
-		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: `%${cpf}%` });
+		if (cpf) query.andWhere('customer.cpf = :cpf', { cpf });
 		// if (deleted === 'false')
-		// 	query.andWhere('customers.deleted_at = :deleted', { deleted: null });
+		// 	query.andWhere('customers.deleted_at == null');
 		// if (deleted === 'true')
-		// 	query.andWhere('customers.deleted_at != :deleted', { deleted: null });
+		// 	query.andWhere('customers.deleted_at !== null');
 
 		const [customers, count] = await query
 			.skip(skip)
