@@ -16,4 +16,6 @@ export default interface UserServiceInterface {
     id: string,
     data: Partial<CreateUserInterface>
   ) => Promise<UserDetailsInterface | null>;
+
+  findUsers(page: number, limit: number): Promise<UserDetailsInterface[]>;
 }

@@ -16,4 +16,6 @@ export default interface UserRepositoryInterface {
     id: string,
     data: Partial<CreateUserInterface>
   ): Promise<UserDetailsInterface | null>;
+
+  getAllUsers: (page: number, limit: number) => Promise<UserDetailsInterface[]>;
 }

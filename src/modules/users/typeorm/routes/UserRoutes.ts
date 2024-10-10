@@ -13,6 +13,7 @@ const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 
 route.post("/users", authenticate, userController.createUser);
+route.get("/users", authenticate, userController.getAllUsers);
 route.get("/users/:id", userController.getUserById);
 route.delete("/users/:id", userController.deleteUserById);
 route.patch("/users/:id", userController.updateUser);

@@ -5,4 +5,5 @@ export default interface UserControllerInterface {
   getUserById(req: Request, res: Response, next: NextFunction): void;
   deleteUserById(req: Request, res: Response): void;
   updateUser(req: Request, res: Response): void;
+  getAllUsers(req: Request, res: Response): void;
 }

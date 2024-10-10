@@ -37,4 +37,11 @@ export default class UserService implements UserServiceInterface {
     const user = await this.repository.updateUser(id, data);
     return user;
   }
+
+  async findUsers(
+    page: number,
+    limit: number
+  ): Promise<UserDetailsInterface[]> {
+    return this.repository.getAllUsers(page, limit);
+  }
 }

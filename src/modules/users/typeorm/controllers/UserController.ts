@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import type UserControllerInterface from "./interfaces/UserControllerInterface";
 import type UserServiceInterface from "../services/interfaces/UserServiceInterface";
 import { postUserSchema } from "./validators/UserValidators";
+import type { UserDetailsInterface } from "../entities/interfaces/UserInterface";
 
 export default class UserController implements UserControllerInterface {
   constructor(private service: UserServiceInterface) {}
@@ -65,5 +66,31 @@ export default class UserController implements UserControllerInterface {
         res.status(500);
       }
     }
+  };
+
+  getAllUsers = async (req: Request, res: Response) => {
+    const page = Number.parseInt(req.query.page as string) || 1;
+    const limit = Number.parseInt(req.query.limit as string) || 10;
+
+    const users: UserDetailsInterface[] = await this.service.findUsers(
+      page,
+      limit
+    );
+
+    if (!users) {
+      res.status(404).json({ message: "No users found" });
+      return;
+    }
+
+    const selectedProperties = users.map((user) => ({
+      id: user.id,
+      name: user.fullName,
+      email: user.email,
+      password: user.password,
+      deletedAt: user.deletedAt,
+      createdAt: user.createdAt,
+    }));
+
+    res.json(selectedProperties);
   };
 }

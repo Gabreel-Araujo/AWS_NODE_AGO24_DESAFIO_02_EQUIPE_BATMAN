@@ -49,4 +49,15 @@ export default class UserRepository implements UserRepositoryInterface {
 
     return updateUser;
   }
+
+  async getAllUsers(
+    page: number,
+    limit: number
+  ): Promise<UserDetailsInterface[]> {
+    return await this.repository.find({
+      withDeleted: true,
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  }
 }
