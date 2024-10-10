@@ -23,10 +23,15 @@ export default class CustomerService implements ICustomerService {
 
 	public async delete(id: string): Promise<ICustomer | null> {
 		const customer = await this.repository.findById(id);
+
 		if (!customer) {
 			throw new NotFoundError('Customer not found.');
 		}
+
 		customer.deleted_at = null;
-		return await this.repository.delete(id);
+
+		const deletedUser = await this.repository.delete(id);
+
+		return deletedUser;
 	}
 }

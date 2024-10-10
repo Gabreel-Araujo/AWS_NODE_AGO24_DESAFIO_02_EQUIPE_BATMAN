@@ -27,3 +27,7 @@ export const postUserSchema = z.object({
 			message: 'password cannot be null',
 		}),
 });
+
+export const idUserSchema = z.object({
+	id: z.string().uuid().min(1),
+});

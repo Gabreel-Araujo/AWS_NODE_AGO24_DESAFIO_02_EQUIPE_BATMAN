@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import CustomerService from '../services/CustomerService';
-import { z } from 'zod';
+import validation from '@/http/middleware/validation';
+import { getCustomerIdSchema } from './validators/CustomerValidator';
+import { authenticate } from '@/http/middleware/auth';
 
 const customersRouter = Router();
 
@@ -8,23 +10,31 @@ const customersService = new CustomerService();
 
 customersRouter.get('/');
 
-customersRouter.get('/:id', async (req, res) => {
-	const idSchema = z.string().uuid();
+customersRouter.get(
+	'/:id',
+	validation(getCustomerIdSchema, 'params'),
+	authenticate,
+	async (req, res) => {
+		const { id } = req.params;
+		const costumer = await customersService.execute(id);
 
-	const id = idSchema.parse(req.params.id);
-	const costumer = await customersService.execute(id);
-
-	res.json(costumer);
-});
+		res.json(costumer);
+	},
+);
 
 customersRouter.post('/');
 customersRouter.put('/:id');
 
-customersRouter.delete('/:id', async (req, res) => {
-	const idSchema = z.string().uuid();
-	const id = idSchema.parse(req.params.id);
-	const costumer = await customersService.delete(id);
-	res.status(204).json(costumer);
-});
+customersRouter.delete(
+	'/:id',
+	validation(getCustomerIdSchema, 'params'),
+	async (req, res) => {
+		const { id } = req.params;
+
+		const costumer = await customersService.delete(id);
+
+		res.status(204).json(costumer);
+	},
+);
 
 export default customersRouter;
