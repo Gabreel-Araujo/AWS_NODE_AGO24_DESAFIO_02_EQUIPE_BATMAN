@@ -31,3 +31,31 @@ export const postUserSchema = z.object({
 export const idUserSchema = z.object({
 	id: z.string().uuid().min(1),
 });
+
+export const putUserSchema = z.object({
+	fullName: z
+		.string({
+			invalid_type_error: 'name must be a string',
+		})
+		.refine((name) => name.trim() !== '', {
+			message: 'name cannot be null',
+		})
+		.optional(),
+	email: z
+		.string({
+			invalid_type_error: 'email must be a string',
+		})
+		.email({
+			message: 'invalid email address',
+		})
+		.optional(),
+	password: z
+		.string({
+			invalid_type_error: 'password must be a string',
+		})
+		.min(8, "password must be at least 8 characters long'")
+		.refine((password) => password.trim() !== '', {
+			message: 'password cannot be null',
+		})
+		.optional(),
+});
