@@ -1,6 +1,7 @@
 import {
 	ICreateCustomer,
 	ICustomer,
+	IUpdateCustomer,
 } from '../typeorm/entities/interfaces/CustomerInterface';
 import { ICustomerService } from './interfaces/CustomerServiceInterface';
 import NotFoundError from '@/http/errors/not-found-error';
@@ -37,5 +38,13 @@ export default class CustomerService implements ICustomerService {
 		if (alreadyExistsCPF) throw new ConflictError('cpf already exist');
 
 		return await this.repository.save(customer);
+	}
+
+	public async update(id: string, customer: IUpdateCustomer): Promise<void> {
+		const customerToUpdate = await this.repository.findActiveCustomerByID(id);
+
+		if (!customerToUpdate) throw new NotFoundError('customer not found');
+
+		await this.repository.updateCustomer(id, customer);
 	}
 }

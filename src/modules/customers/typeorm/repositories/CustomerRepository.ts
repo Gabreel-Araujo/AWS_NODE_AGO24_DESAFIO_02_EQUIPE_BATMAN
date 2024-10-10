@@ -1,11 +1,13 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { DataSource, IsNull, Repository } from 'typeorm';
+import { DataSource, IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
 	ICreateCustomer,
 	ICustomer,
+	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
+import NotFoundError from '@/http/errors/not-found-error';
 
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
@@ -45,6 +47,19 @@ class CustomersRepository implements ICustomersRepository {
 		return await this.ormRepository.findOne({
 			where: { cpf },
 		});
+	}
+
+	public async findActiveCustomerByID(id: string): Promise<ICustomer | null> {
+		return await this.ormRepository.findOne({
+			where: { id, deleted_at: IsNull() },
+		});
+	}
+
+	public async updateCustomer(
+		id: string,
+		customer: IUpdateCustomer,
+	): Promise<UpdateResult> {
+		return await this.ormRepository.update(id, customer);
 	}
 }
 
