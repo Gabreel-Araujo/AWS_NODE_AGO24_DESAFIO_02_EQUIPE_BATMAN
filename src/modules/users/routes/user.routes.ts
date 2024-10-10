@@ -1,7 +1,11 @@
 import { authenticate } from '@/http/middleware/auth';
 import { Request, Response, Router } from 'express';
 import UserService from '../services/UserService';
-import { idUserSchema, postUserSchema } from './validators/UserValidators';
+import {
+	idUserSchema,
+	postUserSchema,
+	putUserSchema,
+} from './validators/UserValidators';
 import UnauthorizedError from '@/http/errors/unauthorized-error';
 import validation from '@/http/middleware/validation';
 import ValidationError from '@/http/errors/validation-error';
@@ -57,6 +61,29 @@ userRoute.delete(
 
 		await userService.softDeleteUser(id);
 		res.status(204).send();
+	},
+);
+
+userRoute.put(
+	'/:id',
+	authenticate,
+	validation(idUserSchema, 'params'),
+	validation(putUserSchema, 'body'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		const { fullName, email, password } = req.body;
+
+		const updateUser = await userService.updateUser(id, {
+			fullName,
+			email,
+			password,
+		});
+
+		if (!updateUser) {
+			res.status(404).json({ message: 'User Not found' });
+		}
+
+		res.status(200).json(updateUser);
 	},
 );
 

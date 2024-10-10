@@ -20,13 +20,13 @@ export default class UserRepository implements UserRepositoryInterface {
 		return this.ormRepository.findOne({ where: { id } });
 	}
 
-	findActiveUserByEmail = async (
+	async findActiveUserByEmail(
 		email: string,
-	): Promise<UserDetailsInterface | null> => {
+	): Promise<UserDetailsInterface | null> {
 		return this.ormRepository.findOne({
 			where: { email, deletedAt: IsNull() },
 		});
-	};
+	}
 
 	async softDeleteUser(id: string): Promise<UserDetailsInterface | null> {
 		const user = await this.ormRepository.findOne({ where: { id } });
@@ -37,5 +37,22 @@ export default class UserRepository implements UserRepositoryInterface {
 
 		await this.ormRepository.save(user);
 		return user;
+	}
+
+	async updateUser(
+		id: string,
+		data: Partial<CreateUserInterface>,
+	): Promise<UserDetailsInterface | null> {
+		const user = await this.findById(id);
+
+		if (!user || user.deletedAt) {
+			return null;
+		}
+
+		const updateUser = { ...user, ...data };
+
+		await this.ormRepository.save(updateUser);
+
+		return updateUser;
 	}
 }

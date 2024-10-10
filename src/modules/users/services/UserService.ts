@@ -24,7 +24,10 @@ export default class UserService implements UserServiceInterface {
 		}
 
 		password = await bcrypt.hash(password, 10);
-		return await this.repository.save({ email, fullName, password });
+
+		const user = await this.repository.save({ email, fullName, password });
+
+		return user;
 	}
 
 	async findActiveUserByEmail(email: string) {
@@ -33,6 +36,7 @@ export default class UserService implements UserServiceInterface {
 		if (!user) {
 			throw new NotFoundError('User not found');
 		}
+
 		return user;
 	}
 
@@ -42,14 +46,44 @@ export default class UserService implements UserServiceInterface {
 		if (!user) {
 			throw new NotFoundError('User not found');
 		}
+
 		return user;
 	}
 
 	async softDeleteUser(id: string): Promise<UserDetailsInterface | null> {
-		const user = await this.repository.softDeleteUser(id);
-		if (!user) {
+		const existingUser = await this.findById(id);
+
+		if (!existingUser) {
 			throw new NotFoundError('User not found');
 		}
+
+		const user = await this.repository.softDeleteUser(id);
+
 		return user;
+	}
+
+	async updateUser(
+		id: string,
+		{ email, fullName, password }: Partial<CreateUserInterface>,
+	): Promise<UserDetailsInterface | null> {
+		const existingUser = await this.findById(id);
+
+		if (!existingUser) {
+			throw new NotFoundError('User not found');
+		}
+
+		let hashPassword: string | undefined;
+
+		if (password) {
+			hashPassword = await bcrypt.hash(password, 10);
+		}
+
+		const updatedUser = await this.repository.updateUser(id, {
+			email,
+			fullName,
+			password: hashPassword,
+		});
+
+		return updatedUser;
 	}
 }
