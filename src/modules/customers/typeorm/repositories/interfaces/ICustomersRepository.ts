@@ -5,9 +5,10 @@ export type SearchParams = {
 	page: number;
 	skip: number;
 	take: number;
-	//email: string;
-	//cpf: string;
-	//nome: string;
+	email?: string;
+	cpf?: string;
+	name?: string;
+	deleted?: 'true' | 'false';
 };
 export interface ICustomersRepository {
 	findAll({ page, skip, take }: SearchParams): Promise<ICustomerPagination>;

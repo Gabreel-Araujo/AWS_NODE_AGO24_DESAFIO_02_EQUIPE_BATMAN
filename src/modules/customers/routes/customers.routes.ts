@@ -1,18 +1,28 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import { z } from 'zod';
-
+import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterface';
 
 const customersRouter = Router();
 
 const customersService = new CustomerService();
 
-customersRouter.get('/', async (req, res) => {
-	const page = req.query.page ? Number(req.query.page) : 1
-	const limit = req.query.limit ? Number(req.query.limit) : 10
+customersRouter.get('/', async (req: Request, res: Response) => {
+	const page = req.query.page ? Number(req.query.page) : 1;
+	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
-	const listCustomers = await customersService.listAll({ page, limit})
-	return res.json(listCustomers)
+	const valuesParams: SearchParamsInterface = { page, limit };
+	const { name, cpf, email, deleted } = req.query;
+
+	if (name) valuesParams.name = name.toString();
+	if (cpf) valuesParams.cpf = cpf.toString();
+	if (email) valuesParams.email = email.toString();
+	if (deleted && (deleted === 'true' || deleted === 'false'))
+		valuesParams.deleted = deleted;
+
+	console.log(deleted);
+	const listCustomers = await customersService.listAll(valuesParams);
+	return res.json(listCustomers);
 });
 
 customersRouter.get('/:id', async (req, res) => {

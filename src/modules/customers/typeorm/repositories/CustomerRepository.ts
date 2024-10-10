@@ -25,24 +25,38 @@ class CustomersRepository implements ICustomersRepository {
 
 		return customer;
 	}
-	
+
 	public async findAll({
 		page,
 		skip,
 		take,
+		name,
+		email,
+		cpf,
+		deleted,
 	}: SearchParams): Promise<ICustomerPagination> {
-		const [customers, count,] = await this.ormRepository
-			.createQueryBuilder()
+		const query = this.ormRepository.createQueryBuilder('customer');
+
+		if (name) query.andWhere('customer.name LIKE :name', { name: `%${name}%` });
+		if (email)
+			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
+		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: `%${cpf}%` });
+		// if (deleted === 'false')
+		// 	query.andWhere('customers.deleted_at = :deleted', { deleted: null });
+		// if (deleted === 'true')
+		// 	query.andWhere('customers.deleted_at != :deleted', { deleted: null });
+
+		const [customers, count] = await query
 			.skip(skip)
 			.take(take)
 			.getManyAndCount();
 
 		const result = {
 			per_page: take,
-    		total: count,
-    		current_page: page,
-    		data: customers,
-		}
+			total: count,
+			current_page: page,
+			data: customers,
+		};
 
 		return result;
 	}

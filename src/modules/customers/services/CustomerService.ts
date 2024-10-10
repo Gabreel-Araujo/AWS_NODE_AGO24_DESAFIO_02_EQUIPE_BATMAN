@@ -26,13 +26,22 @@ export default class CustomerService implements ICustomerService {
 	public async listAll({
 		page,
 		limit,
+		name,
+		email,
+		cpf,
+		deleted
 	}: SearchParamsInterface): Promise<ICustomerPagination> {
 		const take = limit;
 		const skip = Number(page - 1) * take;
+
 		const customers = await this.repository.findAll({
 			page,
 			skip,
 			take,
+			name,
+			email, 
+			cpf,
+			deleted
 		});
 		return customers;
 	}
