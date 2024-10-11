@@ -1,9 +1,13 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { IsNull, Repository, UpdateResult } from 'typeorm';
-import Customer from '../entities/Customer';
 import { SearchParams } from './interfaces/ICustomersRepository';
 import { ICustomerPagination } from './interfaces/ICustomerPagination';
+import { IsNull, Repository } from 'typeorm';
+import Customer from '../entities/Customer';
+import {
+	ICreateCustomer,
+	ICustomer,
+} from '../entities/interfaces/CustomerInterface';
 
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
@@ -30,6 +34,7 @@ class CustomersRepository implements ICustomersRepository {
 		page,
 		skip,
 		take,
+		orderBy,
 		name,
 		email,
 		cpf,
@@ -44,14 +49,15 @@ class CustomersRepository implements ICustomersRepository {
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
 		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: { cpf } });
 		if (deleted === 'false')
-			query.andWhere('customer.deleted_at IS NULL', { deleted: 'false' });
+			query.andWhere('customer.deleted_at IS NULL');
 		if (deleted === 'true')
 			query
 				.withDeleted()
-				.andWhere('customer.deleted_at IS NOT NULL', { deleted: 'true' });
-
-		if (orderBy)
-			orderBy.map((param) => query.addOrderBy(param, order ? order : 'ASC'));
+				.andWhere('customer.deleted_at IS NOT NULL');
+		console.log(orderBy)
+		if(orderBy === 'name') query.orderBy("customer.name", "ASC")
+		if(orderBy === 'createdAt') query.orderBy("customer.created_at", "ASC")
+		if(orderBy === 'deletedAt') query.withDeleted().orderBy("customer.deleted_at", "ASC")
 
 		const [customers, count] = await query
 			.skip(skip)
@@ -67,8 +73,30 @@ class CustomersRepository implements ICustomersRepository {
 
 		return result;
 	}
+	public async save(customer: ICreateCustomer) {
+		const createdCustomer = this.ormRepository.create(customer);
+		return await this.ormRepository.save(createdCustomer);
+	}
 
-	public async delete(id: string): Promise<UpdateResult | null> {
+	public async findActiveCustomerByEmail(
+		email: string,
+	): Promise<ICustomer | null> {
+		const user = await this.ormRepository.findOne({
+			where: { email, deleted_at: IsNull() },
+		});
+
+		return user;
+	}
+
+	public async findCustomerByCPF(cpf: string): Promise<ICustomer | null> {
+		const user = await this.ormRepository.findOne({
+			where: { cpf },
+		});
+
+		return user;
+	}
+
+	public async delete(id: string): Promise<Customer | null> {
 		const customer = await this.ormRepository.findOneBy({
 			id,
 		});

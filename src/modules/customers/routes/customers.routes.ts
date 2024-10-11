@@ -2,17 +2,29 @@ import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import { z } from 'zod';
 import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterface';
+import validation from '@/http/middleware/validation';
+import {
+	getCustomerIdSchema,
+	postCustomerSchema,
+} from './validators/CustomerValidator';
+import { authenticate } from '@/http/middleware/auth';
+import { ICreateCustomer } from '../typeorm/entities/interfaces/CustomerInterface';
 
 const customersRouter = Router();
 
 const customersService = new CustomerService();
+
+customersRouter.use(authenticate);
 
 customersRouter.get('/', async (req: Request, res: Response) => {
 	const page = req.query.page ? Number(req.query.page) : 1;
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
 	const valuesParams: SearchParamsInterface = { page, limit };
-	const { name, cpf, email, deleted, orderBy, order } = req.query;
+	const { orderBy, name, cpf, email, deleted } = req.query;
+
+	if (orderBy &&(orderBy === 'name' ||orderBy === 'createdAt' ||orderBy === 'deletedAt'))valuesParams.orderBy = orderBy.toString();
+
 
 	if (name) valuesParams.name = name.toString();
 	if (cpf) valuesParams.cpf = cpf.toString();
@@ -20,30 +32,47 @@ customersRouter.get('/', async (req: Request, res: Response) => {
 	if (deleted && (deleted === 'true' || deleted === 'false'))
 		valuesParams.deleted = deleted;
 
-	if (orderBy) valuesParams.orderBy = orderBy.toString().split(',');
-	if (order === 'ASC' || order === 'DESC') valuesParams.order = order;
-
 	const listCustomers = await customersService.listAll(valuesParams);
 	return res.json(listCustomers);
 });
 
-customersRouter.get('/:id', async (req, res) => {
-	const idSchema = z.string().uuid();
+customersRouter.get(
+	'/:id',
+	validation(getCustomerIdSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		const costumer = await customersService.execute(id);
 
-	const id = idSchema.parse(req.params.id);
-	const costumer = await customersService.execute(id);
+		res.json(costumer);
+	},
+);
 
-	res.json(costumer);
-});
+customersRouter.post(
+	'/',
+	validation(postCustomerSchema, 'body'),
+	async (req: Request, res: Response) => {
+		const { name, birth, cpf, email, phone_number } = req.body;
 
-customersRouter.post('/');
+		const customer: ICreateCustomer = { name, birth, cpf, email, phone_number };
+
+		const createdCustomer = await customersService.save(customer);
+
+		res.status(201).json({ id: createdCustomer.id });
+	},
+);
+
 customersRouter.put('/:id');
 
-customersRouter.delete('/:id', async (req, res) => {
-	const idSchema = z.string().uuid();
-	const id = idSchema.parse(req.params.id);
-	const costumer = await customersService.delete(id);
-	res.status(204).json(costumer);
-});
+customersRouter.delete(
+	'/:id',
+	validation(getCustomerIdSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		const costumer = await customersService.delete(id);
+
+		res.status(204).json(costumer);
+	},
+);
 
 export default customersRouter;
