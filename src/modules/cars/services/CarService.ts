@@ -7,7 +7,7 @@ import NotFoundError from '@/http/errors/not-found-error';
 import { CarsRepository } from '../typeorm/repositories/CarsRepository';
 import { Item } from '../typeorm/entities/Items';
 import { CarStatus } from '../typeorm/entities/Car';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 class CarService implements ICarService {
 	private repository: ICarRepository;
@@ -41,7 +41,7 @@ class CarService implements ICarService {
 		}
 
 		const newCar: ICar = {
-			id: uuidv4(),
+			id: randomUUID(),
 			plate,
 			brand,
 			model,
