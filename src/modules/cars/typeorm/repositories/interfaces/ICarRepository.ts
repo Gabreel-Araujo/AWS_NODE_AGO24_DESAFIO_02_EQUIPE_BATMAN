@@ -15,5 +15,7 @@ export interface ICar {
 }
 
 export interface ICarRepository {
+	createCar(newCar: ICar): Promise<ICar | null>;
 	findById(id: string): Promise<ICar | null>;
+	findByPlateAndStatus(plate: string, status: CarStatus): Promise<ICar | null>;
 }
