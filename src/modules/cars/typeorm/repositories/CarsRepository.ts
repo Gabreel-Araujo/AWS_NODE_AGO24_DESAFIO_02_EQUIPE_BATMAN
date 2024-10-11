@@ -42,7 +42,7 @@ export class CarsRepository implements ICarRepository {
 			year?: FindOperator<number> | undefined;
 		} = {};
 
-		const order = {};
+		let order = {};
 
 		if (searchParams.status) where.status = searchParams.status;
 		if (searchParams.brand) where.brand = searchParams.brand;
@@ -57,6 +57,14 @@ export class CarsRepository implements ICarRepository {
 
 		if (!searchParams.fromYear && searchParams.untilYear)
 			where.year = LessThanOrEqual(searchParams.untilYear);
+
+		if (searchParams.sortBy?.includes('year')) {
+			order = { year: searchParams.order || 'ASC' };
+		}
+
+		if (searchParams.sortBy?.includes('km')) {
+			order = { ...order, km: searchParams.order || 'ASC' };
+		}
 
 		return await this.ormRepository.findAndCount({
 			skip,

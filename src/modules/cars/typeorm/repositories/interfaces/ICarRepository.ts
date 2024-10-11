@@ -23,8 +23,6 @@ export interface ICarRepository {
 	): Promise<[ICar[], number]>;
 }
 
-type IOrder = 'asc' | 'desc' | 'ASC' | 'DESC';
-
 export type ISearchParams = {
 	status?: CarStatus | undefined;
 	plate?: string | undefined;
@@ -33,5 +31,6 @@ export type ISearchParams = {
 	km?: number | undefined;
 	fromYear?: number | undefined;
 	untilYear?: number | undefined;
-	sortBy?: { year: IOrder; km: IOrder } | undefined;
+	sortBy?: ('km' | 'year')[] | undefined;
+	order?: string | undefined;
 };

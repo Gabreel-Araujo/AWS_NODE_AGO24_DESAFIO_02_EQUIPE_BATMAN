@@ -36,6 +36,8 @@ carsRouter.get('/', async (req: Request, res: Response) => {
 		km,
 		fromYear,
 		untilYear,
+		sortBy,
+		order,
 	} = req.query;
 
 	if (status) {
@@ -61,6 +63,16 @@ carsRouter.get('/', async (req: Request, res: Response) => {
 	if (fromYear) searchParams.fromYear = Number(fromYear);
 	if (untilYear) searchParams.untilYear = Number(untilYear);
 
+	if (sortBy) {
+		let fieldsToSort = sortBy.toString().split(',');
+		fieldsToSort = fieldsToSort.filter(
+			(field) => field === 'km' || field === 'year',
+		);
+
+		searchParams.sortBy = fieldsToSort as ('km' | 'year')[];
+	}
+
+	if (order) searchParams.order = order.toString();
 
 	const { cars, count, total_pages, current_page } = await carService.findAll({
 		limit,
