@@ -29,6 +29,7 @@ customersRouter.get(
 
 customersRouter.post(
 	'/',
+	authenticate,
 	validation(postCustomerSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
