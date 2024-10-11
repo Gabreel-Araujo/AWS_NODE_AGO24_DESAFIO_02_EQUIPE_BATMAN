@@ -18,7 +18,7 @@ customersRouter.get('/');
 
 customersRouter.get(
 	'/:id',
-	validation(getCustomerIdSchema, 'params'),
+	validation(getCustomerSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
@@ -46,7 +46,7 @@ customersRouter.put('/:id');
 
 customersRouter.delete(
 	'/:id',
-	validation(getCustomerIdSchema, 'params'),
+	validation(getCustomerSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 
