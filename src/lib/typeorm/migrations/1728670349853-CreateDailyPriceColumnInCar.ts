@@ -6,7 +6,11 @@ export class CreateDailyPriceColumnInCar1728670349853
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.addColumn(
 			'cars',
-			new TableColumn({ name: 'daily_price', type: 'float', isNullable: false }),
+			new TableColumn({
+				name: 'daily_price',
+				type: 'float',
+				isNullable: false,
+			}),
 		);
 	}
 
