@@ -1,5 +1,8 @@
-import { ICustomer } from '../../entities/interfaces/CustomerInterface';
 import { ICustomerPagination } from './ICustomerPagination';
+import {
+	ICreateCustomer,
+	ICustomer,
+} from '../../entities/interfaces/CustomerInterface';
 
 export type SearchParams = {
 	page: number;
@@ -13,5 +16,8 @@ export type SearchParams = {
 export interface ICustomersRepository {
 	findAll({ page, skip, take }: SearchParams): Promise<ICustomerPagination>;
 	findById(id: string): Promise<ICustomer | null>;
+	save(customer: ICreateCustomer): Promise<ICustomer>;
+	findActiveCustomerByEmail(email: string): Promise<ICustomer | null>;
+	findCustomerByCPF(cpf: string): Promise<ICustomer | null>;
 	delete(id: string): Promise<ICustomer | null>;
 }

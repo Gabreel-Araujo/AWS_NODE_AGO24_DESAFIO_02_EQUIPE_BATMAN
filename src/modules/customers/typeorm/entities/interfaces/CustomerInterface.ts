@@ -8,3 +8,11 @@ export interface ICustomer {
 	created_at: Date;
 	deleted_at?: Date | null ;
 }
+
+export interface ICreateCustomer {
+	name: string;
+	birth: Date;
+	cpf: string;
+	email: string;
+	phone_number: string;
+}
