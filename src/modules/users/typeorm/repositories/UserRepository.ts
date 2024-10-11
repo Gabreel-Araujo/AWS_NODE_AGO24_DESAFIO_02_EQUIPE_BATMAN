@@ -14,7 +14,13 @@ export default class UserRepository implements UserRepositoryInterface {
 		this.ormRepository = dbConnection.getRepository(User);
 	}
 
-	save: (user: CreateUserInterface) => Promise<UserDetailsInterface>;
+	async save(user: CreateUserInterface): Promise<UserDetailsInterface> {
+		const newUser = this.ormRepository.create(user);
+
+		await this.ormRepository.save(newUser);
+
+		return newUser as UserDetailsInterface;
+	}
 
 	async findById(id: string): Promise<UserDetailsInterface | null> {
 		return this.ormRepository.findOne({ where: { id } });
