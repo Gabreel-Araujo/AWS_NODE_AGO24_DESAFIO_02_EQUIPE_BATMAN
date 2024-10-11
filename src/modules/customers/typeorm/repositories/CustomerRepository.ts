@@ -55,8 +55,7 @@ class CustomersRepository implements ICustomersRepository {
 		if (orderBy === 'createdAt')
 			query.orderBy('customer.created_at', `${order}`);
 		if (orderBy === 'deletedAt')
-			query.withDeleted().orderBy('customer.deleted_at', `${order}`);
-
+			query.withDeleted().andWhere('customer.deleted_at IS NOT NULL').orderBy('customer.deleted_at', `${order}`);
 		const customers = await query.skip(skip).take(take).getMany();
 
 		return customers;

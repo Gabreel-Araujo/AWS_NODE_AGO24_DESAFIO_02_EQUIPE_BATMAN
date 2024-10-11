@@ -4,6 +4,7 @@ import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterf
 import validation from '@/http/middleware/validation';
 import {
 	getCustomerIdSchema,
+	getCustomerQuerySchema,
 	postCustomerSchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
@@ -13,11 +14,11 @@ const customersRouter = Router();
 
 const customersService = new CustomerService();
 
-customersRouter.use(authenticate);
+// customersRouter.use(authenticate);
 
 customersRouter.get(
 	'/',
-	validation(getCustomerIdSchema, 'params'),
+	validation(getCustomerQuerySchema, 'query'),
 	async (req: Request, res: Response) => {
 		const page = req.query.page ? Number(req.query.page) : 1;
 		const limit = req.query.limit ? Number(req.query.limit) : 10;
@@ -25,9 +26,9 @@ customersRouter.get(
 		const valuesParams: SearchParamsInterface = { page, limit };
 		const { order, orderBy, name, cpf, email, deleted } = req.query;
 
-		if (name) valuesParams.name = name.toString();
+		if (name) valuesParams.name = name.toString().toUpperCase();
 		if (cpf) valuesParams.cpf = cpf.toString();
-		if (email) valuesParams.email = email.toString();
+		if (email) valuesParams.email = email.toString().toUpperCase();
 		if (deleted && (deleted === 'true' || deleted === 'false'))
 			valuesParams.deleted = deleted;
 		if (
@@ -38,8 +39,7 @@ customersRouter.get(
 		if (order && (order === 'ASC' || order === 'DESC'))
 			valuesParams.order = order;
 		const listCustomers = await customersService.listAll(valuesParams);
-
-		return res.json(listCustomers);
+		res.status(200).json(listCustomers);
 	},
 );
 
@@ -50,7 +50,7 @@ customersRouter.get(
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
 
-		res.json(costumer);
+		res.status(200).json(costumer);
 	},
 );
 
@@ -60,7 +60,7 @@ customersRouter.post(
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
 
-		const customer: ICreateCustomer = { name, birth, cpf, email, phone_number };
+		const customer: ICreateCustomer = { name: name.toUpperCase(), birth, cpf, email: email.toUpperCase(), phone_number };
 
 		const createdCustomer = await customersService.save(customer);
 
