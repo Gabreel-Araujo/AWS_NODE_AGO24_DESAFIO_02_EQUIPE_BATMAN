@@ -7,6 +7,11 @@ import {
 	ICustomer,
 	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
+<<<<<<< HEAD
+=======
+import ConflictError from '@/http/errors/conflict-error';
+
+>>>>>>> ac3733a72b694a260f3d2a15aee639064dd2f48d
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
 
@@ -29,26 +34,35 @@ class CustomersRepository implements ICustomersRepository {
 	}
 
 	public async save(customer: ICreateCustomer) {
-		const createdCustomer = this.ormRepository.create(customer);
-		return await this.ormRepository.save(createdCustomer);
+		try {
+			const createdCustomer = this.ormRepository.create(customer);
+
+			return await this.ormRepository.save(createdCustomer);
+		} catch (error: any) {
+			// Código de erro específico para violação de chave única
+			if (error.code === '23505') {
+				throw new ConflictError('email or cpf already exists');
+			}
+			throw error;
+		}
 	}
 
 	public async findActiveCustomerByEmail(
 		email: string,
 	): Promise<ICustomer | null> {
-		const user = await this.ormRepository.findOne({
+		const customer = await this.ormRepository.findOne({
 			where: { email, deleted_at: IsNull() },
 		});
 
-		return user;
+		return customer;
 	}
 
 	public async findCustomerByCPF(cpf: string): Promise<ICustomer | null> {
-		const user = await this.ormRepository.findOne({
+		const customer = await this.ormRepository.findOne({
 			where: { cpf },
 		});
 
-		return user;
+		return customer;
 	}
 
 	public async delete(id: string): Promise<Customer | null> {
