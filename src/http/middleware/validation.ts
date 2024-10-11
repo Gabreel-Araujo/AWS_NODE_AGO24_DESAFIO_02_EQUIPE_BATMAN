@@ -17,7 +17,9 @@ const validation = (
 	return (req, res, next) => {
 		try {
 			const data = req[field];
-			schema.parse(data);
+			console.log('Data zod: ', data);
+			const schemazod = schema.parse(data);
+			req[field] = schemazod;
 			next();
 		} catch (error) {
 			if (error instanceof ZodError) {
