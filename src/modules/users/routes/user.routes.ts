@@ -6,17 +6,16 @@ import {
 	postUserSchema,
 	putUserSchema,
 } from './validators/UserValidators';
-import UnauthorizedError from '@/http/errors/unauthorized-error';
 import validation from '@/http/middleware/validation';
-import ValidationError from '@/http/errors/validation-error';
 
 const userRoute = Router();
 
 const userService = new UserService();
 
+userRoute.use(authenticate);
+
 userRoute.post(
 	'/',
-	authenticate,
 	validation(postUserSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { email, fullName, password } = req.body;
@@ -26,11 +25,8 @@ userRoute.post(
 			email,
 			password,
 		};
-		const createdUser = await userService.save(user);
 
-		if (!createdUser) {
-			throw new UnauthorizedError('unauthorized');
-		}
+		const createdUser = await userService.save(user);
 
 		res.status(201).json({ id: createdUser.id });
 	},
@@ -38,35 +34,30 @@ userRoute.post(
 
 userRoute.get(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 
-		if (!id) {
-			throw new ValidationError('Id not found');
-		}
-
 		const user = await userService.findById(id);
+
 		res.status(200).json(user);
 	},
 );
 
 userRoute.delete(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 
 		await userService.softDeleteUser(id);
+
 		res.status(204).send();
 	},
 );
 
 userRoute.put(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	validation(putUserSchema, 'body'),
 	async (req: Request, res: Response) => {
@@ -78,10 +69,6 @@ userRoute.put(
 			email,
 			password,
 		});
-
-		if (!updateUser) {
-			res.status(404).json({ message: 'User Not found' });
-		}
 
 		res.status(200).json(updateUser);
 	},

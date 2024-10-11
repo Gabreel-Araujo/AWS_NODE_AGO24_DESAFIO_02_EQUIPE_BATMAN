@@ -10,7 +10,8 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migrate:run": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:run",
     "migrate:show": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:show",
-    "migrate:revert": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:revert"
+    "migrate:revert": "typeorm-ts-node-commonjs -d ./src/lib/typeorm/index.ts migration:revert",
+    "swagger:gen": "tsc ./src/documentation/swagger.ts && node ./src/documentation/swagger.js"
   },
   "keywords": [
     "api",
@@ -26,15 +27,14 @@
     "@types/express": "5.0.0",
     "@types/jsonwebtoken": "9.0.7",
     "@types/node": "22.7.5",
+    "@types/swagger-ui-express": "4.1.6",
+    "swagger-autogen": "2.23.7",
     "ts-node": "10.9.2",
     "tsup": "8.3.0",
     "tsx": "4.19.1",
     "typescript": "5.6.2"
   },
   "dependencies": {
-    "@types/bcrypt": "5.0.2",
-    "@types/jsonwebtoken": "9.0.7",
-    "bcrypt": "5.1.1",
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
     "cpf-cnpj-validator": "1.0.3",
@@ -46,6 +46,7 @@
     "phone": "3.1.50",
     "postgres": "3.4.4",
     "reflect-metadata": "0.2.2",
+    "swagger-ui-express": "5.0.1",
     "tsconfig-paths": "4.2.0",
     "typeorm": "0.3.20",
     "zod": "3.23.8"

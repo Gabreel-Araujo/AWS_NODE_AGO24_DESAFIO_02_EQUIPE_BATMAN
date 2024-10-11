@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import validation from '@/http/middleware/validation';
 import {
-	getCustomerSchema,
+	getCustomerIdSchema,
 	postCustomerSchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
@@ -18,7 +18,7 @@ customersRouter.get('/');
 
 customersRouter.get(
 	'/:id',
-	validation(getCustomerSchema, 'params'),
+	validation(getCustomerIdSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
@@ -30,7 +30,7 @@ customersRouter.get(
 customersRouter.post(
 	'/',
 	authenticate,
-	validation(postCustomerSchema, "body"),
+	validation(postCustomerSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
 
@@ -46,7 +46,7 @@ customersRouter.put('/:id');
 
 customersRouter.delete(
 	'/:id',
-	validation(getCustomerSchema, 'params'),
+	validation(getCustomerIdSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 

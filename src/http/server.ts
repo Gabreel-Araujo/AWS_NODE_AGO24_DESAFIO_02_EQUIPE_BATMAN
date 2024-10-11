@@ -4,6 +4,7 @@ import { app } from '@/app';
 import { env } from '@/env';
 import { dbConnection } from '@/lib/typeorm';
 import { UserSeed } from '@/seeds/UserSeed';
+import { CustomerSeed } from '@/seeds/CustomerSeed';
 
 async function startServer() {
 	try {
@@ -11,6 +12,7 @@ async function startServer() {
 		console.log('Conected to the database storage 🚧');
 
 		await UserSeed(dbConnection);
+		await CustomerSeed(dbConnection);
 
 		app.listen(env.PORT, () => {
 			console.log(`Server is running on port ${env.PORT} 🚀`);
