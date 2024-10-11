@@ -14,7 +14,7 @@ const customersRouter = Router();
 
 const customersService = new CustomerService();
 
-// customersRouter.use(authenticate);
+customersRouter.use(authenticate);
 
 customersRouter.get(
 	'/',
@@ -49,7 +49,6 @@ customersRouter.get(
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
-
 		res.status(200).json(costumer);
 	},
 );
@@ -60,7 +59,13 @@ customersRouter.post(
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
 
-		const customer: ICreateCustomer = { name: name.toUpperCase(), birth, cpf, email: email.toUpperCase(), phone_number };
+		const customer: ICreateCustomer = {
+			name: name.toUpperCase(),
+			birth,
+			cpf,
+			email: email.toUpperCase(),
+			phone_number,
+		};
 
 		const createdCustomer = await customersService.save(customer);
 
