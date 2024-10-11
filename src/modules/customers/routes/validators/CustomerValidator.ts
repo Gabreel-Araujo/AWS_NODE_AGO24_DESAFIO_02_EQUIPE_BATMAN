@@ -1,6 +1,95 @@
+import { cpf } from 'cpf-cnpj-validator';
+import phone from 'phone';
 import { z } from 'zod';
 
-export const getCustomerIdSchema = z
-	.string({ message: 'insert a valid id' })
-	.uuid()
-	.min(1);
+export const getCustomerIdSchema = z.object({
+	id: z.string().uuid({ message: 'insert a valid id' }),
+});
+
+export const postCustomerSchema = z.object({
+	name: z
+		.string({
+			required_error: 'name is required',
+			invalid_type_error: 'name must be a string',
+		})
+		.refine(
+			(name) => {
+				return !(name.trim() === '');
+			},
+			{ message: 'name cannot be a empty value' },
+		),
+	birth: z
+		.string({
+			required_error: 'birth is required',
+			invalid_type_error: 'birth must be a string',
+		})
+		.refine(
+			(value) => {
+				const regex = /^\d{4}-\d{2}-\d{2}$/;
+				return regex.test(value);
+			},
+			{ message: 'invalid birth date: use format yyyy-mm-dd' },
+		)
+		.refine(
+			(value) => {
+				const [year, month, day] = value.split('-').map(Number);
+				const date = new Date(year, month - 1, day);
+
+				return (
+					date.getFullYear() === year &&
+					date.getMonth() === month - 1 &&
+					date.getDate() === day
+				);
+			},
+			{
+				message: 'birth date must be a valid date',
+			},
+		)
+		.refine(
+			(value) => {
+				const date = new Date(value);
+				return !(date.getTime() > Date.now());
+			},
+			{
+				message: 'birth cannot be a future date',
+			},
+		)
+		.transform((value) => {
+			const [year, month, day] = value.split('-').map(Number);
+			return new Date(year, month - 1, day);
+		}),
+	cpf: z
+		.string({
+			required_error: 'cpf is required',
+			invalid_type_error: 'cpf must be a string',
+		})
+		.refine(
+			(cpf) => {
+				return !(cpf.trim() === '');
+			},
+			{ message: 'cpf cannot be a empty value' },
+		)
+		.refine(
+			(value) => {
+				return cpf.isValid(value);
+			},
+			{ message: 'invalid cpf' },
+		),
+	email: z
+		.string({
+			required_error: 'email is required',
+			invalid_type_error: 'email must be a string',
+		})
+		.email('email is invalid'),
+	phone_number: z
+		.string({
+			required_error: 'phone_number is required',
+			invalid_type_error: 'phone_number must be a string',
+		})
+		.refine(
+			(phone_number) => {
+				return phone(phone_number, { country: 'BR' }).isValid;
+			},
+			{ message: 'phone_number must be a valid brazilian phone number' },
+		),
+});
