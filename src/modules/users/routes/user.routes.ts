@@ -14,9 +14,10 @@ const userRoute = Router();
 
 const userService = new UserService();
 
+userRoute.use(authenticate);
+
 userRoute.post(
 	'/',
-	authenticate,
 	validation(postUserSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { email, fullName, password } = req.body;
@@ -38,7 +39,6 @@ userRoute.post(
 
 userRoute.get(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
@@ -54,7 +54,6 @@ userRoute.get(
 
 userRoute.delete(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
@@ -66,7 +65,6 @@ userRoute.delete(
 
 userRoute.put(
 	'/:id',
-	authenticate,
 	validation(idUserSchema, 'params'),
 	validation(putUserSchema, 'body'),
 	async (req: Request, res: Response) => {
@@ -78,10 +76,6 @@ userRoute.put(
 			email,
 			password,
 		});
-
-		if (!updateUser) {
-			res.status(404).json({ message: 'User Not found' });
-		}
 
 		res.status(200).json(updateUser);
 	},
