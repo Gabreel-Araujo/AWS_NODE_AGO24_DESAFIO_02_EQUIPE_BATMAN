@@ -23,7 +23,7 @@ customersRouter.get(
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
 
-		res.json(costumer);
+		res.status(200).json(costumer);
 	},
 );
 

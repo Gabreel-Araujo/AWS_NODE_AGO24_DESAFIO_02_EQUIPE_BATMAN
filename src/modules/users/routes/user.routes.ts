@@ -71,7 +71,7 @@ userRoute.get(
 			createdAt: user.createdAt,
 		}));
 
-		res.json({
+		res.status(200).json({
 			page: Number(page),
 			limit: Number(limit),
 			total,
