@@ -5,7 +5,7 @@ export const CustomerSeed = async (dataSource: DataSource) => {
 	const customerRepository = dataSource.getRepository(Customer);
 
 	const existingCustomer = await customerRepository.findOneBy({
-		email: 'admin@example.com',
+		email: 'customertest@mail.com',
 	});
 
 	const newCustomer = {
