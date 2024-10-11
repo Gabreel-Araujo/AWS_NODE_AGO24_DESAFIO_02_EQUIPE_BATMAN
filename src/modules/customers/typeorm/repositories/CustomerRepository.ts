@@ -1,14 +1,12 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { DataSource, IsNull, Repository, UpdateResult } from 'typeorm';
+import { IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
 	ICreateCustomer,
 	ICustomer,
 	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
-import NotFoundError from '@/http/errors/not-found-error';
-
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
 
@@ -38,15 +36,35 @@ class CustomersRepository implements ICustomersRepository {
 	public async findActiveCustomerByEmail(
 		email: string,
 	): Promise<ICustomer | null> {
-		return await this.ormRepository.findOne({
+		const user = await this.ormRepository.findOne({
 			where: { email, deleted_at: IsNull() },
 		});
+
+		return user;
 	}
 
 	public async findCustomerByCPF(cpf: string): Promise<ICustomer | null> {
-		return await this.ormRepository.findOne({
+		const user = await this.ormRepository.findOne({
 			where: { cpf },
 		});
+
+		return user;
+	}
+
+	public async delete(id: string): Promise<Customer | null> {
+		const customer = await this.ormRepository.findOneBy({
+			id,
+		});
+
+		if (!customer) {
+			return null;
+		}
+
+		customer.deleted_at = new Date();
+
+		const updatedCustomer = await this.ormRepository.save(customer);
+
+		return updatedCustomer;
 	}
 
 	public async findActiveCustomerByID(id: string): Promise<ICustomer | null> {

@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import validation from '@/http/middleware/validation';
 import {
-	getCustomerSchema,
+	getCustomerIdSchema,
 	patchCustomerBodySchema,
 	patchCustomerParamsSchema,
 	postCustomerSchema,
@@ -18,13 +18,14 @@ const customersRouter = Router();
 
 const customersService = new CustomerService();
 
+customersRouter.use(authenticate);
+
 customersRouter.get('/');
 
 customersRouter.get(
 	'/:id',
-	validation(getCustomerSchema, 'params'),
-	authenticate,
-	async (req, res) => {
+	validation(getCustomerIdSchema, 'params'),
+	async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const costumer = await customersService.execute(id);
 
@@ -38,9 +39,11 @@ customersRouter.post(
 	validation(postCustomerSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { name, birth, cpf, email, phone_number } = req.body;
+
 		const customer: ICreateCustomer = { name, birth, cpf, email, phone_number };
 
 		const createdCustomer = await customersService.save(customer);
+
 		res.status(201).json({ id: createdCustomer.id });
 	},
 );
@@ -70,6 +73,18 @@ customersRouter.patch(
 	},
 );
 
-customersRouter.delete('/:id');
+customersRouter.put('/:id');
+
+customersRouter.delete(
+	'/:id',
+	validation(getCustomerIdSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		const costumer = await customersService.delete(id);
+
+		res.status(204).json(costumer);
+	},
+);
 
 export default customersRouter;

@@ -12,4 +12,5 @@ export interface ICustomersRepository {
 	findCustomerByCPF(cpf: string): Promise<ICustomer | null>;
 	findActiveCustomerByID(id: string): Promise<ICustomer | null>;
 	updateCustomer(id: string, customer: IUpdateCustomer): Promise<UpdateResult>;
+	delete(id: string): Promise<ICustomer | null>;
 }

@@ -1,0 +1,399 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "CompassCar API",
+		"description": "API para gerenciamento de carros, incluindo funcionalidades de criação, leitura, atualização e exclusão de registros de carros. Esta API permite a integração com outros sistemas, fornecendo endpoints seguros e documentados para operações de CRUD. Aproveite as funcionalidades avançadas para gerenciar seu inventário de carros de forma eficiente.",
+		"version": "1.0.0"
+	},
+	"host": "localhost:3000",
+	"basePath": "/",
+	"tags": [
+		{
+			"name": "Auth",
+			"description": "Authentication"
+		},
+		{
+			"name": "User",
+			"description": "Operations about user"
+		}
+	],
+	"schemes": ["http"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"components": {
+		"securitySchemes": {
+			"BearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT",
+				"description": "Token de Autenticação"
+			}
+		}
+	},
+	"security": [
+		{
+			"BearerAuth": []
+		}
+	],
+	"paths": {
+		"/api/v1/login": {
+			"post": {
+				"tags": ["Auth"],
+				"summary": "Autenticar Usuário",
+				"description": "Essa rota permite a autenticação de usuários no sistema. O usuário deve fornecer um e-mail e uma senha válidos para obter um token de autenticação.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"example": "admin@example.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "senha123",
+										"description": "Senha do usuário"
+									}
+								},
+								"required": ["email", "password"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Autenticação bem-sucedida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string",
+											"example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+										},
+										"expiresIn": {
+											"type": "string",
+											"example": "10m"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Dados inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "email is required | password is required | invalid email or password"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "Usuário não autorizado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "invalid email or password"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/users": {
+			"post": {
+				"tags": ["User"],
+				"summary": "Criar um novo usuário",
+				"description": "Essa rota permite a criação de um novo usuário no sistema. Forneça um email único, nome completo e senha.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								},
+								"required": ["email", "fullName", "password"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Usuário criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Email já registrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Email already registered"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/users/{id}": {
+			"get": {
+				"tags": ["User"],
+				"summary": "Busca um usuário por ID",
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+										},
+										"fullName": {
+											"type": "string",
+											"example": "Teste da Silva"
+										},
+										"email": {
+											"type": "string",
+											"example": "teste@mail.com"
+										},
+										"password": {
+											"type": "string",
+											"example": "$2a$10$zIG4RbQmCr.K6A0yOPAhh.OYFM9LRxvhd1qCeMEf0KObzpneYEWIq"
+										},
+										"createdAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deletedAt": {
+											"type": "string",
+											"example": "null"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "validation error"
+										},
+										"errors": {
+											"type": "string",
+											"example": "invalid uuid"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["User"],
+				"description": "",
+				"summary": "Atualiza um usuário por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								}
+							},
+							"required": []
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+										},
+										"createdAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deletedAt": {
+											"type": "string",
+											"example": null
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Requisição inválida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Dados inválidos"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Usuário não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "User not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["User"],
+				"description": "",
+				"summary": "Deleta um usuário por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Usuário deletado com sucesso. Nenhum conteúdo retornado."
+					},
+					"404": {
+						"description": "Usuário não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "User not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"basepath": "/"
+}
