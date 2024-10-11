@@ -112,7 +112,7 @@ export default class UserService implements UserServiceInterface {
 		const [users] = result;
 
 		if (users.length === 0) {
-			throw new NotFoundError('user Not found');
+			throw new NotFoundError('users not found');
 		}
 
 		return result;

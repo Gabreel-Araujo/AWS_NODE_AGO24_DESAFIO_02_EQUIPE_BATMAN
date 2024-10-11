@@ -70,11 +70,6 @@ userRoute.get(
 					: 'ASC',
 		});
 
-		if (users.length === 0) {
-			res.status(404).json({ message: 'No users found' });
-			return;
-		}
-
 		const selectedProperties = users.map((user) => ({
 			id: user.id,
 			name: user.fullName,
