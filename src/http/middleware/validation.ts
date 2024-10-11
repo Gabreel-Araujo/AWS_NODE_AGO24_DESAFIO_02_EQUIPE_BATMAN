@@ -16,8 +16,7 @@ const validation = (
 ): ((req: Request, res: Response, next: NextFunction) => void) => {
 	return (req, res, next) => {
 		try {
-			const data = req[field];
-			schema.parse(data);
+			req[field] = schema.parse(req[field]);
 			next();
 		} catch (error) {
 			if (error instanceof ZodError) {
