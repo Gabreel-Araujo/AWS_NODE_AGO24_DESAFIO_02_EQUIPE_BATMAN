@@ -29,13 +29,35 @@ export default class CustomerService implements ICustomerService {
 		const alreadyExistsEmail = await this.repository.findActiveCustomerByEmail(
 			customer.email,
 		);
-		if (alreadyExistsEmail) throw new ConflictError('email already exist');
+
+		if (alreadyExistsEmail) {
+			throw new ConflictError('email already exist');
+		}
 
 		const alreadyExistsCPF = await this.repository.findCustomerByCPF(
 			customer.cpf,
 		);
-		if (alreadyExistsCPF) throw new ConflictError('cpf already exist');
 
-		return await this.repository.save(customer);
+		if (alreadyExistsCPF) {
+			throw new ConflictError('cpf already exist');
+		}
+
+		const newCustomer = await this.repository.save(customer);
+
+		return newCustomer;
+	}
+
+	public async delete(id: string): Promise<ICustomer | null> {
+		const customer = await this.repository.findById(id);
+
+		if (!customer) {
+			throw new NotFoundError('Customer not found.');
+		}
+
+		customer.deleted_at = null;
+
+		const deletedUser = await this.repository.delete(id);
+
+		return deletedUser;
 	}
 }
