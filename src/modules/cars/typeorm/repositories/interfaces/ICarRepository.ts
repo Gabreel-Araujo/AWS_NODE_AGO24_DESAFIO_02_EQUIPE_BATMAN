@@ -16,4 +16,22 @@ export interface ICar {
 
 export interface ICarRepository {
 	findById(id: string): Promise<ICar | null>;
+	findAll(
+		skip: number,
+		take: number,
+		searchParams?: ISearchParams,
+	): Promise<[ICar[], number]>;
 }
+
+type IOrder = 'asc' | 'desc' | 'ASC' | 'DESC';
+
+export type ISearchParams = {
+	status?: CarStatus | undefined;
+	plate?: string | undefined;
+	brand?: string | undefined;
+	model?: string | undefined;
+	km?: number | undefined;
+	fromYear?: number | undefined;
+	untilYear?: number | undefined;
+	sortBy?: { year: IOrder; km: IOrder }[] | undefined;
+};
