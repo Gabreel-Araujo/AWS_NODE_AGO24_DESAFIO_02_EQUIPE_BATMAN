@@ -26,22 +26,6 @@ export default class CustomerService implements ICustomerService {
 	}
 
 	public async save(customer: ICreateCustomer): Promise<ICustomer> {
-		const alreadyExistsEmail = await this.repository.findActiveCustomerByEmail(
-			customer.email,
-		);
-
-		if (alreadyExistsEmail) {
-			throw new ConflictError('email already exist');
-		}
-
-		const alreadyExistsCPF = await this.repository.findCustomerByCPF(
-			customer.cpf,
-		);
-
-		if (alreadyExistsCPF) {
-			throw new ConflictError('cpf already exist');
-		}
-
 		const newCustomer = await this.repository.save(customer);
 
 		return newCustomer;
