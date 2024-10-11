@@ -2,10 +2,9 @@ import { cpf } from 'cpf-cnpj-validator';
 import phone from 'phone';
 import { z } from 'zod';
 
-export const getCustomerSchema = z
-	.string({ message: 'insert a valid id' })
-	.uuid()
-	.min(1);
+export const getCustomerIdSchema = z.object({
+	id: z.string().uuid({ message: 'insert a valid id' }),
+});
 
 export const postCustomerSchema = z.object({
 	name: z
