@@ -1,7 +1,6 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
 import { SearchParams } from './interfaces/ICustomersRepository';
-import { ICustomerPagination } from './interfaces/ICustomerPagination';
 import { IsNull, Repository } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
@@ -31,7 +30,6 @@ class CustomersRepository implements ICustomersRepository {
 	}
 
 	public async findAll({
-		page,
 		skip,
 		take,
 		orderBy,
@@ -40,39 +38,28 @@ class CustomersRepository implements ICustomersRepository {
 		email,
 		cpf,
 		deleted,
-	}: SearchParams): Promise<ICustomerPagination> {
+	}: SearchParams): Promise<Customer[]> {
 		const query = this.ormRepository.createQueryBuilder('customer');
 
 		if (name) query.andWhere('customer.name LIKE :name', { name: `%${name}%` });
 		if (email)
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
 		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: { cpf } });
-		if (deleted === 'false')
-			query.andWhere('customer.deleted_at IS NULL');
+		if (deleted === 'false') query.andWhere('customer.deleted_at IS NULL');
 		if (deleted === 'true')
-			query
-				.withDeleted()
-				.andWhere('customer.deleted_at IS NOT NULL');
-		if(!order || (order !== 'DESC' && order !== 'ASC')) {
-			order = 'ASC'
-		} 
-		if(orderBy === 'name') query.orderBy("customer.name", `${order}`)
-		if(orderBy === 'createdAt') query.orderBy("customer.created_at", `${order}`)
-		if(orderBy === 'deletedAt') query.withDeleted().orderBy("customer.deleted_at", `${order}`)
-		
-		const [customers, count] = await query
-			.skip(skip)
-			.take(take)
-			.getManyAndCount();
+			query.withDeleted().andWhere('customer.deleted_at IS NOT NULL');
+		if (!order || (order !== 'DESC' && order !== 'ASC')) {
+			order = 'ASC';
+		}
+		if (orderBy === 'name') query.orderBy('customer.name', `${order}`);
+		if (orderBy === 'createdAt')
+			query.orderBy('customer.created_at', `${order}`);
+		if (orderBy === 'deletedAt')
+			query.withDeleted().orderBy('customer.deleted_at', `${order}`);
 
-		const result = {
-			per_page: take,
-			total: count,
-			current_page: page,
-			data: customers,
-		};
+		const customers = await query.skip(skip).take(take).getMany();
 
-		return result;
+		return customers;
 	}
 	public async save(customer: ICreateCustomer) {
 		const createdCustomer = this.ormRepository.create(customer);
@@ -105,8 +92,8 @@ class CustomersRepository implements ICustomersRepository {
 			return null;
 		}
 		customer.deleted_at = new Date();
-		const updatedCustomer = await this.ormRepository.save(customer)
-		return updatedCustomer
+		const updatedCustomer = await this.ormRepository.save(customer);
+		return updatedCustomer;
 	}
 }
 

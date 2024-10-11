@@ -7,8 +7,8 @@ import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
 import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
-import { ICustomerPagination } from '../typeorm/repositories/interfaces/ICustomerPagination';
 import ConflictError from '@/http/errors/conflict-error';
+import { CustomerPaginationServiceInterface } from './interfaces/CustomerPaginationServiceInterface';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;
@@ -36,12 +36,11 @@ export default class CustomerService implements ICustomerService {
 		email,
 		cpf,
 		deleted,
-	}: SearchParamsInterface): Promise<ICustomerPagination> {
+	}: SearchParamsInterface): Promise<CustomerPaginationServiceInterface> {
 		const take = limit;
 		const skip = Number(page - 1) * take;
 
 		const customers = await this.repository.findAll({
-			page,
 			skip,
 			take,
 			order,
@@ -51,9 +50,19 @@ export default class CustomerService implements ICustomerService {
 			cpf,
 			deleted,
 		});
-		return customers;
+
+		const result = {
+			per_page: take,
+			total: customers.length,
+			current_page: page,
+			data: customers,
+		};
+		if (customers.length === 0) {
+			throw new NotFoundError('Customers not found.');
+		}
+		return result;
 	}
-	
+
 	public async save(customer: ICreateCustomer): Promise<ICustomer> {
 		const alreadyExistsEmail = await this.repository.findActiveCustomerByEmail(
 			customer.email,
