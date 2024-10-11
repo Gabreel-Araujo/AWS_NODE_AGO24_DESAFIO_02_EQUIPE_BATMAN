@@ -51,11 +51,12 @@ class CustomersRepository implements ICustomersRepository {
 		if (!order || (order !== 'DESC' && order !== 'ASC')) {
 			order = 'ASC';
 		}
-		if (orderBy === 'name') query.orderBy('customer.name', `${order}`);
-		if (orderBy === 'createdAt')
-			query.orderBy('customer.created_at', `${order}`);
-		if (orderBy === 'deletedAt')
-			query.withDeleted().andWhere('customer.deleted_at IS NOT NULL').orderBy('customer.deleted_at', `${order}`);
+
+		const ordersBy = orderBy?.split(',')
+
+		ordersBy?.map(item => {
+			query.addOrderBy(`customer.${item}`, `${order}`);
+		})
 		const customers = await query.skip(skip).take(take).getMany();
 
 		return customers;

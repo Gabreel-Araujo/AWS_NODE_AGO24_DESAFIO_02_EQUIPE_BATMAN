@@ -14,12 +14,10 @@ export const postCustomerSchema = z.object({
 	phone_number: z.string({ message: 'phone is required' }).min(1),
 });
 
-// export const getCustomersParamsSchema
-
 export const getCustomerQuerySchema = z.object({
 	name: z
-		.string()
-		.regex(/^[A-Z][a-z]*$/)
+		.string({message: 'name is required'})
+		.regex(/^[A-Z][a-z]*$/, 'Invalid name format, must have only letters')
 		.optional(),
 	email: z.string().optional(),
 	cpf: z
@@ -28,5 +26,5 @@ export const getCustomerQuerySchema = z.object({
 		.optional(),
 		deleted: z.string().regex(/^(true|false)$/, "Invalid deleted format, must be 'true' or 'false'").optional(),
 	order: z.string().regex(/^(asc|desc)$/, "Invalid order format, must be 'asc' or 'esc'").optional(),
-	orderBy: z.string().regex(/^(name|createdAt|deletedAt)$/, "Invalid orderBy format, must be 'name' or 'createdAt' or 'deletedAt'").optional(),
+	orderBy: z.string().regex(/^(name|created_at|deleted_at)(,(name|created_at|deleted_at)){0,2}$/, "Invalid orderBy format, must be 'name' or 'created_at' or 'deleted_at'").optional(),
 });

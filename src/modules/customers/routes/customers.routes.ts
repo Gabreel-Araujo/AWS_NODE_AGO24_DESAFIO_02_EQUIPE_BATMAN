@@ -31,10 +31,7 @@ customersRouter.get(
 		if (email) valuesParams.email = email.toString().toUpperCase();
 		if (deleted && (deleted === 'true' || deleted === 'false'))
 			valuesParams.deleted = deleted;
-		if (
-			orderBy &&
-			(orderBy === 'name' || orderBy === 'createdAt' || orderBy === 'deletedAt')
-		)
+		if (orderBy)
 			valuesParams.orderBy = orderBy.toString();
 		if (order && (order === 'ASC' || order === 'DESC'))
 			valuesParams.order = order;
