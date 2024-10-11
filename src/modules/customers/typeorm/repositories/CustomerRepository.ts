@@ -34,6 +34,7 @@ class CustomersRepository implements ICustomersRepository {
 		page,
 		skip,
 		take,
+		orderBy,
 		name,
 		email,
 		cpf,
@@ -51,6 +52,10 @@ class CustomersRepository implements ICustomersRepository {
 			query
 				.withDeleted()
 				.andWhere('customer.deleted_at IS NOT NULL');
+		console.log(orderBy)
+		if(orderBy === 'name') query.orderBy("customer.name", "ASC")
+		if(orderBy === 'createdAt') query.orderBy("customer.created_at", "ASC")
+		if(orderBy === 'deletedAt') query.withDeleted().orderBy("customer.deleted_at", "ASC")
 
 		const [customers, count] = await query
 			.skip(skip)

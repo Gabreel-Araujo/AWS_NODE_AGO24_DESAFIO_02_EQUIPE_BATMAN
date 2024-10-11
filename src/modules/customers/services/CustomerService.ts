@@ -30,6 +30,7 @@ export default class CustomerService implements ICustomerService {
 	public async listAll({
 		page,
 		limit,
+		orderBy,
 		name,
 		email,
 		cpf,
@@ -42,6 +43,7 @@ export default class CustomerService implements ICustomerService {
 			page,
 			skip,
 			take,
+			orderBy,
 			name,
 			email, 
 			cpf,

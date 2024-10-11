@@ -21,7 +21,10 @@ customersRouter.get('/', async (req: Request, res: Response) => {
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
 	const valuesParams: SearchParamsInterface = { page, limit };
-	const { name, cpf, email, deleted } = req.query;
+	const { orderBy, name, cpf, email, deleted } = req.query;
+
+	if (orderBy &&(orderBy === 'name' ||orderBy === 'createdAt' ||orderBy === 'deletedAt'))valuesParams.orderBy = orderBy.toString();
+
 
 	if (name) valuesParams.name = name.toString();
 	if (cpf) valuesParams.cpf = cpf.toString();
@@ -29,7 +32,6 @@ customersRouter.get('/', async (req: Request, res: Response) => {
 	if (deleted && (deleted === 'true' || deleted === 'false'))
 		valuesParams.deleted = deleted;
 
-	console.log(deleted);
 	const listCustomers = await customersService.listAll(valuesParams);
 	return res.json(listCustomers);
 });

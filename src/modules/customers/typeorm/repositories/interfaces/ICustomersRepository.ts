@@ -8,6 +8,7 @@ export type SearchParams = {
 	page: number;
 	skip: number;
 	take: number;
+	orderBy?: string;
 	email?: string;
 	cpf?: string;
 	name?: string;
