@@ -14,25 +14,24 @@ const customersRouter = Router();
 
 const customersService = new CustomerService();
 
-customersRouter.use(authenticate);
+//customersRouter.use(authenticate);
 
 customersRouter.get('/', async (req: Request, res: Response) => {
 	const page = req.query.page ? Number(req.query.page) : 1;
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
 	const valuesParams: SearchParamsInterface = { page, limit };
-	const { orderBy, name, cpf, email, deleted } = req.query;
-
-	if (orderBy &&(orderBy === 'name' ||orderBy === 'createdAt' ||orderBy === 'deletedAt'))valuesParams.orderBy = orderBy.toString();
-
-
+	const { order, orderBy, name, cpf, email, deleted } = req.query;
+	
 	if (name) valuesParams.name = name.toString();
 	if (cpf) valuesParams.cpf = cpf.toString();
 	if (email) valuesParams.email = email.toString();
 	if (deleted && (deleted === 'true' || deleted === 'false'))
 		valuesParams.deleted = deleted;
-
+	if (orderBy &&(orderBy === 'name' ||orderBy === 'createdAt' ||orderBy === 'deletedAt'))valuesParams.orderBy = orderBy.toString();
+	if(order && (order === 'ASC' || order === 'DESC')) valuesParams.order = order
 	const listCustomers = await customersService.listAll(valuesParams);
+
 	return res.json(listCustomers);
 });
 

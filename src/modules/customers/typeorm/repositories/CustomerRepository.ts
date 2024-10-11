@@ -35,12 +35,11 @@ class CustomersRepository implements ICustomersRepository {
 		skip,
 		take,
 		orderBy,
+		order,
 		name,
 		email,
 		cpf,
 		deleted,
-		orderBy,
-		order,
 	}: SearchParams): Promise<ICustomerPagination> {
 		const query = this.ormRepository.createQueryBuilder('customer');
 
@@ -54,11 +53,13 @@ class CustomersRepository implements ICustomersRepository {
 			query
 				.withDeleted()
 				.andWhere('customer.deleted_at IS NOT NULL');
-		console.log(orderBy)
-		if(orderBy === 'name') query.orderBy("customer.name", "ASC")
-		if(orderBy === 'createdAt') query.orderBy("customer.created_at", "ASC")
-		if(orderBy === 'deletedAt') query.withDeleted().orderBy("customer.deleted_at", "ASC")
-
+		if(!order || (order !== 'DESC' && order !== 'ASC')) {
+			order = 'ASC'
+		} 
+		if(orderBy === 'name') query.orderBy("customer.name", `${order}`)
+		if(orderBy === 'createdAt') query.orderBy("customer.created_at", `${order}`)
+		if(orderBy === 'deletedAt') query.withDeleted().orderBy("customer.deleted_at", `${order}`)
+		
 		const [customers, count] = await query
 			.skip(skip)
 			.take(take)
@@ -104,7 +105,8 @@ class CustomersRepository implements ICustomersRepository {
 			return null;
 		}
 		customer.deleted_at = new Date();
-		return await this.ormRepository.update(id, customer);
+		const updatedCustomer = await this.ormRepository.save(customer)
+		return updatedCustomer
 	}
 }
 

@@ -30,13 +30,12 @@ export default class CustomerService implements ICustomerService {
 	public async listAll({
 		page,
 		limit,
+		order,
 		orderBy,
 		name,
 		email,
 		cpf,
 		deleted,
-		orderBy,
-		order
 	}: SearchParamsInterface): Promise<ICustomerPagination> {
 		const take = limit;
 		const skip = Number(page - 1) * take;
@@ -45,13 +44,12 @@ export default class CustomerService implements ICustomerService {
 			page,
 			skip,
 			take,
+			order,
 			orderBy,
 			name,
 			email,
 			cpf,
 			deleted,
-			orderBy,
-			order
 		});
 		return customers;
 	}

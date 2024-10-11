@@ -12,8 +12,9 @@ export type SearchParams = {
 	cpf?: string;
 	name?: string;
 	deleted?: 'true' | 'false';
-	orderBy?: string[] | null;
-	order?: 'ASC' | 'DESC' | null;
+	orderBy?: string;
+	order?: 'ASC' | 'DESC' | null
+	
 };
 
 export interface ICustomersRepository {
