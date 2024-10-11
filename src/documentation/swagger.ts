@@ -15,7 +15,7 @@ const doc = {
 			type: 'apiKey',
 			name: 'Authorization',
 			in: 'header',
-			description: 'Adicione "Bearer " antes do token',
+			description: 'Token de autenticação',
 		},
 	},
 	security: [
