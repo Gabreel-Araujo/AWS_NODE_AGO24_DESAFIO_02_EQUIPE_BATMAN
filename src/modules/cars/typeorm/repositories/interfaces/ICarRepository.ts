@@ -33,5 +33,5 @@ export type ISearchParams = {
 	km?: number | undefined;
 	fromYear?: number | undefined;
 	untilYear?: number | undefined;
-	sortBy?: { year: IOrder; km: IOrder }[] | undefined;
+	sortBy?: { year: IOrder; km: IOrder } | undefined;
 };
