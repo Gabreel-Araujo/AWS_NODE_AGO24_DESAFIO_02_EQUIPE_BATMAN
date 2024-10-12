@@ -1,12 +1,12 @@
-import Customer from '@/modules/customers/typeorm/entities/Customer';
-import Car from '@/modules/cars/typeorm/entities/Car';
+import Customer from '../../../customers/typeorm/entities/Customer';
+import Car from '../../../cars/typeorm/entities/Car';
 import {
 	Entity,
 	PrimaryGeneratedColumn,
 	Column,
 	ManyToOne,
 	JoinColumn,
-	OneToMany,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity('rental_orders')
@@ -21,7 +21,7 @@ class RentalOrder {
 	@JoinColumn({ name: 'customer_id' })
 	customer_id: Customer;
 
-	@Column()
+	@CreateDateColumn()
 	order_date: Date;
 
 	@Column({
@@ -31,10 +31,10 @@ class RentalOrder {
 	})
 	status: string;
 
-	@Column()
+	@Column('varchar', { nullable: false})
 	cep: string;
 
-	@Column()
+	@Column('varchar', { nullable: false})
 	city: string;
 
 	@Column({
@@ -84,16 +84,16 @@ class RentalOrder {
 	@JoinColumn({ name: 'car_id' })
 	car_id: Car;
 
-	@Column()
+  @CreateDateColumn()
 	start_date: Date;
 
-	@Column()
+  @CreateDateColumn()
 	end_date: Date;
 
-	@Column({ nullable: true })
+  @CreateDateColumn({ nullable: true })
 	cancellation_date: Date;
 
-	@Column({ nullable: true })
+	@CreateDateColumn({ nullable: true })
 	closing_date: Date;
 
 	@Column('decimal', { nullable: true })

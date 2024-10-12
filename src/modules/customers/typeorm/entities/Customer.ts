@@ -1,4 +1,4 @@
-import RentalOrder from '@/modules/rentalOrder/typeorm/entities/RentalOrder';
+import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
 import {
 	Column,
 	CreateDateColumn,

@@ -7,7 +7,8 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 import { Item } from './Items';
-import RentalOrder from '@/modules/rentalOrder/typeorm/entities/RentalOrder';
+import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
+
 
 export enum CarStatus {
 	ACTIVE = 'ativo',
