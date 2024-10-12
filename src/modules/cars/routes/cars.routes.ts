@@ -22,7 +22,7 @@ carsRouter.get(
 	},
 );
 
-carsRouter.get('/', async (req: Request, res: Response) => {
+carsRouter.get('/', authenticate, async (req: Request, res: Response) => {
 	const page = req.query.page ? Number(req.query.page) : 1;
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 

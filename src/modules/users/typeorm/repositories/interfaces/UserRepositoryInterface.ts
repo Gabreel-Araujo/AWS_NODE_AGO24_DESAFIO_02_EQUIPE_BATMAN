@@ -2,6 +2,7 @@ import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../../entities/interfaces/UserInterface';
+import User from '../../entities/User';
 
 export default interface UserRepositoryInterface {
 	save: (user: CreateUserInterface) => Promise<UserDetailsInterface>;
@@ -14,4 +15,11 @@ export default interface UserRepositoryInterface {
 		id: string,
 		data: Partial<CreateUserInterface>,
 	): Promise<UserDetailsInterface | null>;
+	getAllUsers(
+		limit: number,
+		page: number,
+		filters: Partial<User>,
+		sortBy: string,
+		sortOrder: 'ASC' | 'DESC',
+	): Promise<[User[], number]>;
 }
