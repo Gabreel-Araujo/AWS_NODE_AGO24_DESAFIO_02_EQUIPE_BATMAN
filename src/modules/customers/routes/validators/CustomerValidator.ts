@@ -196,7 +196,7 @@ export const getCustomerQuerySchema = z.object({
 		.string({ message: 'name is required' })
 		.regex(/^[A-Za-z]+$/, 'Invalid name format, must have only letters')
 		.optional(),
-	email: z.string().email().optional(),
+	email: z.string().optional(),
 	cpf: z
 		.string({ message: 'cpf is required' })
 		.regex(/^\d{11}$/, 'Invalid CPF format, must have 11 digits')
