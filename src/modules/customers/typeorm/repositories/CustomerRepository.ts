@@ -73,22 +73,26 @@ class CustomersRepository implements ICustomersRepository {
 
 		customer.deleted_at = new Date();
 
-		const updatedCustomer = await this.ormRepository.save(customer);
+		const updateDeleteCustomer = await this.ormRepository.save(customer);
 
-		return updatedCustomer;
+		return updateDeleteCustomer;
 	}
 
 	public async findActiveCustomerByID(id: string): Promise<ICustomer | null> {
-		return await this.ormRepository.findOne({
+		const activeCustomer = await this.ormRepository.findOne({
 			where: { id, deleted_at: IsNull() },
 		});
+
+		return activeCustomer;
 	}
 
 	public async updateCustomer(
 		id: string,
 		customer: IUpdateCustomer,
 	): Promise<UpdateResult> {
-		return await this.ormRepository.update(id, customer);
+		const updatedCustomer = await this.ormRepository.update(id, customer);
+
+		return updatedCustomer;
 	}
 }
 

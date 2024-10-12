@@ -8,6 +8,7 @@ import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
 import ConflictError from '@/http/errors/conflict-error';
+import ValidationError from '@/http/errors/validation-error';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;
@@ -50,6 +51,10 @@ export default class CustomerService implements ICustomerService {
 		const customerToUpdate = await this.repository.findActiveCustomerByID(id);
 
 		if (!customerToUpdate) throw new NotFoundError('customer not found');
+
+		if (Object.keys(customerToUpdate).length === 0) {
+			throw new ValidationError('one field at least is required for update');
+		}
 
 		await this.repository.updateCustomer(id, customer);
 	}

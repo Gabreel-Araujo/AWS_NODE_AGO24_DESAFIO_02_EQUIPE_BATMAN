@@ -12,7 +12,6 @@ import {
 	ICreateCustomer,
 	IUpdateCustomer,
 } from '../typeorm/entities/interfaces/CustomerInterface';
-import ValidationError from '@/http/errors/validation-error';
 
 const customersRouter = Router();
 
@@ -50,25 +49,22 @@ customersRouter.post(
 
 customersRouter.patch(
 	'/:id',
-	validation(patchCustomerParamsSchema, "params"),
+	validation(patchCustomerParamsSchema, 'params'),
 	validation(patchCustomerBodySchema, 'body'),
 	async (req: Request, res: Response) => {
+		const { id } = req.params;
 		const { name, birth, email, cpf, phone_number } = req.body;
 
-		const customer: IUpdateCustomer = {};
-		if (name) customer.name = name;
-		if (birth) customer.birth = birth;
-		if (email) customer.email = email;
-		if (cpf) customer.cpf = cpf;
-		if (phone_number) customer.phone_number = phone_number;
-
-		const id = req.params.id;
-
-		if (Object.keys(customer).length === 0) {
-			throw new ValidationError('one field at least is required for update');
-		}
+		const customer: IUpdateCustomer = {
+			name: name ?? null,
+			birth: birth ?? null,
+			email: email ?? null,
+			cpf: cpf ?? null,
+			phone_number: phone_number ?? null,
+		};
 
 		await customersService.update(id, customer);
+
 		res.status(204).send();
 	},
 );
