@@ -40,6 +40,9 @@ export class Cars {
 	})
 	status!: CarStatus;
 
+	@Column('float', { nullable: false })
+	daily_price!: number;
+
 	@CreateDateColumn()
 	created_at!: Date;
 

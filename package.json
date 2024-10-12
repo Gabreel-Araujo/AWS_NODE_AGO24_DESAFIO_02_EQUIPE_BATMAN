@@ -35,16 +35,15 @@
     "typescript": "5.6.2"
   },
   "dependencies": {
-    "@types/bcrypt": "5.0.2",
-    "@types/jsonwebtoken": "9.0.7",
-    "bcrypt": "5.1.1",
     "bcryptjs": "2.4.3",
     "cors": "2.8.5",
+    "cpf-cnpj-validator": "1.0.3",
     "dotenv": "16.4.5",
     "express": "4.21.0",
     "express-async-errors": "3.1.1",
     "jsonwebtoken": "9.0.2",
     "pg": "8.13.0",
+    "phone": "3.1.50",
     "postgres": "3.4.4",
     "reflect-metadata": "0.2.2",
     "swagger-ui-express": "5.0.1",

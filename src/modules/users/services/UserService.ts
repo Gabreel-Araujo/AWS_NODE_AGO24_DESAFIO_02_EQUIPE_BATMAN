@@ -8,6 +8,14 @@ import type UserRepositoryInterface from '../typeorm/repositories/interfaces/Use
 import type UserServiceInterface from './interfaces/UserServiceInterface';
 import UserRepository from '../typeorm/repositories/UserRepository';
 import NotFoundError from '@/http/errors/not-found-error';
+import User from '../typeorm/entities/User';
+
+export interface QueryOptions {
+	page: number;
+	limit: number;
+	sortBy: string;
+	sortOrder: 'ASC' | 'DESC';
+}
 
 export default class UserService implements UserServiceInterface {
 	private repository: UserRepositoryInterface;
@@ -85,5 +93,28 @@ export default class UserService implements UserServiceInterface {
 		});
 
 		return updatedUser;
+	}
+
+	async findUsers(
+		filters: Partial<User>,
+		options: QueryOptions,
+	): Promise<[User[], number]> {
+		const { page, limit, sortBy, sortOrder } = options;
+		console.log(filters);
+
+		const result = await this.repository.getAllUsers(
+			page,
+			limit,
+			filters,
+			sortBy,
+			sortOrder,
+		);
+		const [users] = result;
+
+		if (users.length === 0) {
+			throw new NotFoundError('users not found');
+		}
+
+		return result;
 	}
 }
