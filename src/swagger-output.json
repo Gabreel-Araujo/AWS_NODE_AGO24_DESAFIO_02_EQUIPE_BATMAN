@@ -19,6 +19,10 @@
 		{
 			"name": "Customer",
 			"description": "Operations about customer"
+		},
+		{
+			"name": "Car",
+			"description": "Operations about car"
 		}
 	],
 	"schemes": ["http"],
@@ -1021,6 +1025,469 @@
 										"message": {
 											"type": "string",
 											"example": "Customer not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/cars": {
+			"post": {
+				"tags": ["Car"],
+				"summary": "Criar um novo carro",
+				"description": "Essa rota permite a criação de um novo usuário no sistema. Forneça um email único, nome completo e senha.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								},
+								"required": ["email", "fullName", "password"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Usuário criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Email já registrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Email already registered"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["User"],
+				"summary": "Listar todos os usuários",
+				"description": "Essa rota permite a listagem de todos os usuários no sistema.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 1
+						},
+						"description": "Número da página para paginação"
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 10
+						},
+						"description": "Número de itens por página"
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "John Doe"
+						},
+						"description": "Filtrar por nome completo do usuário"
+					},
+					{
+						"name": "email",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "john.doe@example.com"
+						},
+						"description": "Filtrar por email do usuário"
+					},
+					{
+						"name": "deleted",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "boolean",
+							"example": false
+						},
+						"description": "Filtrar usuários deletados"
+					},
+					{
+						"name": "sortBy",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "createdAt"
+						},
+						"description": "Campo para ordenar os resultados"
+					},
+					{
+						"name": "sortOrder",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ASC"
+						},
+						"description": "Ordem de classificação (ASC ou DESC)"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de usuários retornada com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"page": {
+											"type": "integer",
+											"example": 1
+										},
+										"limit": {
+											"type": "integer",
+											"example": 10
+										},
+										"total": {
+											"type": "integer",
+											"example": 100
+										},
+										"users": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+													},
+													"name": {
+														"type": "string",
+														"example": "John Doe"
+													},
+													"email": {
+														"type": "string",
+														"example": "john.doe@example.com"
+													},
+													"deletedAt": {
+														"type": "string",
+														"example": null
+													},
+													"createdAt": {
+														"type": "string",
+														"example": "2024-10-11T19:55:11.499Z"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Nenhum usuário encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "users not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/cars/{id}": {
+			"get": {
+				"tags": ["Car"],
+				"summary": "Busca um carro por ID",
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b",
+											"description": "Identificador único do carro"
+										},
+										"plate": {
+											"type": "string",
+											"example": "MKF3123",
+											"description": "Placa do carro"
+										},
+										"brand": {
+											"type": "string",
+											"example": "Ford",
+											"description": "Marca do carro"
+										},
+										"model": {
+											"type": "string",
+											"example": "Fusion",
+											"description": "Modelo do carro"
+										},
+										"km": {
+											"type": "number",
+											"example": 30000,
+											"description": "Quilometragem do carro"
+										},
+										"year": {
+											"type": "number",
+											"example": 2019,
+											"description": "Ano de fabricação do carro"
+										},
+										"status": {
+											"type": "string",
+											"enum": ["ativo", "inativo", "excluido"],
+											"example": "ativo",
+											"description": "Status do carro"
+										},
+										"created_at": {
+											"type": "string",
+											"example": "2024-10-12T00:48:11.146Z",
+											"description": "Data de criação do registro"
+										},
+										"updated_at": {
+											"type": "string",
+											"example": "2024-10-12T00:48:11.146Z",
+											"description": "Data da última atualização do registro"
+										},
+										"items": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b",
+														"description": "Identificador único do item"
+													},
+													"car_id": {
+														"type": "string",
+														"example": "a1234567-89ab-cdef-0123-456789abcdef",
+														"description": "Identificador único do carro associado"
+													},
+													"item": {
+														"type": "string",
+														"example": "Airbag",
+														"description": "Nome do item"
+													}
+												}
+											},
+											"description": "Lista de itens associados ao carro"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Carro não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["User"],
+				"description": "",
+				"summary": "Atualiza um usuário por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								}
+							},
+							"required": []
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+										},
+										"createdAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deletedAt": {
+											"type": "string",
+											"example": null
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Requisição inválida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Dados inválidos"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Usuário não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "User not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["User"],
+				"description": "",
+				"summary": "Deleta um usuário por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Usuário deletado com sucesso. Nenhum conteúdo retornado."
+					},
+					"404": {
+						"description": "Usuário não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "User not found"
 										}
 									}
 								}
