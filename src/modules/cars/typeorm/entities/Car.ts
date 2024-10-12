@@ -7,6 +7,7 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 import { Item } from './Items';
+import RentalOrder from '@/modules/rentalOrder/typeorm/entities/RentalOrder';
 
 export enum CarStatus {
 	ACTIVE = 'ativo',
@@ -54,4 +55,10 @@ export default class Cars {
 		(item) => item.car,
 	)
 	items!: Item[];
+
+	@OneToMany(
+		() => RentalOrder,
+		(rentalOrder) => rentalOrder.car,
+	)
+	rentalOrders: RentalOrder[];
 }
