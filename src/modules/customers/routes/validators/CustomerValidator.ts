@@ -122,4 +122,12 @@ export const getCustomerQuerySchema = z.object({
 			"Invalid orderBy format, must be 'name' or 'created_at' or 'deleted_at'",
 		)
 		.optional(),
+	page: z.coerce
+		.number()
+		.min(1, { message: 'Page must be at least 1' })
+		.optional(),
+	limit: z.coerce
+		.number()
+		.min(1, { message: 'Limit must be at least 1' })
+		.optional(),
 });

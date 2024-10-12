@@ -52,10 +52,10 @@ export default class CustomerService implements ICustomerService {
 		});
 
 		const result = {
-			per_page: take,
+			page,
+			limit,
 			total: customers.length,
-			current_page: page,
-			data: customers,
+			customers,
 		};
 
 		if (customers.length === 0) {
@@ -75,7 +75,7 @@ export default class CustomerService implements ICustomerService {
 		const customer = await this.repository.findById(id);
 
 		if (!customer) {
-			throw new NotFoundError('Customer not found.');
+			throw new NotFoundError('Customers not found.');
 		}
 
 		customer.deleted_at = null;
