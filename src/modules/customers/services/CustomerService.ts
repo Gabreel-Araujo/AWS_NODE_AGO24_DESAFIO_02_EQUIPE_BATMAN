@@ -57,9 +57,11 @@ export default class CustomerService implements ICustomerService {
 			current_page: page,
 			data: customers,
 		};
+
 		if (customers.length === 0) {
 			throw new NotFoundError('Customers not found.');
 		}
+
 		return result;
 	}
 

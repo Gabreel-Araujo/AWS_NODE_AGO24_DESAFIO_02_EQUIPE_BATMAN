@@ -41,26 +41,46 @@ class CustomersRepository implements ICustomersRepository {
 	}: SearchParams): Promise<Customer[]> {
 		const query = this.ormRepository.createQueryBuilder('customer');
 
-		if (name) query.andWhere('customer.name LIKE :name', { name: `%${name}%` });
-		if (email)
+		if (name) {
+			query.andWhere('LOWER(customer.name) LIKE LOWER(:name)', {
+				name: `%${name}%`,
+			});
+		}
+
+		if (email) {
 			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
-		if (cpf) query.andWhere('customer.cpf LIKE :cpf', { cpf: { cpf } });
-		if (deleted === 'false') query.andWhere('customer.deleted_at IS NULL');
-		if (deleted === 'true')
+		}
+
+		if (cpf) {
+			query.andWhere('customer.cpf LIKE :cpf', { cpf: `%${cpf}%` });
+		}
+
+		if (deleted === 'false') {
+			query.andWhere('customer.deleted_at IS NULL');
+		}
+
+		if (deleted === 'true') {
 			query.withDeleted().andWhere('customer.deleted_at IS NOT NULL');
+		}
+
 		if (!order || (order !== 'DESC' && order !== 'ASC')) {
 			order = 'ASC';
 		}
 
-		const ordersBy = orderBy?.split(',')
+		if (orderBy) {
+			const ordersBy = orderBy.split(',');
+			for (const item of ordersBy) {
+				query.addOrderBy(`customer.${item}`, order);
+			}
+		} else {
+			query.addOrderBy('customer.created_at', order);
+		}
 
-		ordersBy?.map(item => {
-			query.addOrderBy(`customer.${item}`, `${order}`);
-		})
 		const customers = await query.skip(skip).take(take).getMany();
 
 		return customers;
 	}
+
 	public async save(customer: ICreateCustomer) {
 		const createdCustomer = this.ormRepository.create(customer);
 		return await this.ormRepository.save(createdCustomer);

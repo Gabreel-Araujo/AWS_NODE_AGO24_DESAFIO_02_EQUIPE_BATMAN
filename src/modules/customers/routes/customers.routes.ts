@@ -26,16 +26,19 @@ customersRouter.get(
 		const valuesParams: SearchParamsInterface = { page, limit };
 		const { order, orderBy, name, cpf, email, deleted } = req.query;
 
-		if (name) valuesParams.name = name.toString().toUpperCase();
+		if (name) valuesParams.name = name.toString().toLowerCase();
+		if (email) valuesParams.email = email.toString().toLowerCase();
 		if (cpf) valuesParams.cpf = cpf.toString();
-		if (email) valuesParams.email = email.toString().toUpperCase();
 		if (deleted && (deleted === 'true' || deleted === 'false'))
 			valuesParams.deleted = deleted;
-		if (orderBy)
-			valuesParams.orderBy = orderBy.toString();
-		if (order && (order === 'ASC' || order === 'DESC'))
-			valuesParams.order = order;
+		if (orderBy) valuesParams.orderBy = orderBy.toString();
+
+		if (order && typeof order === 'string') {
+			valuesParams.order = order.toUpperCase() as 'ASC' | 'DESC';
+		}
+
 		const listCustomers = await customersService.listAll(valuesParams);
+
 		res.status(200).json(listCustomers);
 	},
 );
@@ -45,7 +48,9 @@ customersRouter.get(
 	validation(getCustomerIdSchema, 'params'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
+
 		const costumer = await customersService.execute(id);
+
 		res.status(200).json(costumer);
 	},
 );
@@ -57,10 +62,10 @@ customersRouter.post(
 		const { name, birth, cpf, email, phone_number } = req.body;
 
 		const customer: ICreateCustomer = {
-			name: name.toUpperCase(),
+			name,
 			birth,
 			cpf,
-			email: email.toUpperCase(),
+			email,
 			phone_number,
 		};
 
