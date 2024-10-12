@@ -7,11 +7,8 @@ import {
 	ICustomer,
 	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
-<<<<<<< HEAD
-=======
 import ConflictError from '@/http/errors/conflict-error';
 
->>>>>>> ac3733a72b694a260f3d2a15aee639064dd2f48d
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;
 

@@ -3,11 +3,8 @@ import CustomerService from '../services/CustomerService';
 import validation from '@/http/middleware/validation';
 import {
 	getCustomerIdSchema,
-<<<<<<< HEAD
 	patchCustomerBodySchema,
 	patchCustomerParamsSchema,
-=======
->>>>>>> 19cc7cfc5c41fb2f95cb551b0a025475285c80a1
 	postCustomerSchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
