@@ -6,7 +6,9 @@ import { ICustomerService } from './interfaces/CustomerServiceInterface';
 import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
+import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
 import ConflictError from '@/http/errors/conflict-error';
+import { CustomerPaginationServiceInterface } from './interfaces/CustomerPaginationServiceInterface';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;
@@ -23,6 +25,44 @@ export default class CustomerService implements ICustomerService {
 		}
 
 		return customer;
+	}
+
+	public async listAll({
+		page,
+		limit,
+		order,
+		orderBy,
+		name,
+		email,
+		cpf,
+		deleted,
+	}: SearchParamsInterface): Promise<CustomerPaginationServiceInterface> {
+		const take = limit;
+		const skip = Number(page - 1) * take;
+
+		const customers = await this.repository.findAll({
+			skip,
+			take,
+			order,
+			orderBy,
+			name,
+			email,
+			cpf,
+			deleted,
+		});
+
+		const result = {
+			per_page: take,
+			total: customers.length,
+			current_page: page,
+			data: customers,
+		};
+
+		if (customers.length === 0) {
+			throw new NotFoundError('Customers not found.');
+		}
+
+		return result;
 	}
 
 	public async save(customer: ICreateCustomer): Promise<ICustomer> {
