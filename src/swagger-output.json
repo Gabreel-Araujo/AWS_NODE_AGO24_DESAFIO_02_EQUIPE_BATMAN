@@ -191,6 +191,153 @@
 						}
 					}
 				}
+			},
+			"get": {
+				"tags": ["User"],
+				"summary": "Listar todos os usuários",
+				"description": "Essa rota permite a listagem de todos os usuários no sistema.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 1
+						},
+						"description": "Número da página para paginação"
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 10
+						},
+						"description": "Número de itens por página"
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "John Doe"
+						},
+						"description": "Filtrar por nome completo do usuário"
+					},
+					{
+						"name": "email",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "john.doe@example.com"
+						},
+						"description": "Filtrar por email do usuário"
+					},
+					{
+						"name": "deleted",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "boolean",
+							"example": false
+						},
+						"description": "Filtrar usuários deletados"
+					},
+					{
+						"name": "sortBy",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "createdAt"
+						},
+						"description": "Campo para ordenar os resultados"
+					},
+					{
+						"name": "sortOrder",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ASC"
+						},
+						"description": "Ordem de classificação (ASC ou DESC)"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de usuários retornada com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"page": {
+											"type": "integer",
+											"example": 1
+										},
+										"limit": {
+											"type": "integer",
+											"example": 10
+										},
+										"total": {
+											"type": "integer",
+											"example": 100
+										},
+										"users": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+													},
+													"name": {
+														"type": "string",
+														"example": "John Doe"
+													},
+													"email": {
+														"type": "string",
+														"example": "john.doe@example.com"
+													},
+													"deletedAt": {
+														"type": "string",
+														"example": null
+													},
+													"createdAt": {
+														"type": "string",
+														"example": "2024-10-11T19:55:11.499Z"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Nenhum usuário encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "users not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/v1/users/{id}": {
