@@ -1,4 +1,3 @@
-import { CarStatus } from '../../typeorm/entities/Car';
 import { Item } from '../../typeorm/entities/Items';
 import { ICar } from '../../typeorm/repositories/interfaces/ICarRepository';
 
@@ -8,8 +7,10 @@ export interface ICarService {
 		model: string,
 		brand: string,
 		km: number,
+		daily_price: number,
 		year: number,
-		items: Item[],
+		items?: Item[],
 	): Promise<ICar | null>;
+	createCarItems(carId: string, items: Item[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
 }

@@ -22,13 +22,16 @@ export class Cars {
 	plate!: string;
 
 	@Column('varchar')
-	brand!: string;
+	model!: string;
 
 	@Column('varchar')
-	model!: string;
+	brand!: string;
 
 	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
 	km!: number;
+
+	@Column('float', { nullable: false })
+	daily_price!: number;
 
 	@Column('int')
 	year!: number;
@@ -39,9 +42,6 @@ export class Cars {
 		default: CarStatus.ACTIVE,
 	})
 	status!: CarStatus;
-
-	@Column('float', { nullable: false })
-	daily_price!: number;
 
 	@CreateDateColumn()
 	created_at!: Date;

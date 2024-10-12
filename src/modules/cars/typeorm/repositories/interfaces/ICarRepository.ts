@@ -1,4 +1,4 @@
-import { CarStatus } from '../../entities/Car';
+import { Cars, CarStatus } from '../../entities/Car';
 import { Item } from '../../entities/Items';
 
 export interface ICar {
@@ -8,14 +8,16 @@ export interface ICar {
 	model: string;
 	km: number;
 	year: number;
+	daily_price: number;
 	status: CarStatus;
 	created_at: Date;
 	updated_at: Date;
-	items: Item[];
+	items?: Item[];
 }
 
 export interface ICarRepository {
-	createCar(newCar: ICar): Promise<ICar | null>;
+	createCar(newCar: ICar): Promise<ICar>;
+	createCarItems(items: { carId: string; item: string }[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
 	findByPlateAndStatus(plate: string, status: CarStatus): Promise<ICar | null>;
 }

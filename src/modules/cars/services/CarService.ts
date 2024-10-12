@@ -31,6 +31,7 @@ class CarService implements ICarService {
 		model: string,
 		brand: string,
 		km: number,
+		daily_price: number,
 		year: number,
 		items: Item[],
 	): Promise<ICar | null> {
@@ -46,16 +47,29 @@ class CarService implements ICarService {
 			brand,
 			model,
 			km,
+			daily_price,
 			year,
 			status: CarStatus.ACTIVE,
 			created_at: new Date(),
 			updated_at: new Date(),
-			items,
 		};
 
 		const createdCar = await this.repository.createCar(newCar);
 
+		this.createCarItems(createdCar.id, items);
+
 		return createdCar;
+	}
+
+	async createCarItems(carId: string, items: Item[]): Promise<void> {
+		if (items && items.length >= 1) {
+			const newItems = items.map((item) => ({
+				id: randomUUID,
+				carId: carId,
+				item: item.item,
+			}));
+			await this.repository.createCarItems(newItems);
+		}
 	}
 }
 
