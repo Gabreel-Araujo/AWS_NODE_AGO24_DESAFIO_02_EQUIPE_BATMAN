@@ -99,7 +99,7 @@ export const postCustomerSchema = z.object({
 		),
 });
 
-export const patchCustomerBodySchema = z.object({
+export const putCustomerBodySchema = z.object({
 	name: z
 		.string({
 			invalid_type_error: 'name must be a string',

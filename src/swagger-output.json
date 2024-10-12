@@ -907,14 +907,17 @@
 			},
 			"put": {
 				"tags": ["Customer"],
-				"description": "TODO",
+				"description": "",
 				"summary": "Atualiza um cliente por ID",
 				"parameters": [
 					{
 						"name": "id",
 						"in": "path",
 						"required": true,
-						"type": "string"
+						"schema": {
+							"type": "string"
+						},
+						"description": "ID do cliente a ser atualizado"
 					}
 				],
 				"requestBody": {
@@ -923,51 +926,40 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"fullName": {
+									"name": {
 										"type": "string",
 										"example": "Teste da Silva",
-										"description": "Nome completo do usuário"
+										"description": "Nome do cliente"
+									},
+									"birth": {
+										"type": "string",
+										"example": "1990-01-01",
+										"description": "Data de nascimento do cliente, formato yyyy-mm-dd"
+									},
+									"cpf": {
+										"type": "string",
+										"example": "12345678900",
+										"description": "CPF do cliente"
 									},
 									"email": {
 										"type": "string",
 										"example": "teste@mail.com",
-										"description": "E-mail do usuário"
+										"description": "E-mail do cliente"
 									},
-									"password": {
+									"phone_number": {
 										"type": "string",
-										"example": "teste123",
-										"description": "Senha do usuário"
+										"example": "123456789",
+										"description": "Número de telefone do cliente"
 									}
-								}
-							},
-							"required": []
+								},
+								"required": []
+							}
 						}
 					}
 				},
 				"responses": {
-					"200": {
-						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"id": {
-											"type": "string",
-											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
-										},
-										"createdAt": {
-											"type": "string",
-											"example": "2024-10-11T19:55:11.499Z"
-										},
-										"deletedAt": {
-											"type": "string",
-											"example": null
-										}
-									}
-								}
-							}
-						}
+					"204": {
+						"description": "Cliente atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado."
 					},
 					"400": {
 						"description": "Requisição inválida",
@@ -986,7 +978,7 @@
 						}
 					},
 					"404": {
-						"description": "Usuário não encontrado",
+						"description": "Cliente não encontrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -994,7 +986,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "User not found"
+											"example": "Customers not found"
 										}
 									}
 								}

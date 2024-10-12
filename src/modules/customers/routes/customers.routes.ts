@@ -4,10 +4,10 @@ import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterf
 import validation from '@/http/middleware/validation';
 import {
 	getCustomerIdSchema,
-	patchCustomerBodySchema,
 	patchCustomerParamsSchema,
 	getCustomerQuerySchema,
 	postCustomerSchema,
+	putCustomerBodySchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
 import {
@@ -81,10 +81,10 @@ customersRouter.post(
 	},
 );
 
-customersRouter.patch(
+customersRouter.put(
 	'/:id',
 	validation(patchCustomerParamsSchema, 'params'),
-	validation(patchCustomerBodySchema, 'body'),
+	validation(putCustomerBodySchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { id } = req.params;
 		const { name, birth, email, cpf, phone_number } = req.body;
