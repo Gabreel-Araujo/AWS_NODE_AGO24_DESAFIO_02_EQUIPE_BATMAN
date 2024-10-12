@@ -1,13 +1,14 @@
 import {
 	ICreateCustomer,
 	ICustomer,
+	IUpdateCustomer,
 } from '../typeorm/entities/interfaces/CustomerInterface';
 import { ICustomerService } from './interfaces/CustomerServiceInterface';
 import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
 import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
-import ConflictError from '@/http/errors/conflict-error';
+import ValidationError from '@/http/errors/validation-error';
 import { CustomerPaginationServiceInterface } from './interfaces/CustomerPaginationServiceInterface';
 
 export default class CustomerService implements ICustomerService {
@@ -83,5 +84,17 @@ export default class CustomerService implements ICustomerService {
 		const deletedUser = await this.repository.delete(id);
 
 		return deletedUser;
+	}
+
+	public async update(id: string, customer: IUpdateCustomer): Promise<void> {
+		const customerToUpdate = await this.repository.findActiveCustomerByID(id);
+
+		if (!customerToUpdate) throw new NotFoundError('customer not found');
+
+		if (Object.keys(customerToUpdate).length === 0) {
+			throw new ValidationError('one field at least is required for update');
+		}
+
+		await this.repository.updateCustomer(id, customer);
 	}
 }

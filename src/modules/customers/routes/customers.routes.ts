@@ -4,11 +4,16 @@ import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterf
 import validation from '@/http/middleware/validation';
 import {
 	getCustomerIdSchema,
+	patchCustomerBodySchema,
+	patchCustomerParamsSchema,
 	getCustomerQuerySchema,
 	postCustomerSchema,
 } from './validators/CustomerValidator';
 import { authenticate } from '@/http/middleware/auth';
-import { ICreateCustomer } from '../typeorm/entities/interfaces/CustomerInterface';
+import {
+	ICreateCustomer,
+	IUpdateCustomer,
+} from '../typeorm/entities/interfaces/CustomerInterface';
 
 const customersRouter = Router();
 
@@ -73,6 +78,28 @@ customersRouter.post(
 		const createdCustomer = await customersService.save(customer);
 
 		res.status(201).json({ id: createdCustomer.id });
+	},
+);
+
+customersRouter.patch(
+	'/:id',
+	validation(patchCustomerParamsSchema, 'params'),
+	validation(patchCustomerBodySchema, 'body'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		const { name, birth, email, cpf, phone_number } = req.body;
+
+		const customer: IUpdateCustomer = {
+			name: name ?? null,
+			birth: birth ?? null,
+			email: email ?? null,
+			cpf: cpf ?? null,
+			phone_number: phone_number ?? null,
+		};
+
+		await customersService.update(id, customer);
+
+		res.status(204).send();
 	},
 );
 

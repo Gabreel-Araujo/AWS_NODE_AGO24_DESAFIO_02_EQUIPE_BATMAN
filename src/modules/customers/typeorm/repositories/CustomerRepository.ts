@@ -1,11 +1,12 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
 import { SearchParams } from './interfaces/ICustomersRepository';
-import { IsNull, Repository } from 'typeorm';
+import { IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
 	ICreateCustomer,
 	ICustomer,
+	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
 import ConflictError from '@/http/errors/conflict-error';
 
@@ -122,7 +123,26 @@ class CustomersRepository implements ICustomersRepository {
 			return null;
 		}
 		customer.deleted_at = new Date();
-		const updatedCustomer = await this.ormRepository.save(customer);
+
+		const updateDeleteCustomer = await this.ormRepository.save(customer);
+
+		return updateDeleteCustomer;
+	}
+
+	public async findActiveCustomerByID(id: string): Promise<ICustomer | null> {
+		const activeCustomer = await this.ormRepository.findOne({
+			where: { id, deleted_at: IsNull() },
+		});
+
+		return activeCustomer;
+	}
+
+	public async updateCustomer(
+		id: string,
+		customer: IUpdateCustomer,
+	): Promise<UpdateResult> {
+		const updatedCustomer = await this.ormRepository.update(id, customer);
+
 		return updatedCustomer;
 	}
 }

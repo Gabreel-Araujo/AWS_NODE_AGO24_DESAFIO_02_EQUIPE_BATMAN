@@ -1,7 +1,9 @@
+import { UpdateResult } from 'typeorm';
 import Customer from '../../entities/Customer';
 import {
 	ICreateCustomer,
 	ICustomer,
+	IUpdateCustomer,
 } from '../../entities/interfaces/CustomerInterface';
 
 export type SearchParams = {
@@ -21,5 +23,7 @@ export interface ICustomersRepository {
 	save(customer: ICreateCustomer): Promise<ICustomer>;
 	findActiveCustomerByEmail(email: string): Promise<ICustomer | null>;
 	findCustomerByCPF(cpf: string): Promise<ICustomer | null>;
+	findActiveCustomerByID(id: string): Promise<ICustomer | null>;
+	updateCustomer(id: string, customer: IUpdateCustomer): Promise<UpdateResult>;
 	delete(id: string): Promise<ICustomer | null>;
 }
