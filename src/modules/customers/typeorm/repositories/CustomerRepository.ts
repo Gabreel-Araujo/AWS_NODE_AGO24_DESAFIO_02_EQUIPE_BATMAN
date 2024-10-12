@@ -1,5 +1,6 @@
 import { dbConnection } from './../../../../lib/typeorm/index';
 import { ICustomersRepository } from './interfaces/ICustomersRepository';
+import { SearchParams } from './interfaces/ICustomersRepository';
 import { IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
@@ -28,6 +29,58 @@ class CustomersRepository implements ICustomersRepository {
 		}
 
 		return customer;
+	}
+
+	public async findAll({
+		skip,
+		take,
+		orderBy,
+		order,
+		name,
+		email,
+		cpf,
+		deleted,
+	}: SearchParams): Promise<Customer[]> {
+		const query = this.ormRepository.createQueryBuilder('customer');
+
+		if (name) {
+			query.andWhere('LOWER(customer.name) LIKE LOWER(:name)', {
+				name: `%${name}%`,
+			});
+		}
+
+		if (email) {
+			query.andWhere('customer.email LIKE :email', { email: `%${email}%` });
+		}
+
+		if (cpf) {
+			query.andWhere('customer.cpf LIKE :cpf', { cpf: `%${cpf}%` });
+		}
+
+		if (deleted === 'false') {
+			query.andWhere('customer.deleted_at IS NULL');
+		}
+
+		if (deleted === 'true') {
+			query.withDeleted().andWhere('customer.deleted_at IS NOT NULL');
+		}
+
+		if (!order || (order !== 'DESC' && order !== 'ASC')) {
+			order = 'ASC';
+		}
+
+		if (orderBy) {
+			const ordersBy = orderBy.split(',');
+			for (const item of ordersBy) {
+				query.addOrderBy(`customer.${item}`, order);
+			}
+		} else {
+			query.addOrderBy('customer.created_at', order);
+		}
+
+		const customers = await query.skip(skip).take(take).getMany();
+
+		return customers;
 	}
 
 	public async save(customer: ICreateCustomer) {
@@ -66,11 +119,9 @@ class CustomersRepository implements ICustomersRepository {
 		const customer = await this.ormRepository.findOneBy({
 			id,
 		});
-
 		if (!customer) {
 			return null;
 		}
-
 		customer.deleted_at = new Date();
 
 		const updateDeleteCustomer = await this.ormRepository.save(customer);

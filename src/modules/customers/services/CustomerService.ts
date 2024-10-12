@@ -7,8 +7,9 @@ import { ICustomerService } from './interfaces/CustomerServiceInterface';
 import NotFoundError from '@/http/errors/not-found-error';
 import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
-import ConflictError from '@/http/errors/conflict-error';
+import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
 import ValidationError from '@/http/errors/validation-error';
+import { CustomerPaginationServiceInterface } from './interfaces/CustomerPaginationServiceInterface';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;
@@ -27,6 +28,44 @@ export default class CustomerService implements ICustomerService {
 		return customer;
 	}
 
+	public async listAll({
+		page,
+		limit,
+		order,
+		orderBy,
+		name,
+		email,
+		cpf,
+		deleted,
+	}: SearchParamsInterface): Promise<CustomerPaginationServiceInterface> {
+		const take = limit;
+		const skip = Number(page - 1) * take;
+
+		const customers = await this.repository.findAll({
+			skip,
+			take,
+			order,
+			orderBy,
+			name,
+			email,
+			cpf,
+			deleted,
+		});
+
+		const result = {
+			page,
+			limit,
+			total: customers.length,
+			customers,
+		};
+
+		if (customers.length === 0) {
+			throw new NotFoundError('Customers not found.');
+		}
+
+		return result;
+	}
+
 	public async save(customer: ICreateCustomer): Promise<ICustomer> {
 		const newCustomer = await this.repository.save(customer);
 
@@ -37,7 +76,7 @@ export default class CustomerService implements ICustomerService {
 		const customer = await this.repository.findById(id);
 
 		if (!customer) {
-			throw new NotFoundError('Customer not found.');
+			throw new NotFoundError('Customers not found.');
 		}
 
 		customer.deleted_at = null;
