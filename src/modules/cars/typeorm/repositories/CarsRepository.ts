@@ -2,6 +2,7 @@ import {
 	Between,
 	FindOperator,
 	LessThanOrEqual,
+	Like,
 	MoreThanOrEqual,
 	Repository,
 } from 'typeorm';
@@ -36,6 +37,7 @@ export class CarsRepository implements ICarRepository {
 	async findAll(skip: number, take: number, searchParams: ISearchParams) {
 		const where: {
 			status?: CarStatus | undefined;
+			plate?: FindOperator<string> | undefined;
 			brand?: string | undefined;
 			model?: string | undefined;
 			km?: FindOperator<number> | undefined;
@@ -45,6 +47,8 @@ export class CarsRepository implements ICarRepository {
 		let order = {};
 
 		if (searchParams.status) where.status = searchParams.status;
+		if(searchParams.plate) where.plate = Like(`%${searchParams.plate}`)
+		if(searchParams.plate) 
 		if (searchParams.brand) where.brand = searchParams.brand;
 		if (searchParams.model) where.model = searchParams.model;
 		if (searchParams.km) where.km = LessThanOrEqual(searchParams.km);
@@ -66,6 +70,7 @@ export class CarsRepository implements ICarRepository {
 			order = { ...order, km: searchParams.order || 'ASC' };
 		}
 
+		console.log(where)
 		return await this.ormRepository.findAndCount({
 			skip,
 			take,
