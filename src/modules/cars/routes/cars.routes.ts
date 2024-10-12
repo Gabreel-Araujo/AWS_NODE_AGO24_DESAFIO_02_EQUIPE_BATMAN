@@ -38,6 +38,8 @@ carsRouter.get('/', async (req: Request, res: Response) => {
 		untilYear,
 		sortBy,
 		order,
+		minDailyPrice,
+		maxDailyPrice,
 	} = req.query;
 
 	if (status) {
@@ -62,14 +64,16 @@ carsRouter.get('/', async (req: Request, res: Response) => {
 	if (km && !Number.isNaN(Number(km))) searchParams.km = Number(km);
 	if (fromYear) searchParams.fromYear = Number(fromYear);
 	if (untilYear) searchParams.untilYear = Number(untilYear);
+	if (minDailyPrice) searchParams.minDailyPrice = Number(minDailyPrice);
+	if (maxDailyPrice) searchParams.maxDailyPrice = Number(maxDailyPrice);
 
 	if (sortBy) {
 		let fieldsToSort = sortBy.toString().split(',');
 		fieldsToSort = fieldsToSort.filter(
-			(field) => field === 'km' || field === 'year',
+			(field) => field === 'km' || field === 'year' || field === 'daily_price',
 		);
 
-		searchParams.sortBy = fieldsToSort as ('km' | 'year')[];
+		searchParams.sortBy = fieldsToSort as ('km' | 'year' | 'daily_price')[];
 	}
 
 	if (order) searchParams.order = order.toString();

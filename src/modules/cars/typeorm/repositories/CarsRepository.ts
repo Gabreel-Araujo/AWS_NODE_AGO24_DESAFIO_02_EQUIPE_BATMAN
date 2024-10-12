@@ -1,18 +1,7 @@
-import {
-	Between,
-	FindOperator,
-	LessThanOrEqual,
-	Like,
-	MoreThanOrEqual,
-	Repository,
-} from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { Cars, CarStatus } from '../entities/Car';
 import { dbConnection } from '@/lib/typeorm';
-import {
-	ICar,
-	ICarRepository,
-	ISearchParams,
-} from './interfaces/ICarRepository';
+import { ICar, ICarRepository } from './interfaces/ICarRepository';
 
 export class CarsRepository implements ICarRepository {
 	private ormRepository: Repository<Cars>;
@@ -34,43 +23,12 @@ export class CarsRepository implements ICarRepository {
 		return car;
 	}
 
-	async findAll(skip: number, take: number, searchParams: ISearchParams) {
-		const where: {
-			status?: CarStatus | undefined;
-			plate?: FindOperator<string> | undefined;
-			brand?: string | undefined;
-			model?: string | undefined;
-			km?: FindOperator<number> | undefined;
-			year?: FindOperator<number> | undefined;
-		} = {};
-
-		let order = {};
-
-		if (searchParams.status) where.status = searchParams.status;
-		if(searchParams.plate) where.plate = Like(`%${searchParams.plate}`)
-		if(searchParams.plate) 
-		if (searchParams.brand) where.brand = searchParams.brand;
-		if (searchParams.model) where.model = searchParams.model;
-		if (searchParams.km) where.km = LessThanOrEqual(searchParams.km);
-
-		if (searchParams.fromYear && searchParams.untilYear)
-			where.year = Between(searchParams.fromYear, searchParams.untilYear);
-
-		if (searchParams.fromYear && !searchParams.untilYear)
-			where.year = MoreThanOrEqual(searchParams.fromYear);
-
-		if (!searchParams.fromYear && searchParams.untilYear)
-			where.year = LessThanOrEqual(searchParams.untilYear);
-
-		if (searchParams.sortBy?.includes('year')) {
-			order = { year: searchParams.order || 'ASC' };
-		}
-
-		if (searchParams.sortBy?.includes('km')) {
-			order = { ...order, km: searchParams.order || 'ASC' };
-		}
-
-		console.log(where)
+	async findAll(
+		skip: number,
+		take: number,
+		where: FindOptionsWhere<ICar>,
+		order: FindOptionsOrder<ICar>,
+	) {
 		return await this.ormRepository.findAndCount({
 			skip,
 			take,
