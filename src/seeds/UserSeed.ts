@@ -21,7 +21,7 @@ export const UserSeed = async (dataSource: DataSource) => {
 		user.password = await bcrypt.hash(newUser.password, 8);
 
 		await userRepository.save(user);
-		console.log('Usuário admin criado com sucesso!');
+		console.log(`Usuário admin criado com sucesso! ID: ${user.id}`);
 	} else {
 		console.log('Usuário admin já existe.');
 	}

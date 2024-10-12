@@ -5,11 +5,14 @@ import { z } from 'zod';
 export const getCustomerIdSchema = z.object({
 	id: z.string().uuid({ message: 'insert a valid id' }),
 });
+<<<<<<< HEAD
 
 export const getCustomerSchema = z
 	.string({ message: 'insert a valid id' })
 	.uuid()
 	.min(1);
+=======
+>>>>>>> 19cc7cfc5c41fb2f95cb551b0a025475285c80a1
 
 export const postCustomerSchema = z.object({
 	name: z
@@ -97,6 +100,7 @@ export const postCustomerSchema = z.object({
 			},
 			{ message: 'phone_number must be a valid brazilian phone number' },
 		),
+<<<<<<< HEAD
 });
 
 export const patchCustomerBodySchema = z.object({
@@ -185,6 +189,8 @@ export const patchCustomerBodySchema = z.object({
 			{ message: 'phone_number must be a valid brazilian phone number' },
 		)
 		.optional(),
+=======
+>>>>>>> 19cc7cfc5c41fb2f95cb551b0a025475285c80a1
 });
 
 export const patchCustomerParamsSchema = z.object({

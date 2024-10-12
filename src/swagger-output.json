@@ -15,6 +15,10 @@
 		{
 			"name": "User",
 			"description": "Operations about user"
+		},
+		{
+			"name": "Customer",
+			"description": "Operations about customer"
 		}
 	],
 	"schemes": ["http"],
@@ -385,6 +389,330 @@
 										"message": {
 											"type": "string",
 											"example": "User not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/customers": {
+			"post": {
+				"tags": ["Customer"],
+				"summary": "Criar um novo cliente",
+				"description": "Essa rota permite a criação de um novo cliente no sistema. Forneça um email único, cpf único, nome, data de nascimento e número de telefone.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome do cliente"
+									},
+									"birth": {
+										"type": "string",
+										"example": "1990-10-05",
+										"description": "Data de nascimento do cliente"
+									},
+									"cpf": {
+										"type": "string",
+										"example": "12345678900",
+										"description": "CPF do cliente"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do cliente"
+									},
+									"phone_number": {
+										"type": "string",
+										"example": "123456789",
+										"description": "Número de telefone do cliente"
+									}
+								},
+								"required": ["name", "birth", "cpf", "email", "phone_number"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Cliente criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Erro de validação",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Validation error: name is required, email is required, cpf must be 11 digits, birth must be in YYYY-MM-DD format"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Email ou CPF já registrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "email or cpf already exists"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/customers/{id}": {
+			"get": {
+				"tags": ["Customer"],
+				"summary": "Busca um cliente por ID",
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+										},
+										"name": {
+											"type": "string",
+											"example": "Teste da Silva"
+										},
+										"birth": {
+											"type": "string",
+											"example": "1999-09-18"
+										},
+										"cpf": {
+											"type": "string",
+											"example": "3815161780"
+										},
+										"email": {
+											"type": "string",
+											"example": "teste@mail.com"
+										},
+										"phone_number": {
+											"type": "string",
+											"example": "48996748155"
+										},
+										"created_at": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deleted_at": {
+											"type": "string",
+											"example": "null"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "validation error"
+										},
+										"errors": {
+											"type": "string",
+											"example": "invalid uuid"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Cliente não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Customer not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Customer"],
+				"description": "TODO",
+				"summary": "Atualiza um cliente por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								}
+							},
+							"required": []
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+										},
+										"createdAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deletedAt": {
+											"type": "string",
+											"example": null
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Requisição inválida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Dados inválidos"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Usuário não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "User not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Customer"],
+				"description": "",
+				"summary": "Deleta um cliente por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Cliente deletado com sucesso. Nenhum conteúdo retornado."
+					},
+					"404": {
+						"description": "Cliente não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Customer not found"
 										}
 									}
 								}
