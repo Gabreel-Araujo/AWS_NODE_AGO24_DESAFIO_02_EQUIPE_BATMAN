@@ -103,7 +103,7 @@ export class CreateRentalOrders1728738131076 implements MigrationInterface {
 						isNullable: true,
 					},
 					{
-						name: 'closing_ate',
+						name: 'closing_date',
 						type: 'timestamp',
 						isNullable: true,
 					},
