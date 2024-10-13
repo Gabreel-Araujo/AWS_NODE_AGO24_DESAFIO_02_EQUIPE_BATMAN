@@ -19,7 +19,10 @@ class RentalOrder {
 		(customer) => customer,
 	)
 	@JoinColumn({ name: 'customer_id' })
-	customer_id: Customer;
+	customer: Customer
+
+  @Column('uuid')
+  customer_id: string
 
 	@CreateDateColumn()
 	order_date: Date;
@@ -82,7 +85,10 @@ class RentalOrder {
 		(car) => car,
 	)
 	@JoinColumn({ name: 'car_id' })
-	car_id: Car;
+	car: Car
+  
+  @Column('uuid')
+  car_id: string
 
 	@CreateDateColumn({ nullable: true })
 	start_date: Date;
@@ -98,8 +104,6 @@ class RentalOrder {
 
 	@Column('decimal', { nullable: true })
 	late_fee: number;
-	customer: Customer;
-	car: Car;
 }
 
 export default RentalOrder;

@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Cars } from '../entities/Car';
+import  Cars  from '../entities/Car';
 import { dbConnection } from '@/lib/typeorm';
 import { ICar, ICarRepository } from './interfaces/ICarRepository';
 
