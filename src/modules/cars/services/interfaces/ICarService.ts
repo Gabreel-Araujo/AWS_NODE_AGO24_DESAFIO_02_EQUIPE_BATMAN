@@ -4,13 +4,13 @@ import { ICar } from '../../typeorm/repositories/interfaces/ICarRepository';
 export interface ICarService {
 	createCar(
 		plate: string,
-		model: string,
 		brand: string,
-		km: number,
-		daily_price: number,
+		model: string,
 		year: number,
+		daily_price: number,
+		km: number,
 		items?: Item[],
 	): Promise<ICar | null>;
-	createCarItems(carId: string, items: Item[]): Promise<void>;
+	createCarItems(car: ICar, items: Item[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
 }

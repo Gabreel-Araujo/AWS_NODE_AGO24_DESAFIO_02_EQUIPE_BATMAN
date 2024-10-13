@@ -22,19 +22,19 @@ export class Cars {
 	plate!: string;
 
 	@Column('varchar')
-	model!: string;
-
-	@Column('varchar')
 	brand!: string;
 
-	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-	km!: number;
+	@Column('varchar')
+	model!: string;
+
+	@Column('int')
+	year!: number;
 
 	@Column('float', { nullable: false })
 	daily_price!: number;
 
-	@Column('int')
-	year!: number;
+	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+	km!: number;
 
 	@Column({
 		type: 'enum',

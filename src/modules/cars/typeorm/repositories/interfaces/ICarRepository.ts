@@ -6,9 +6,9 @@ export interface ICar {
 	plate: string;
 	brand: string;
 	model: string;
-	km: number;
 	year: number;
 	daily_price: number;
+	km: number;
 	status: CarStatus;
 	created_at: Date;
 	updated_at: Date;
@@ -17,7 +17,9 @@ export interface ICar {
 
 export interface ICarRepository {
 	createCar(newCar: ICar): Promise<ICar>;
-	createCarItems(items: { carId: string; item: string }[]): Promise<void>;
+	createCarItems(
+		items: { id: string; car: ICar; item: string | Item }[],
+	): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
 	findByPlateAndStatus(plate: string, status: CarStatus): Promise<ICar | null>;
 }

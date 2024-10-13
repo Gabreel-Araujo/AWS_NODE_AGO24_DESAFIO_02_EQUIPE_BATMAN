@@ -25,13 +25,14 @@ carsRouter.post(
 	validation(postCarSchema, 'body'),
 	authenticate,
 	(req, res) => {
-		const { plate, brand, model, year, km, items } = req.body;
+		const { plate, brand, model, year, daily_price, km, items } = req.body;
 		console.log(req.body);
 		const createdCar = carService.createCar(
 			plate,
 			brand,
 			model,
 			Number(year),
+			Number(daily_price),
 			Number(km),
 			items,
 		);

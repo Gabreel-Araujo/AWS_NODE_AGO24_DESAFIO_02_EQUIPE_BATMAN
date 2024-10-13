@@ -28,14 +28,14 @@ class CarService implements ICarService {
 
 	async createCar(
 		plate: string,
-		model: string,
 		brand: string,
-		km: number,
-		daily_price: number,
+		model: string,
 		year: number,
+		daily_price: number,
+		km: number,
 		items: Item[],
 	): Promise<ICar | null> {
-		const carExists = this.repository.findByPlateAndStatus;
+		const carExists = await this.repository.findByPlateAndStatus;
 
 		if (!carExists) {
 			throw new NotFoundError('A car with this plate already exists');
@@ -56,18 +56,22 @@ class CarService implements ICarService {
 
 		const createdCar = await this.repository.createCar(newCar);
 
-		this.createCarItems(createdCar.id, items);
+		await this.createCarItems(createdCar, items);
 
 		return createdCar;
 	}
 
-	async createCarItems(carId: string, items: Item[]): Promise<void> {
+	async createCarItems(car: ICar, items: Item[]): Promise<void> {
 		if (items && items.length >= 1) {
-			const newItems = items.map((item) => ({
-				id: randomUUID,
-				carId: carId,
-				item: item.item,
-			}));
+			const newItems = items.map((item) => {
+				const itemName = item;
+				return {
+					id: randomUUID(),
+					car: car,
+					item: itemName,
+				};
+			});
+
 			await this.repository.createCarItems(newItems);
 		}
 	}

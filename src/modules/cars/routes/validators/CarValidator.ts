@@ -49,6 +49,10 @@ export const postCarSchema = z.object({
 		})
 		.max(new Date().getFullYear() + 1, { message: 'cannot be in the future' }),
 
+	daily_price: z.number({
+		invalid_type_error: 'must be a number',
+	}),
+
 	km: z
 		.number({
 			invalid_type_error: 'must be a number',

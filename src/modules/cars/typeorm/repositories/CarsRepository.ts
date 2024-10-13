@@ -10,6 +10,7 @@ export class CarsRepository implements ICarRepository {
 
 	constructor() {
 		this.ormRepository = dbConnection.getRepository(Cars);
+		this.itemRepository = dbConnection.getRepository(Item);
 	}
 
 	async findById(id: string): Promise<ICar | null> {
@@ -49,9 +50,9 @@ export class CarsRepository implements ICarRepository {
 	}
 
 	async createCarItems(
-		items: { carId: string; item: string; id: string }[],
+		items: { id: string; car: ICar; item: string }[],
 	): Promise<void> {
-		const newItems = await this.itemRepository.create(items);
+		const newItems = this.itemRepository.create(items);
 		await this.itemRepository.save(newItems);
 	}
 }
