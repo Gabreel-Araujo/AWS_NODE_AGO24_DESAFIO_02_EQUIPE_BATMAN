@@ -26,6 +26,9 @@ export const postCarSchema = z.object({
 		})
 		.refine((brand) => brand.trim() !== '', {
 			message: 'brand cannot be null',
+		})
+		.refine((brand) => !/\d/.test(brand), {
+			message: 'brand cannot contain numbers',
 		}),
 
 	model: z
@@ -44,8 +47,8 @@ export const postCarSchema = z.object({
 		.int({
 			message: 'must be an interger',
 		})
-		.min(new Date().getFullYear() - 11, {
-			message: 'must be at least 1886',
+		.min(new Date().getFullYear() - 10, {
+			message: 'must be from at most ten years ago',
 		})
 		.max(new Date().getFullYear() + 1, { message: 'cannot be in the future' }),
 
@@ -59,7 +62,8 @@ export const postCarSchema = z.object({
 		})
 		.int({
 			message: 'must be an interger',
-		}),
+		})
+		.default(0),
 
 	items: z
 		.array(
@@ -74,5 +78,11 @@ export const postCarSchema = z.object({
 		)
 		.nonempty({
 			message: 'one item is required',
+		})
+		.max(5, {
+			message: 'maximum five items',
+		})
+		.refine((items) => new Set(items).size === items.length, {
+			message: 'duplicate items are not allowed',
 		}),
 });

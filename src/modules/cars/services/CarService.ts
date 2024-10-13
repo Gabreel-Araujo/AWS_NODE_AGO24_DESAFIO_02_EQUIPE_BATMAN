@@ -62,18 +62,16 @@ class CarService implements ICarService {
 	}
 
 	async createCarItems(car: ICar, items: Item[]): Promise<void> {
-		if (items && items.length >= 1) {
-			const newItems = items.map((item) => {
-				const itemName = item;
-				return {
-					id: randomUUID(),
-					car: car,
-					item: itemName,
-				};
-			});
+		const newItems = items.map((item) => {
+			const itemName = item;
+			return {
+				id: randomUUID(),
+				car: car,
+				item: itemName,
+			};
+		});
 
-			await this.repository.createCarItems(newItems);
-		}
+		await this.repository.createCarItems(newItems);
 	}
 }
 
