@@ -6,7 +6,7 @@ import {
 	Column,
 	ManyToOne,
 	JoinColumn,
-  CreateDateColumn,
+	CreateDateColumn,
 } from 'typeorm';
 
 @Entity('rental_orders')
@@ -19,7 +19,10 @@ class RentalOrder {
 		(customer) => customer,
 	)
 	@JoinColumn({ name: 'customer_id' })
-	customer_id: Customer;
+	customer: Customer
+
+  @Column('uuid')
+  customer_id: string
 
 	@CreateDateColumn()
 	order_date: Date;
@@ -31,10 +34,10 @@ class RentalOrder {
 	})
 	status: string;
 
-	@Column('varchar', { nullable: false})
+	@Column('varchar', { nullable: true })
 	cep: string;
 
-	@Column('varchar', { nullable: false})
+	@Column('varchar', { nullable: true })
 	city: string;
 
 	@Column({
@@ -67,7 +70,7 @@ class RentalOrder {
 			'SP',
 			'SE',
 			'TO',
-		],
+		], default: null
 	})
 	state: string;
 
@@ -82,15 +85,18 @@ class RentalOrder {
 		(car) => car,
 	)
 	@JoinColumn({ name: 'car_id' })
-	car_id: Car;
+	car: Car
+  
+  @Column('uuid')
+  car_id: string
 
-  @CreateDateColumn()
+	@CreateDateColumn({ nullable: true })
 	start_date: Date;
 
-  @CreateDateColumn()
+	@CreateDateColumn({ nullable: true })
 	end_date: Date;
 
-  @CreateDateColumn({ nullable: true })
+	@CreateDateColumn({ nullable: true })
 	cancellation_date: Date;
 
 	@CreateDateColumn({ nullable: true })
@@ -98,8 +104,6 @@ class RentalOrder {
 
 	@Column('decimal', { nullable: true })
 	late_fee: number;
-	customer: Customer;
-	car: Car;
 }
 
 export default RentalOrder;
