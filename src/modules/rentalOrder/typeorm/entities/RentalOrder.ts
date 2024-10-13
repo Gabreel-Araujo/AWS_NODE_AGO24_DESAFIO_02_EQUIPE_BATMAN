@@ -6,7 +6,7 @@ import {
 	Column,
 	ManyToOne,
 	JoinColumn,
-  CreateDateColumn,
+	CreateDateColumn,
 } from 'typeorm';
 
 @Entity('rental_orders')
@@ -31,10 +31,10 @@ class RentalOrder {
 	})
 	status: string;
 
-	@Column('varchar', { nullable: false})
+	@Column('varchar', { nullable: true })
 	cep: string;
 
-	@Column('varchar', { nullable: false})
+	@Column('varchar', { nullable: true })
 	city: string;
 
 	@Column({
@@ -67,7 +67,7 @@ class RentalOrder {
 			'SP',
 			'SE',
 			'TO',
-		],
+		], default: null
 	})
 	state: string;
 
@@ -84,13 +84,13 @@ class RentalOrder {
 	@JoinColumn({ name: 'car_id' })
 	car_id: Car;
 
-  @CreateDateColumn()
+	@CreateDateColumn({ nullable: true })
 	start_date: Date;
 
-  @CreateDateColumn()
+	@CreateDateColumn({ nullable: true })
 	end_date: Date;
 
-  @CreateDateColumn({ nullable: true })
+	@CreateDateColumn({ nullable: true })
 	cancellation_date: Date;
 
 	@CreateDateColumn({ nullable: true })

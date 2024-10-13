@@ -28,17 +28,16 @@ export class CreateRentalOrders1728738131076 implements MigrationInterface {
 						type: 'enum',
 						enum: ['open', 'aproved', 'closed', 'canceled'],
 						default: "'open'",
-						isNullable: false,
 					},
 					{
 						name: 'cep',
 						type: 'varchar',
-						isNullable: false,
+						isNullable: true,
 					},
 					{
 						name: 'city',
 						type: 'varchar',
-						isNullable: false,
+						isNullable: true,
 					},
 					{
 						name: 'state',
@@ -72,17 +71,18 @@ export class CreateRentalOrders1728738131076 implements MigrationInterface {
 							'SE',
 							'TO',
 						],
-						isNullable: false,
+						default: null,
+						isNullable: true,
 					},
 					{
 						name: 'rental_rate',
 						type: 'decimal',
-						isNullable: false,
+						default: 0,
 					},
 					{
 						name: 'total',
 						type: 'decimal',
-						isNullable: false,
+						default: 0,
 					},
 					{
 						name: 'car_id',
@@ -92,10 +92,14 @@ export class CreateRentalOrders1728738131076 implements MigrationInterface {
 					{
 						name: 'start_date',
 						type: 'timestamp',
+						default: null,
+						isNullable: true,
 					},
 					{
 						name: 'end_date',
 						type: 'timestamp',
+						default: null,
+						isNullable: true,
 					},
 					{
 						name: 'cancellation_date',
