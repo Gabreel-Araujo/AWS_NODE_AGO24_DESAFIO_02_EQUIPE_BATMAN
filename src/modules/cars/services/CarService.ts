@@ -35,7 +35,10 @@ class CarService implements ICarService {
 		km: number,
 		items: Item[],
 	): Promise<ICar | null> {
-		const carExists = await this.repository.findByPlateAndStatus;
+		const carExists = await this.repository.findByPlateAndStatus(
+			plate,
+			CarStatus.ACTIVE,
+		);
 
 		if (!carExists) {
 			throw new NotFoundError('A car with this plate already exists');

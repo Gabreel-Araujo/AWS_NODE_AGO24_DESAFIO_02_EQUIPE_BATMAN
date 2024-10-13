@@ -12,14 +12,17 @@ carsRouter.get(
 	'/:id',
 	validation(idCarSchema, 'params'),
 	authenticate,
-	(req, res) => {
-		const { id } = req.params;
-		const car = carService.findById(id);
+	async (req, res) => {
+		try {
+			const { id } = req.params;
+			const car = await carService.findById(id);
 
-		res.status(200).json(car);
+			res.status(200).json(car);
+		} catch (error) {
+			res.status(404);
+		}
 	},
 );
-
 carsRouter.post(
 	'/',
 	validation(postCarSchema, 'body'),

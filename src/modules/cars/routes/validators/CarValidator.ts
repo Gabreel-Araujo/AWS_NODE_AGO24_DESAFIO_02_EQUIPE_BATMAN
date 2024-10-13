@@ -1,11 +1,8 @@
 import { z } from 'zod';
 
-export const idCarSchema = z
-	.string({
-		message: 'insert a valid uuid',
-	})
-	.uuid()
-	.min(1);
+export const idCarSchema = z.object({
+	id: z.string().uuid({ message: 'insert a valid uuid' }), // Validação do UUID
+});
 
 export const postCarSchema = z.object({
 	plate: z
