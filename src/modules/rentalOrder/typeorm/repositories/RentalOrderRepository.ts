@@ -70,8 +70,28 @@ class RentalOrderRepository implements IRentalOrderRepository {
 			query.andWhere('order.status = :status', { status: filters.status });
 		}
 		if (filters.customer_cpf) {
-			query.leftJoinAndSelect('order.customer', 'customer')
-			.andWhere('customer.cpf = :cpf ', {cpf: filters.customer_cpf});
+			query
+				.leftJoinAndSelect('order.customer', 'customer')
+				.andWhere('customer.cpf = :cpf ', { cpf: filters.customer_cpf });
+		}
+
+		if (filters.start_date && !filters.end_date) {
+			query.andWhere('order.order_date >= :start_date ', {
+				start_date: filters.start_date,
+			});
+		}
+
+		if (!filters.start_date && filters.end_date) {
+			query.andWhere('order.order_date <= :end_date ', {
+				end_date: filters.end_date,
+			});
+		}
+
+		if (filters.start_date && filters.end_date) {
+			query.andWhere('order.order_date BETWEEN :start_date AND :end_date ', {
+				start_date: filters.start_date,
+				end_date: filters.end_date,
+			});
 		}
 
 		const total = await query.getCount();
