@@ -2,8 +2,8 @@ import { ICreateRentalOrder} from "../../entities/interfaces/RentalOrderInterfac
 import RentalOrder from "../../entities/RentalOrder";
 
 export interface IRentalOrderRepository {
-    findByCustomer(customer_id: string): Promise<RentalOrder | null> 
-    findByCar(car_id: string): Promise<RentalOrder | null>
+    findOrderStatusByCustomer(customer_id: string): Promise<RentalOrder | null> 
+    findOrderStatusByCar(car_id: string): Promise<RentalOrder | null>
     findById(id: string): Promise<RentalOrder | null>
 	save(order: ICreateRentalOrder): Promise<RentalOrder>;
 }
