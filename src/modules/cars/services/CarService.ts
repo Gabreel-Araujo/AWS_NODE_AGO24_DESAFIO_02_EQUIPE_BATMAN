@@ -16,6 +16,7 @@ import {
 } from 'typeorm';
 import { Item } from '../typeorm/entities/Items';
 import { CarStatus } from '../typeorm/entities/Car';
+import ConflictError from '@/http/errors/conflict-error';
 
 class CarService implements ICarService {
 	private repository: ICarRepository;
@@ -84,7 +85,7 @@ class CarService implements ICarService {
 			await this.rentalOrderRepository.findActiveOrdersByCarId(id);
 
 		if (hasActiveRentalOrder) {
-			throw new Error(
+			throw new ConflictError(
 				'Car cannot be deleted, it is in an active or approved rental order',
 			);
 		}

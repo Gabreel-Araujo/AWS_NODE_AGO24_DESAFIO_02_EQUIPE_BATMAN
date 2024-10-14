@@ -1,9 +1,6 @@
 import { dbConnection } from '@/lib/typeorm';
 import { In, Repository } from 'typeorm';
-import {
-	ICreateRentalOrder,
-	IRentalOrder,
-} from '../entities/interfaces/RentalOrderInterface';
+import { ICreateRentalOrder } from '../entities/interfaces/RentalOrderInterface';
 import RentalOrder from '../entities/RentalOrder';
 import { IRentalOrderRepository } from './interfaces/IRentalOrderRepository';
 

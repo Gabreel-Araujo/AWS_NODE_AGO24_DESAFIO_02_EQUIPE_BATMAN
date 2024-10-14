@@ -108,7 +108,6 @@ carsRouter.get('/:id', validation(idCarSchema, 'params'), async (req, res) => {
 carsRouter.delete(
 	'/:id',
 	validation(idCarSchema, 'params'),
-	authenticate,
 	async (req, res) => {
 		try {
 			const { id } = req.params;
