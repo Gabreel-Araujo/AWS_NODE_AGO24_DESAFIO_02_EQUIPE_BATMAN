@@ -12,6 +12,7 @@ export interface ICar {
 	created_at: Date;
 	updated_at: Date;
 	items: Item[];
+	daily_price: number;
 }
 
 export interface ICarRepository {
