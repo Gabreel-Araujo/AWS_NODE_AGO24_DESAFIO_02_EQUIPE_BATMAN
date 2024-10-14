@@ -10,7 +10,7 @@ const carsRouter = Router();
 
 const carService = new CarService();
 
-// carsRouter.use(authenticate);
+carsRouter.use(authenticate);
 
 carsRouter.post('/', validation(postCarSchema, 'body'), async (req, res) => {
 	const { plate, brand, model, year, daily_price, km, items } = req.body;

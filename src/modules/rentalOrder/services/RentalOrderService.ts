@@ -52,4 +52,16 @@ export default class RentalOrderService implements IRentalOrderService {
 
 		return newOrder;
 	}
+
+	public async softDeleteById(id: string): Promise<void> {
+		const existingOrder = await this.repository.findById(id);
+
+		if (!existingOrder) {
+			throw new NotFoundError('Order not found');
+		}
+
+		const deletedOrder = await this.repository.softDeleteById(id);
+
+		return deletedOrder;
+	}
 }

@@ -35,12 +35,9 @@ userRoute.post(
 
 userRoute.get(
 	'/',
-	authenticate,
 	validation(queryParamsSchema, 'query'),
 	async (req: Request, res: Response) => {
 		const { page, limit, name, email, deleted, sortBy, sortOrder } = req.query;
-
-		console.log('req query', req.query);
 
 		const filters: any = {};
 

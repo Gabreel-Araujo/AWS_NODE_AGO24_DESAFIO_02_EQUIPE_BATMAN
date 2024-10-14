@@ -9,11 +9,11 @@ const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
 
-// ordersRouter.use(authenticate);
+ordersRouter.use(authenticate);
 
-// customersRouter.get('/');
+// ordersRouter.get('/');
 
-// customersRouter.get('/:id');
+// ordersRouter.get('/:id');
 
 ordersRouter.post(
 	'/',
@@ -32,8 +32,14 @@ ordersRouter.post(
 	},
 );
 
-//ordersRouter.put('/:id');
+ordersRouter.delete('/:id', async (req: Request, res: Response) => {
+	const { id } = req.params;
 
-//ordersRouter.delete('/:id',);
+	await ordersService.softDeleteById(id);
+
+	res.status(204).send();
+});
+
+//ordersRouter.put('/:id');
 
 export default ordersRouter;
