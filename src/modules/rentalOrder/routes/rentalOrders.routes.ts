@@ -9,7 +9,7 @@ const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
 
-ordersRouter.use(authenticate);
+// ordersRouter.use(authenticate);
 
 // customersRouter.get('/');
 
@@ -17,16 +17,16 @@ ordersRouter.use(authenticate);
 
 ordersRouter.post(
 	'/',
-	authenticate,
 	validation(postOrderSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { car_id, customer_id } = req.body;
 
 		const order: ICreateRentalOrder = {
-            car_id, customer_id,
-        };
+			car_id,
+			customer_id,
+		};
 
-		const createdOrder = await ordersService.save(order);
+		const createdOrder = await ordersService.create(order);
 
 		res.status(201).json({ id: createdOrder.id });
 	},
