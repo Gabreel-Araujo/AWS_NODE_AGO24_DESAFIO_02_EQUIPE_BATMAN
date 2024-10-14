@@ -16,6 +16,7 @@ export interface ICarService {
 	): Promise<ICar | null>;
 	createCarItems(car: ICar, items: Item[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
+	softDeleteCar(id: string): Promise<ICar | null>;
 	findAll({ limit, page, searchParams }: ICarPagination): Promise<{
 		cars: ICar[];
 		count: number;

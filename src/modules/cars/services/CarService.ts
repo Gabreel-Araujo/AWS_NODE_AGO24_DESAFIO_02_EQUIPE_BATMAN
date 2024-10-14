@@ -5,6 +5,7 @@ import {
 } from '../typeorm/repositories/interfaces/ICarRepository';
 import NotFoundError from '@/http/errors/not-found-error';
 import { CarsRepository } from '../typeorm/repositories/CarsRepository';
+import RentalOrderRepository from '@/modules/rentalOrder/typeorm/repositories/RentalOrderRepository';
 import {
 	Between,
 	FindOptionsOrder,
@@ -15,12 +16,15 @@ import {
 } from 'typeorm';
 import { Item } from '../typeorm/entities/Items';
 import { CarStatus } from '../typeorm/entities/Car';
+import ConflictError from '@/http/errors/conflict-error';
 
 class CarService implements ICarService {
 	private repository: ICarRepository;
+	rentalOrderRepository: RentalOrderRepository;
 
 	constructor() {
 		this.repository = new CarsRepository();
+		this.rentalOrderRepository = new RentalOrderRepository();
 	}
 
 	async createCar(
@@ -66,8 +70,29 @@ class CarService implements ICarService {
 		if (!car) {
 			throw new NotFoundError('Car not found');
 		}
-
+		console.log(car);
 		return car;
+	}
+
+	async softDeleteCar(id: string): Promise<ICar | null> {
+		const car = await this.findById(id);
+
+		if (!car) {
+			throw new NotFoundError('Car not found');
+		}
+
+		const hasActiveRentalOrder =
+			await this.rentalOrderRepository.findActiveOrdersByCarId(id);
+
+		if (hasActiveRentalOrder) {
+			throw new ConflictError(
+				'Car cannot be deleted, it is in an active or approved rental order',
+			);
+		}
+
+		const updatedCar = await this.repository.softDeleteCar(id);
+
+		return updatedCar;
 	}
 
 	async findAll({ limit, page, searchParams }: ICarPagination) {

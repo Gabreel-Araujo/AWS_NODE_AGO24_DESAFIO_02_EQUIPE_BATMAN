@@ -20,6 +20,7 @@ export interface ICarRepository {
 	save(car: ICar): Promise<ICar>;
 	createCarItems(items: { car: ICar; item: string | Item }[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
+	softDeleteCar(id: string): Promise<ICar | null>;
 	findAll(
 		skip: number,
 		take: number,
