@@ -53,12 +53,9 @@ export const postCarSchema = z.object({
 		invalid_type_error: 'must be a number',
 	}),
 
-	km: z
+	km: z.coerce
 		.number({
 			invalid_type_error: 'must be a number',
-		})
-		.int({
-			message: 'must be an interger',
 		})
 		.default(0),
 
