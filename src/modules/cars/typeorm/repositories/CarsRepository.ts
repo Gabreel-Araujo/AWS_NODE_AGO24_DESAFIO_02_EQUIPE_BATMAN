@@ -34,6 +34,7 @@ export class CarsRepository implements ICarRepository {
 			take,
 			where,
 			order,
+			relations: ['items'],
 		});
 	}
 }
