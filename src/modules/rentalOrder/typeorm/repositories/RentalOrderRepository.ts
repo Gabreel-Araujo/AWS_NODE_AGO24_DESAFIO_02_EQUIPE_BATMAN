@@ -28,8 +28,8 @@ class RentalOrderRepository implements IRentalOrderRepository {
 		return car;
 	}
 	public async findById(id: string): Promise<RentalOrder | null> {
-		const rentalOrder = await this.ormRepository.findOne({
-			where: { id },
+		const rentalOrder = await this.ormRepository.findOneBy({
+			id,
 		});
 		return rentalOrder;
 	}
@@ -47,6 +47,17 @@ class RentalOrderRepository implements IRentalOrderRepository {
 			},
 		});
 		return activeOrders.length > 0;
+	}
+
+	public async softDeleteById(id: string): Promise<void> {
+		const rentalOrder = await this.ormRepository.findOneBy({ id });
+
+		if (!rentalOrder) {
+			throw new Error('Pedido não encontrado.');
+		}
+
+		rentalOrder.status = 'canceled';
+		await this.ormRepository.save(rentalOrder);
 	}
 }
 

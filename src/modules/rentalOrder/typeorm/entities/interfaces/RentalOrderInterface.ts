@@ -2,8 +2,8 @@ export interface IRentalOrder {
 	id: string;
 	customer_id: string;
 	order_date?: Date;
-    status?: 'open' | 'aproved' | 'closed' | 'canceled'
-	cep?: string | null ;
+	status?: 'open' | 'aproved' | 'closed' | 'canceled';
+	cep?: string | null;
 	city?: string | null;
 	state?:
 		| 'AC'
@@ -33,14 +33,14 @@ export interface IRentalOrder {
 		| 'SP'
 		| 'SE'
 		| 'TO'
-        | null;
+		| null;
 	rental_rate?: number;
-    total?: number;
-    car_id: string;
+	total?: number;
+	car_id: string;
 	start_date?: Date;
 	end_date?: Date | null;
-    cancellation_date?: Date | null;
-    closing_date?: Date | null;
+	cancellation_date?: Date | null;
+	closing_date?: Date | null;
 	late_fee?: number | null;
 }
 

@@ -1,6 +1,7 @@
 import { ICustomersRepository } from '@/modules/customers/typeorm/repositories/interfaces/ICustomersRepository';
 import {
 	ICreateRentalOrder,
+	IRentalOrder,
 } from '../typeorm/entities/interfaces/RentalOrderInterface';
 import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import RentalOrderRepository from '../typeorm/repositories/RentalOrderRepository';
@@ -11,6 +12,7 @@ import { CarsRepository } from '@/modules/cars/typeorm/repositories/CarsReposito
 import NotFoundError from '@/http/errors/not-found-error';
 import { ApiError } from '@/http/errors/api-error';
 import RentalOrder from '../typeorm/entities/RentalOrder';
+import { postOrderSchema } from '../routes/validators/RentalOrdersValidators';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -27,7 +29,9 @@ export default class RentalOrderService implements IRentalOrderService {
 		const customer = await this.customerRepository.findById(order.customer_id);
 		const car = await this.carRepository.findById(order.car_id);
 		const carOrders = await this.repository.findByCar(order.car_id);
-        const customerOrders = await this.repository.findByCustomer(order.customer_id);
+		const customerOrders = await this.repository.findByCustomer(
+			order.customer_id,
+		);
 
 		if (!customer) {
 			throw new NotFoundError('Customer not found.');
@@ -35,14 +39,21 @@ export default class RentalOrderService implements IRentalOrderService {
 		if (!car) {
 			throw new NotFoundError('Car not found.');
 		}
-        if (carOrders) {
-            throw new ApiError('Car cant be used. It is already in use', 400);
-        }
-        if (customerOrders) {
-            throw new ApiError('Cant create order because customer has an opened order already', 400);
-        }
+		if (carOrders) {
+			throw new ApiError('Car cant be used. It is already in use', 400);
+		}
+		if (customerOrders) {
+			throw new ApiError(
+				'Cant create order because customer has an opened order already',
+				400,
+			);
+		}
 		const newOrder = await this.repository.save(order);
 
 		return newOrder;
+	}
+
+	public async deleteById(id: string): Promise<void> {
+		await this.repository.softDeleteById(id);
 	}
 }

@@ -8,6 +8,7 @@ import { postOrderSchema } from './validators/RentalOrdersValidators';
 const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
+const rentalOrderService = new RentalOrderService();
 
 //ordersRouter.use(authenticate);
 
@@ -23,14 +24,26 @@ ordersRouter.post(
 		const { car_id, customer_id } = req.body;
 
 		const order: ICreateRentalOrder = {
-            car_id, customer_id,
-        };
+			car_id,
+			customer_id,
+		};
 
 		const createdOrder = await ordersService.save(order);
 
 		res.status(201).json({ id: createdOrder.id });
 	},
 );
+
+ordersRouter.delete('/:id', async (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		await ordersService.deleteById(id);
+		res.status(204).send();
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ error: error });
+	}
+});
 
 //ordersRouter.put('/:id');
 
