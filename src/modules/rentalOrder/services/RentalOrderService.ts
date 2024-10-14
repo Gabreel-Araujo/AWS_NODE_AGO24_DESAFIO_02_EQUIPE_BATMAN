@@ -74,45 +74,63 @@ export default class RentalOrderService implements IRentalOrderService {
 
 			if (!car) throw new NotFoundError('car not found');
 
-			if (rentalOrder.end_date && car) {
+			if (rentalOrder.closing_date && car) {
 				const lateFee = this.calculateLateFee(
-					rentalOrder.end_date,
+					rentalOrder.closing_date,
 					car.daily_price,
 				);
 				order.late_fee = lateFee;
 			}
 
-			order.total = this.calculateTotal(rentalOrder, car as Cars);
+			const { total, lateFee } = this.calculateTotal(
+				rentalOrder,
+				order.closing_date,
+				car as Cars,
+			);
+
+			order.total = total;
+			order.late_fee = lateFee;
+
+			console.log(order);
 		}
 
 		return await this.repository.update(id, order);
 	}
 
-	private calculateLateFee(endDate: Date, dailyPrice: number) {
-		const actualDate = new Date();
-		const lateDays = differenceInDays(actualDate, endDate);
+	private calculateLateFee(
+		endDate: Date,
+		closingDate: Date,
+		dailyPrice: number,
+	) {
+		const lateDays = differenceInDays(closingDate, endDate);
 		return lateDays > 0 ? lateDays * (2 * dailyPrice) : 0;
 	}
 
-	private calculateTotal(order: RentalOrder, car: Cars) {
+	private calculateTotal(
+		order: RentalOrder,
+		closingDate: Date | undefined,
+		car: Cars,
+	) {
 		const startDate = new Date(order.start_date);
-		let endDate: Date;
+		const endDate: Date = new Date(order.end_date);
+		let lateFee = 0;
 
-		if (order.status === 'closed') {
-			endDate = new Date(order.end_date);
-		} else {
-			endDate = new Date(order.end_date);
+		if (order.end_date !== closingDate) {
+			if (!closingDate) return;
+			lateFee = this.calculateLateFee(endDate, closingDate, car.daily_price);
 		}
-		
+
 		if (Number.isNaN(endDate.getTime())) {
 			throw new Error('Invalid end date or cancellation date');
 		}
 		const rentalDays = differenceInDays(endDate, startDate);
 
-		return (
-			Number(car.daily_price) * Number(rentalDays) +
-			Number(order.rental_rate) +
-			(Number(order.late_fee) ?? 0)
-		);
+		return {
+			total:
+				Number(car.daily_price) * Number(rentalDays) +
+				Number(order.rental_rate) +
+				Number(lateFee),
+			lateFee,
+		};
 	}
 }
