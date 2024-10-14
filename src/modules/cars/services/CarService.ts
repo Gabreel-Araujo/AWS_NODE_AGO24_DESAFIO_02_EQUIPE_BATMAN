@@ -19,7 +19,7 @@ class CarService implements ICarService {
 		if (!car) {
 			throw new NotFoundError('Car not found');
 		}
-
+		console.log(car)
 		return car;
 	}
 }

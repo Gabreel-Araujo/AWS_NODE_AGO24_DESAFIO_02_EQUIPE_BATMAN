@@ -10,11 +10,11 @@ const carService = new CarService();
 
 carsRouter.get(
 	'/:id',
-	validation(idCarSchema, 'params'),
-	authenticate,
-	(req, res) => {
+	//validation(idCarSchema, 'params'),
+	//authenticate,
+	async (req, res) => {
 		const { id } = req.params;
-		const car = carService.findById(id);
+		const car = await carService.findById(id);
 
 		res.status(200).json(car);
 	},

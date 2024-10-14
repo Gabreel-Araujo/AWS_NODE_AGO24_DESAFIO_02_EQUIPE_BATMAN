@@ -1,8 +1,10 @@
+import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
 import {
 	Column,
 	CreateDateColumn,
 	DeleteDateColumn,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -31,6 +33,12 @@ class Customer {
 
 	@DeleteDateColumn({ nullable: true })
 	deleted_at: Date | null;
+
+	@OneToMany(
+		() => RentalOrder,
+		(rentalOrder) => rentalOrder.customer,
+	)
+	rentalOrders: RentalOrder[];
 }
 
 export default Customer;

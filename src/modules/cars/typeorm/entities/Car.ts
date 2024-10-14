@@ -7,6 +7,8 @@ import {
 	UpdateDateColumn,
 } from 'typeorm';
 import { Item } from './Items';
+import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
+
 
 export enum CarStatus {
 	ACTIVE = 'ativo',
@@ -14,7 +16,7 @@ export enum CarStatus {
 	ERASED = 'excluído',
 }
 @Entity('cars')
-export class Cars {
+export default class Cars {
 	@PrimaryGeneratedColumn('uuid')
 	id!: string;
 
@@ -54,4 +56,10 @@ export class Cars {
 		(item) => item.car,
 	)
 	items!: Item[];
+
+	@OneToMany(
+		() => RentalOrder,
+		(rentalOrder) => rentalOrder.car,
+	)
+	rentalOrders: RentalOrder[];
 }
