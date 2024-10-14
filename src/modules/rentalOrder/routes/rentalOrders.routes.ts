@@ -62,23 +62,22 @@ ordersRouter.get('/', validation(queryParamsSchema), async (req, res) => {
 
 		const pagination = {
 			page: Number.parseInt(req.query.page as string) || 1,
-			size: Number.parseInt(req.query.size as string) || 10,
+			limit: Number.parseInt(req.query.limit as string) || 10,
 		};
 
 		const { data, total } = await rentalOrderService.getAllOrders(
 			filters,
 			pagination,
 		);
-
 		res.status(200).json({
 			total,
 			currentPage: pagination.page,
-			totalPages: Math.ceil(total / pagination.size),
+			totalPages: Math.ceil(total / pagination.limit),
 			data,
 		});
 	} catch (error) {
 		console.log(error);
-		res.status(400).json({ message: error });
+		res.status(404).json({ message: 'Orders not found' });
 	}
 });
 //ordersRouter.put('/:id');

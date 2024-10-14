@@ -66,7 +66,7 @@ export default class RentalOrderService implements IRentalOrderService {
 		const { data, total } = await this.repository.findAll(filters, pagination);
 
 		if (data.length === 0) {
-			throw new Error('Nenhum resultado encontrado.');
+			throw new ApiError('Nenhum resultado encontrado', 404);
 		}
 
 		return { data, total };

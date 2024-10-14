@@ -69,6 +69,10 @@ class RentalOrderRepository implements IRentalOrderRepository {
 		if (filters.status) {
 			query.andWhere('order.status = :status', { status: filters.status });
 		}
+		if (filters.customer_cpf) {
+			query.leftJoinAndSelect('order.customer', 'customer')
+			.andWhere('customer.cpf = :cpf ', {cpf: filters.customer_cpf});
+		}
 
 		const total = await query.getCount();
 
