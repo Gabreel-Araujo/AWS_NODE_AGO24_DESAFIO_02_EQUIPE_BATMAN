@@ -9,7 +9,7 @@ const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
 
-//ordersRouter.use(authenticate);
+ordersRouter.use(authenticate);
 
 // customersRouter.get('/');
 
@@ -17,7 +17,7 @@ const ordersService = new RentalOrderService();
 
 ordersRouter.post(
 	'/',
-	//authenticate,
+	authenticate,
 	validation(postOrderSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { car_id, customer_id } = req.body;

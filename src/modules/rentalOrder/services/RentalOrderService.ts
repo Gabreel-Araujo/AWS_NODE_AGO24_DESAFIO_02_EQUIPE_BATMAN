@@ -26,8 +26,8 @@ export default class RentalOrderService implements IRentalOrderService {
 	public async save(order: ICreateRentalOrder): Promise<RentalOrder> {
 		const customer = await this.customerRepository.findById(order.customer_id);
 		const car = await this.carRepository.findById(order.car_id);
-		const carOrders = await this.repository.findByCar(order.car_id);
-        const customerOrders = await this.repository.findByCustomer(order.customer_id);
+		const carOrders = await this.repository.findOrderStatusByCar(order.car_id);
+        const customerOrders = await this.repository.findOrderStatusByCustomer(order.customer_id);
 
 		if (!customer) {
 			throw new NotFoundError('Customer not found.');
