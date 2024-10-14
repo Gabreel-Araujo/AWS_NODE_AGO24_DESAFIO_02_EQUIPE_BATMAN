@@ -2,6 +2,8 @@ import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../../typeorm/entities/interfaces/UserInterface';
+import User from '../../typeorm/entities/User';
+import { QueryOptions } from '../UserService';
 
 export default interface UserServiceInterface {
 	save(user: CreateUserInterface): Promise<UserDetailsInterface | undefined>;
@@ -11,4 +13,8 @@ export default interface UserServiceInterface {
 		id: string,
 		data: Partial<CreateUserInterface>,
 	) => Promise<UserDetailsInterface | null>;
+	findUsers(
+		filters: Partial<User>,
+		options: QueryOptions,
+	): Promise<[User[], number]>;
 }

@@ -8,7 +8,8 @@ export default function errorMiddleware(
 	res: Response,
 	next: NextFunction,
 ) {
-	console.log(error);
+	console.log(error)
+
 	if (error instanceof ZodError) {
 		res
 			.status(400)

@@ -5,6 +5,7 @@ import {
 	idUserSchema,
 	postUserSchema,
 	putUserSchema,
+	queryParamsSchema,
 } from './validators/UserValidators';
 import validation from '@/http/middleware/validation';
 
@@ -29,6 +30,53 @@ userRoute.post(
 		const createdUser = await userService.save(user);
 
 		res.status(201).json({ id: createdUser.id });
+	},
+);
+
+userRoute.get(
+	'/',
+	authenticate,
+	validation(queryParamsSchema, 'query'),
+	async (req: Request, res: Response) => {
+		const { page, limit, name, email, deleted, sortBy, sortOrder } = req.query;
+
+		console.log('req query', req.query);
+
+		const filters: any = {};
+
+		if (typeof name === 'string') {
+			filters.fullName = name;
+		}
+		if (typeof email === 'string') {
+			filters.email = email;
+		}
+
+		Object.assign(filters, { deletedAt: deleted });
+
+		const [users, total] = await userService.findUsers(filters, {
+			page: Number(page),
+			limit: Number(limit),
+			sortBy: typeof sortBy === 'string' ? sortBy : 'createdAt',
+			sortOrder:
+				typeof sortOrder === 'string'
+					? (sortOrder.toUpperCase() as 'ASC' | 'DESC')
+					: 'ASC',
+		});
+
+		const selectedProperties = users.map((user) => ({
+			id: user.id,
+			name: user.fullName,
+			email: user.email,
+			deletedAt: user.deletedAt,
+			createdAt: user.createdAt,
+		}));
+
+		res.status(200).json({
+			page: Number(page),
+			limit: Number(limit),
+			total,
+			users: selectedProperties,
+		});
 	},
 );
 
