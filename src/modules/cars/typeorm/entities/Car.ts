@@ -29,11 +29,14 @@ export default class Cars {
 	@Column('varchar')
 	model!: string;
 
-	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-	km!: number;
-
 	@Column('int')
 	year!: number;
+
+	@Column('float', { nullable: false })
+	daily_price!: number;
+
+	@Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+	km!: number;
 
 	@Column({
 		type: 'enum',
@@ -41,9 +44,6 @@ export default class Cars {
 		default: CarStatus.ACTIVE,
 	})
 	status!: CarStatus;
-
-	@Column('float', { nullable: false })
-	daily_price!: number;
 
 	@CreateDateColumn()
 	created_at!: Date;
