@@ -56,4 +56,19 @@ export default class RentalOrderService implements IRentalOrderService {
 	public async deleteById(id: string): Promise<void> {
 		await this.repository.softDeleteById(id);
 	}
+
+	public async getAllOrders(
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		filters: any,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		pagination: any,
+	): Promise<{ data: IRentalOrder[]; total: number }> {
+		const { data, total } = await this.repository.findAll(filters, pagination);
+
+		if (data.length === 0) {
+			throw new Error('Nenhum resultado encontrado.');
+		}
+
+		return { data, total };
+	}
 }
