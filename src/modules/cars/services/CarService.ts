@@ -2,6 +2,7 @@ import { ICarPagination, ICarService } from './interfaces/ICarService';
 import {
 	ICar,
 	ICarRepository,
+	IUpdateCar,
 } from '../typeorm/repositories/interfaces/ICarRepository';
 import NotFoundError from '@/http/errors/not-found-error';
 import { CarsRepository } from '../typeorm/repositories/CarsRepository';
@@ -167,6 +168,22 @@ class CarService implements ICarService {
 		});
 
 		await this.repository.createCarItems(newItems);
+	}
+
+	async updateCar(
+		id: string,
+		car: IUpdateCar,
+		items: Item[],
+	): Promise<IUpdateCar | null> {
+		const existingCar = await this.repository.findById(id);
+
+		if (!existingCar) {
+			throw new NotFoundError('car not found');
+		}
+
+		const updatedCar = await this.repository.updateCar(id, car, items);
+
+		return updatedCar;
 	}
 }
 

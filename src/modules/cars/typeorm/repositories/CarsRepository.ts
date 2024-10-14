@@ -1,8 +1,13 @@
 import Cars, { CarStatus } from '../entities/Car';
-import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import {
+	FindOptionsOrder,
+	FindOptionsWhere,
+	Repository,
+	UpdateResult,
+} from 'typeorm';
 import { Item } from '../entities/Items';
 import { dbConnection } from '@/lib/typeorm';
-import { ICar, ICarRepository } from './interfaces/ICarRepository';
+import { ICar, ICarRepository, IUpdateCar } from './interfaces/ICarRepository';
 import NotFoundError from '@/http/errors/not-found-error';
 
 export class CarsRepository implements ICarRepository {
@@ -91,5 +96,50 @@ export class CarsRepository implements ICarRepository {
 	): Promise<void> {
 		const newItems = this.itemRepository.create(items);
 		await this.itemRepository.save(newItems);
+	}
+
+	async updateCar(
+		id: string,
+		car: IUpdateCar,
+		items: Item[],
+	): Promise<IUpdateCar | null> {
+		const existingCar = await this.ormRepository.findOne({
+			where: {
+				id,
+			},
+		});
+
+		if (!existingCar) {
+			return null;
+		}
+
+		Object.assign(existingCar, car);
+
+		await this.ormRepository.save(existingCar);
+
+		await this.itemRepository.delete({ car: existingCar });
+
+		const updatedItems = items.map((item) => {
+			const newItem = this.itemRepository.create({
+				...item,
+				car: existingCar,
+			});
+
+			if (!newItem.car) {
+				console.log('car id is missing for item: ', newItem);
+				newItem.car = existingCar;
+			}
+			return newItem;
+		});
+
+		console.log(updatedItems);
+		await this.itemRepository.save(updatedItems);
+
+		return await this.ormRepository.findOne({
+			where: {
+				id,
+			},
+			relations: ['items'],
+		});
 	}
 }
