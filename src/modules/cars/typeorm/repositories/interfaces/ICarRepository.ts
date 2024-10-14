@@ -2,7 +2,7 @@ import { Cars, CarStatus } from '../../entities/Car';
 import { Item } from '../../entities/Items';
 
 export interface ICar {
-	id: string;
+	id?: string;
 	plate: string;
 	brand: string;
 	model: string;
@@ -16,7 +16,7 @@ export interface ICar {
 }
 
 export interface ICarRepository {
-	createCar(newCar: ICar): Promise<ICar>;
+	save(car: ICar): Promise<ICar>;
 	createCarItems(
 		items: { id: string; car: ICar; item: string | Item }[],
 	): Promise<void>;

@@ -15,17 +15,6 @@ class CarService implements ICarService {
 	constructor() {
 		this.repository = new CarsRepository();
 	}
-
-	async findById(id: string): Promise<ICar | null> {
-		const car = await this.repository.findById(id);
-
-		if (!car) {
-			throw new NotFoundError('Car not found');
-		}
-
-		return car;
-	}
-
 	async createCar(
 		plate: string,
 		brand: string,
@@ -40,12 +29,11 @@ class CarService implements ICarService {
 			CarStatus.ACTIVE,
 		);
 
-		if (!carExists) {
+		if (carExists) {
 			throw new NotFoundError('A car with this plate already exists');
 		}
 
 		const newCar: ICar = {
-			id: randomUUID(),
 			plate,
 			brand,
 			model,
@@ -57,11 +45,21 @@ class CarService implements ICarService {
 			updated_at: new Date(),
 		};
 
-		const createdCar = await this.repository.createCar(newCar);
+		const createdCar = await this.repository.save(newCar);
 
 		await this.createCarItems(createdCar, items);
 
 		return createdCar;
+	}
+
+	async findById(id: string): Promise<ICar | null> {
+		const car = await this.repository.findById(id);
+
+		if (!car) {
+			throw new NotFoundError('Car not found');
+		}
+
+		return car;
 	}
 
 	async createCarItems(car: ICar, items: Item[]): Promise<void> {

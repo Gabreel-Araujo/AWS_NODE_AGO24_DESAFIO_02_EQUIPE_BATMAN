@@ -42,7 +42,7 @@ export class CarsRepository implements ICarRepository {
 		return carExists;
 	}
 
-	async createCar(car: ICar): Promise<ICar> {
+	async save(car: ICar): Promise<ICar> {
 		const newCar = this.ormRepository.create(car);
 		const createdCar = await this.ormRepository.save(newCar);
 
