@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import CarService from '../services/CarService';
 import { authenticate } from '@/http/middleware/auth';
 import validation from '@/http/middleware/validation';
-import { idCarSchema } from './validators/CarValidator';
+import { idCarSchema, postCarSchema } from './validators/CarValidator';
 import { ISearchParams } from '../typeorm/repositories/interfaces/ICarRepository';
 import { CarStatus } from '../typeorm/entities/Car';
 
@@ -10,19 +10,32 @@ const carsRouter = Router();
 
 const carService = new CarService();
 
-carsRouter.get(
-	'/:id',
-	validation(idCarSchema, 'params'),
-	authenticate,
-	(req, res) => {
-		const { id } = req.params;
-		const car = carService.findById(id);
+// carsRouter.use(authenticate);
 
-		res.status(200).json(car);
-	},
-);
+carsRouter.get('/:id', validation(idCarSchema, 'params'), async (req, res) => {
+	const { id } = req.params;
+	const car = await carService.findById(id);
 
-carsRouter.get('/', authenticate, async (req: Request, res: Response) => {
+	res.status(200).json(car);
+});
+
+carsRouter.post('/', validation(postCarSchema, 'body'), async (req, res) => {
+	const { plate, brand, model, year, daily_price, km, items } = req.body;
+
+	const car = await carService.createCar(
+		plate,
+		brand,
+		model,
+		Number(year),
+		Number(daily_price),
+		Number(km),
+		items,
+	);
+
+	res.status(200).json({ id: car?.id });
+});
+
+carsRouter.get('/', async (req: Request, res: Response) => {
 	const page = req.query.page ? Number(req.query.page) : 1;
 	const limit = req.query.limit ? Number(req.query.limit) : 10;
 
@@ -54,7 +67,8 @@ carsRouter.get('/', authenticate, async (req: Request, res: Response) => {
 				searchParams.status = status;
 				break;
 			default:
-				return res.status(204).send();
+				res.status(204).send();
+				break;
 		}
 	}
 
@@ -84,7 +98,9 @@ carsRouter.get('/', authenticate, async (req: Request, res: Response) => {
 		searchParams,
 	});
 
-	if (count === 0) return res.status(204).send();
+	if (count === 0) {
+		res.status(204).send();
+	}
 
 	res.status(200).json({ count, total_pages, current_page, cars });
 });

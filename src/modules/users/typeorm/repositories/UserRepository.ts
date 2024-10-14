@@ -7,8 +7,6 @@ import type UserRepositoryInterface from './interfaces/UserRepositoryInterface';
 import User from '../entities/User';
 import { dbConnection } from '@/lib/typeorm';
 
-type UserFilters = Partial<Record<keyof User, string | boolean>>;
-
 export default class UserRepository implements UserRepositoryInterface {
 	private ormRepository: Repository<User>;
 
@@ -68,22 +66,17 @@ export default class UserRepository implements UserRepositoryInterface {
 		sortOrder: 'ASC' | 'DESC',
 	): Promise<[User[], number]> {
 		const queryBuilder = this.ormRepository.createQueryBuilder('user');
-		console.log('object keys ', Object.keys(filters));
 		for (const key of Object.keys(filters) as Array<keyof User>) {
 			if (key === 'deletedAt') {
 				if (filters.deletedAt) {
 					queryBuilder.andWhere('user.deletedAt IS NOT NULL');
-
-					console.log('os deletados:', filters.deletedAt);
 				} else {
 					queryBuilder.andWhere('user.deletedAt IS NULL');
-					console.log('filter do else ', filters.deletedAt);
 				}
 			} else {
 				queryBuilder.andWhere(`user.${key} LIKE :${key}`, {
 					[key]: `%${filters[key]}%`,
 				});
-				console.log('key:', key);
 			}
 		}
 
