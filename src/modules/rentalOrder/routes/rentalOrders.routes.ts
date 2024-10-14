@@ -5,13 +5,13 @@ import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderIn
 import RentalOrderService from '../services/RentalOrderService';
 import {
 	postOrderSchema,
-	updateOrderSchema,
-	validateCep,
+	queryParamsSchema,
 } from './validators/RentalOrdersValidators';
 
 const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
+const rentalOrderService = new RentalOrderService();
 
 //ordersRouter.use(authenticate);
 
@@ -37,40 +37,50 @@ ordersRouter.post(
 	},
 );
 
-ordersRouter.put(
-	'/:id',
-	validation(updateOrderSchema, 'body'),
-	async (req: Request, res: Response) => {
-		const { status, cep, start_date, end_date, cancellation_date } = req.body;
-
-		const order: {
-			status?: string;
-			cep: string;
-			start_date: Date;
-			end_date: Date;
-			cancellation_date?: Date;
-			city?: string;
-			state?: string;
-			rental_rate?: number;
-		} = {
-			status,
-			cep,
-			start_date,
-			end_date,
-			cancellation_date,
+ordersRouter.delete('/:id', async (req: Request, res: Response) => {
+	const { id } = req.params;
+	try {
+		await ordersService.deleteById(id);
+		res.status(204).send();
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ error: error });
+	}
+});
+ordersRouter.get('/', validation(queryParamsSchema), async (req, res) => {
+	try {
+		const filters = {
+			status: req.query.status,
+			customer_cpf: req.query.customer_cpf,
+			start_date: req.query.start_date
+				? new Date(req.query.start_date as string)
+				: undefined,
+			end_date: req.query.end_date
+				? new Date(req.query.end_date as string)
+				: undefined,
 		};
 
-		if (cep) {
-			const { localidade, uf, rentalRate } = await validateCep(cep);
-			order.city = localidade;
-			order.state = uf;
-			order.rental_rate = rentalRate;
-		}
+		const pagination = {
+			page: Number.parseInt(req.query.page as string) || 1,
+			limit: Number.parseInt(req.query.limit as string) || 10,
+		};
 
-		await ordersService.update(req.params.id, order);
-		res.status(204).send();
-	},
-);
+		const { data, total } = await rentalOrderService.getAllOrders(
+			filters,
+			pagination,
+		);
+		res.status(200).json({
+			total,
+			currentPage: pagination.page,
+			totalPages: Math.ceil(total / pagination.limit),
+			data,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(404).json({ message: 'Orders not found' });
+	}
+});
+//ordersRouter.put('/:id');
 
 //ordersRouter.delete('/:id',);
 

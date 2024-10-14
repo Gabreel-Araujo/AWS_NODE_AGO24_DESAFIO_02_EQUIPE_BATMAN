@@ -1,5 +1,8 @@
 import { ICustomersRepository } from '@/modules/customers/typeorm/repositories/interfaces/ICustomersRepository';
-import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
+import {
+	ICreateRentalOrder,
+	IRentalOrder,
+} from '../typeorm/entities/interfaces/RentalOrderInterface';
 import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import RentalOrderRepository from '../typeorm/repositories/RentalOrderRepository';
 import { IRentalOrderService } from './interfaces/RentalOrderServiceInterface';
@@ -9,8 +12,7 @@ import { CarsRepository } from '@/modules/cars/typeorm/repositories/CarsReposito
 import NotFoundError from '@/http/errors/not-found-error';
 import { ApiError } from '@/http/errors/api-error';
 import RentalOrder from '../typeorm/entities/RentalOrder';
-import { UpdateResult } from 'typeorm';
-import { differenceInDays } from 'date-fns';
+import { postOrderSchema } from '../routes/validators/RentalOrdersValidators';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -51,42 +53,22 @@ export default class RentalOrderService implements IRentalOrderService {
 		return newOrder;
 	}
 
-	public async update(id: string, order: Partial<RentalOrder>) {
-		const rentalOrder = await this.repository.findById(id);
-		if (!rentalOrder) throw new NotFoundError('order not found');
-
-		if (rentalOrder.status !== 'open' && order.status === 'aproved')
-			throw new ApiError('order can only be approved if it is open', 400);
-
-		if (rentalOrder.status !== 'open' && order.status === 'canceled')
-			throw new ApiError('order can only be canceled if it is open', 400);
-
-		if (rentalOrder.status !== 'aproved' && order.status === 'closed')
-			throw new ApiError('order can only be closed if it is aproved', 400);
-
-		return await this.repository.update(id, order);
+	public async deleteById(id: string): Promise<void> {
+		await this.repository.softDeleteById(id);
 	}
 
-	private async calculateTotal(
-		car_id: string,
-		start_date: Date,
-		end_date: Date,
-		rental_rate: number,
-		late_fee: number,
-		closing_date: Date,
-	) {
-		const car = await this.carRepository.findById(car_id);
-		if (!car) throw new NotFoundError('Car not found');
+	public async getAllOrders(
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		filters: any,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		pagination: any,
+	): Promise<{ data: IRentalOrder[]; total: number }> {
+		const { data, total } = await this.repository.findAll(filters, pagination);
 
-		const startDate = new Date(start_date);
-		const endDate = new Date(end_date);
+		if (data.length === 0) {
+			throw new ApiError('Nenhum resultado encontrado', 404);
+		}
 
-		const dateBetweenInDays = differenceInDays(endDate, startDate);
-		const dailyTotal = dateBetweenInDays * car.daily_price;
-
-		console.log("---------------------")
-		console.log(dateBetweenInDays, dailyTotal)
-
-		return dailyTotal + rental_rate + late_fee;
+		return { data, total };
 	}
 }

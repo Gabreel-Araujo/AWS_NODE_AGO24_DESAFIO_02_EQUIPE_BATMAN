@@ -17,4 +17,5 @@ export interface ICar {
 
 export interface ICarRepository {
 	findById(id: string): Promise<ICar | null>;
+	softDeleteCar(id: string): Promise<ICar | null>;
 }

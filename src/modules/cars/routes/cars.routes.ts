@@ -19,5 +19,27 @@ carsRouter.get(
 		res.status(200).json(car);
 	},
 );
+carsRouter.delete(
+	'/:id',
+	validation(idCarSchema, 'params'),
+	authenticate,
+	async (req, res) => {
+		try {
+			const { id } = req.params;
+			const deletedCar = await carService.softDeleteCar(id);
+
+			if (!deletedCar) {
+				res.status(404).json({ message: 'Car not found or already deleted' });
+			} else {
+				res.status(200).json({ message: 'Car deleted successfully' });
+			}
+		} catch (error) {
+			console.log(error);
+			res
+				.status(404)
+				.json({ message: 'User has deleted, can not be deleted again' });
+		}
+	},
+);
 
 export default carsRouter;
