@@ -41,7 +41,7 @@ ordersRouter.put(
 	'/:id',
 	validation(updateOrderSchema, 'body'),
 	async (req: Request, res: Response) => {
-		const { status, cep, start_date, end_date, cancellation_date } = req.body;
+		const { status, cep, start_date, end_date, cancellation_date, closing_date } = req.body;
 
 		const order: {
 			status?: string;
@@ -52,12 +52,14 @@ ordersRouter.put(
 			city?: string;
 			state?: string;
 			rental_rate?: number;
+			closing_date?: number
 		} = {
 			status,
 			cep,
 			start_date,
 			end_date,
 			cancellation_date,
+			closing_date
 		};
 
 		if (cep) {

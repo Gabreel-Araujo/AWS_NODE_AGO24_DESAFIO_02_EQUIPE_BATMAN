@@ -77,56 +77,53 @@ export const updateOrderSchema = z
 	})
 	.refine(
 		(data) => {
-			return (
-				(data.status === 'aproved' &&
-					data.start_date !== undefined &&
-					data.start_date !== null) ||
-				data.start_date !== 'aproved'
-			);
+			if (data.status === 'aproved') {
+				return data.start_date !== undefined && data.start_date !== null;
+			}
+
+			return true;
 		},
 		{ message: 'start_date is required for aprove order' },
 	)
 	.refine(
 		(data) => {
-			return (
-				(data.status === 'aproved' &&
-					data.end_date !== undefined &&
-					data.end_date !== null) ||
-				data.start_date !== 'aproved'
-			);
+			if (data.status === 'aproved') {
+				return data.end_date !== undefined && data.end_date !== null;
+			}
+
+			return true;
 		},
 		{ message: 'end_date is required for aprove order' },
 	)
 	.refine(
 		(data) => {
-			return (
-				(data.status === 'aproved' &&
-					data.cep !== undefined &&
-					data.cep !== null) ||
-				data.start_date !== 'aproved'
-			);
+			if (data.status === 'aproved') {
+				return data.cep !== undefined && data.cep !== null;
+			}
+
+			return true;
 		},
 		{ message: 'cep is required for aprove order' },
 	)
 	.refine(
 		(data) => {
-			return (
-				(data.status === 'canceled' &&
+			if (data.status === 'canceled') {
+				return (
 					data.cancellation_date !== undefined &&
-					data.cancellation_date !== null) ||
-				data.status !== 'canceled'
-			);
+					data.cancellation_date !== null
+				);
+			}
+			return true;
 		},
 		{ message: 'cancellation_date is required for cancel order' },
 	)
 	.refine(
 		(data) => {
-			return (
-				(data.status === 'closed' &&
-					data.closing_date !== undefined &&
-					data.closing_date !== null) ||
-				data.status !== 'closed'
-			);
+			if (data.status === 'closed') {
+				return data.closing_date !== undefined && data.closing_date !== null;
+			}
+
+			return true;
 		},
 		{ message: 'closing_date is required for close order' },
 	);

@@ -10,6 +10,8 @@ import NotFoundError from '@/http/errors/not-found-error';
 import { ApiError } from '@/http/errors/api-error';
 import RentalOrder from '../typeorm/entities/RentalOrder';
 import { UpdateResult } from 'typeorm';
+import { differenceInDays } from 'date-fns';
+import Cars from '@/modules/cars/typeorm/entities/Car';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -52,6 +54,7 @@ export default class RentalOrderService implements IRentalOrderService {
 
 	public async update(id: string, order: Partial<RentalOrder>) {
 		const rentalOrder = await this.repository.findById(id);
+
 		if (!rentalOrder) throw new NotFoundError('order not found');
 
 		if (rentalOrder.status !== 'open' && order.status === 'aproved')
@@ -65,44 +68,51 @@ export default class RentalOrderService implements IRentalOrderService {
 
 		if (
 			(order.status === 'closed' || order.status === 'canceled') &&
-			order.car_id
+			rentalOrder.car_id
 		) {
-			const car = await this.carRepository.findById(order.car_id);
+			const car = await this.carRepository.findById(rentalOrder.car_id);
 
-			if (
-				order.status === 'closed' &&
-				order.end_date &&
-				order.end_date < new Date() &&
-				car
-			) {
-				const actualDate = new Date();
-				const lateFee =
-					((actualDate.getTime() - order.end_date.getTime()) /
-						(1000 * 60 * 60 * 24)) *
-					(2 * car.daily_price);
+			if (!car) throw new NotFoundError('car not found');
+
+			if (rentalOrder.end_date && car) {
+				const lateFee = this.calculateLateFee(
+					rentalOrder.end_date,
+					car.daily_price,
+				);
 				order.late_fee = lateFee;
 			}
 
-			order.total = this.calculateTotal(order as RentalOrder);
+			order.total = this.calculateTotal(rentalOrder, car as Cars);
 		}
 
 		return await this.repository.update(id, order);
 	}
 
-	private calculateTotal(order: RentalOrder) {
-		const startDate = new Date(order.start_date);
-		const endDate =
-			order.status === 'closed'
-				? new Date(order.end_date)
-				: new Date(order.cancellation_date);
+	private calculateLateFee(endDate: Date, dailyPrice: number) {
+		const actualDate = new Date();
+		const lateDays = differenceInDays(actualDate, endDate);
+		return lateDays > 0 ? lateDays * (2 * dailyPrice) : 0;
+	}
 
-		const dateBetweenInDays =
-			(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+	private calculateTotal(order: RentalOrder, car: Cars) {
+		const startDate = new Date(order.start_date);
+		let endDate: Date;
+
+		if (order.status === 'closed') {
+			endDate = new Date(order.end_date);
+		} else {
+			endDate = new Date(order.end_date);
+		}
+		
+		if (Number.isNaN(endDate.getTime())) {
+			throw new Error('Invalid end date or cancellation date');
+		}
+		const rentalDays = differenceInDays(endDate, startDate);
 
 		return (
-			order.car.daily_price * dateBetweenInDays +
-			order.rental_rate +
-			order.late_fee
+			Number(car.daily_price) * Number(rentalDays) +
+			Number(order.rental_rate) +
+			(Number(order.late_fee) ?? 0)
 		);
 	}
 }
