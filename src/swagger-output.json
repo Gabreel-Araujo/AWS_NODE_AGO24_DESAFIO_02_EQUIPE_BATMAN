@@ -1038,7 +1038,7 @@
 			"post": {
 				"tags": ["Car"],
 				"summary": "Criar um novo carro",
-				"description": "Essa rota permite a criação de um novo usuário no sistema. Forneça um email único, nome completo e senha.",
+				"description": "Essa rota permite a criação de um novo carro no sistema.",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1046,30 +1046,68 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"fullName": {
+									"plate": {
 										"type": "string",
-										"example": "Teste da Silva",
-										"description": "Nome completo do usuário"
+										"example": "MKF3123",
+										"description": "Placa do carro"
 									},
-									"email": {
+									"brand": {
 										"type": "string",
-										"example": "teste@mail.com",
-										"description": "E-mail do usuário"
+										"example": "Ford",
+										"description": "Marca do carro"
 									},
-									"password": {
+									"model": {
 										"type": "string",
-										"example": "teste123",
-										"description": "Senha do usuário"
+										"example": "Fusion",
+										"description": "Modelo do carro"
+									},
+									"year": {
+										"type": "number",
+										"example": 2019,
+										"description": "Ano de fabricação do carro"
+									},
+									"daily_price": {
+										"type": "number",
+										"example": 300.0,
+										"description": "Preço diário de aluguel do carro"
+									},
+									"km": {
+										"type": "number",
+										"example": 30000,
+										"description": "Quilometragem do carro"
+									},
+									"status": {
+										"type": "string",
+										"enum": ["ativo", "inativo", "excluído"],
+										"example": "ativo",
+										"description": "Status do carro"
+									},
+									"items": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"example": "vidro eletrico",
+											"description": "Nome do item"
+										},
+										"description": "Lista de itens associados ao carro"
 									}
 								},
-								"required": ["email", "fullName", "password"]
+								"required": [
+									"plate",
+									"brand",
+									"model",
+									"year",
+									"daily_price",
+									"km",
+									"status"
+								]
 							}
 						}
 					}
 				},
 				"responses": {
 					"201": {
-						"description": "Usuário criado com sucesso",
+						"description": "Carro criado com sucesso",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1085,7 +1123,7 @@
 						}
 					},
 					"409": {
-						"description": "Email já registrado",
+						"description": "Carro já registrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1093,7 +1131,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "Email already registered"
+											"example": "A car with this plate already exists"
 										}
 									}
 								}
@@ -1103,9 +1141,9 @@
 				}
 			},
 			"get": {
-				"tags": ["User"],
-				"summary": "Listar todos os usuários",
-				"description": "Essa rota permite a listagem de todos os usuários no sistema.",
+				"tags": ["Car"],
+				"summary": "Listar todos os carros",
+				"description": "Essa rota permite a listagem de todos os carros no sistema.",
 				"parameters": [
 					{
 						"name": "page",
@@ -1128,34 +1166,104 @@
 						"description": "Número de itens por página"
 					},
 					{
-						"name": "name",
+						"name": "status",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "John Doe"
+							"example": "ativo | inativo | excluido"
 						},
-						"description": "Filtrar por nome completo do usuário"
+						"description": "Filtrar por status do carro"
 					},
 					{
-						"name": "email",
+						"name": "plate",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "john.doe@example.com"
+							"example": "MKF3123"
 						},
-						"description": "Filtrar por email do usuário"
+						"description": "Filtra pela placa do carro"
 					},
 					{
-						"name": "deleted",
+						"name": "brand",
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": "boolean",
-							"example": false
+							"type": "string",
+							"example": "Ford"
 						},
-						"description": "Filtrar usuários deletados"
+						"description": "Filtra pela marca do carro"
+					},
+					{
+						"name": "model",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "Focus"
+						},
+						"description": "Filtra pelo modelo do carro"
+					},
+					{
+						"name": "km",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "10.800"
+						},
+						"description": "Filtra pelo total em Kms do carro"
+					},
+					{
+						"name": "fromYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2014
+						},
+						"description": "Filtra os carros fabricados a partir do ano especificado"
+					},
+					{
+						"name": "untilYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2020
+						},
+						"description": "Filtra os carros fabricados até o ano especificado"
+					},
+					{
+						"name": "minDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 25000
+						},
+						"description": "Filtra os carros com preço diário a partir do valor especificado"
+					},
+					{
+						"name": "maxDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 40000
+						},
+						"description": "Filtra os carros com preço diário até o valor especificado"
+					},
+					{
+						"name": "order",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ASC | DESC"
+						},
+						"description": "Ordem de classificação (ASC ou DESC)"
 					},
 					{
 						"name": "sortBy",
@@ -1163,42 +1271,36 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "createdAt"
+							"example": "year, km, daily_price"
 						},
-						"description": "Campo para ordenar os resultados"
-					},
-					{
-						"name": "sortOrder",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string",
-							"example": "ASC"
-						},
-						"description": "Ordem de classificação (ASC ou DESC)"
+						"description": "Campo pelo qual a listagem será ordenada (year, km, daily_price)"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Lista de usuários retornada com sucesso",
+						"description": "Lista de carros retornada com sucesso",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"page": {
+										"count": {
+											"type": "integer",
+											"example": 4
+										},
+										"total_pages": {
 											"type": "integer",
 											"example": 1
-										},
-										"limit": {
-											"type": "integer",
-											"example": 10
 										},
 										"total": {
 											"type": "integer",
 											"example": 100
 										},
-										"users": {
+										"current_page": {
+											"type": "integer",
+											"example": 1
+										},
+										"cars": {
 											"type": "array",
 											"items": {
 												"type": "object",
@@ -1207,21 +1309,58 @@
 														"type": "string",
 														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
 													},
-													"name": {
+													"plate": {
 														"type": "string",
-														"example": "John Doe"
+														"example": "MAS1453"
 													},
-													"email": {
+													"brand": {
 														"type": "string",
-														"example": "john.doe@example.com"
+														"example": "Ford"
 													},
-													"deletedAt": {
+													"model": {
 														"type": "string",
-														"example": null
+														"example": "Focus"
 													},
-													"createdAt": {
+													"year": {
+														"type": "integer",
+														"example": 2018
+													},
+													"daily_price": {
+														"type": "number",
+														"example": 16.8
+													},
+													"km": {
+														"type": "number",
+														"example": 18000.0
+													},
+													"status": {
 														"type": "string",
-														"example": "2024-10-11T19:55:11.499Z"
+														"enum": ["ativo", "inativo", "excluído"],
+														"example": "inativo"
+													},
+													"created_at": {
+														"type": "string",
+														"example": "2024-10-14T15:53:52.227Z"
+													},
+													"updated_at": {
+														"type": "string",
+														"example": "2024-10-14T16:50:17.119Z"
+													},
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"id": {
+																	"type": "string",
+																	"example": "fb901f0e-842b-44ca-8b87-f3309c94fe71"
+																},
+																"item": {
+																	"type": "string",
+																	"example": "vidro eletrico"
+																}
+															}
+														}
 													}
 												}
 											}
@@ -1231,8 +1370,8 @@
 							}
 						}
 					},
-					"400": {
-						"description": "Nenhum usuário encontrado.",
+					"404": {
+						"description": "Nenhum carro encontrado.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1240,7 +1379,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "users not found"
+											"example": "Cars not found"
 										}
 									}
 								}
@@ -1291,15 +1430,20 @@
 											"example": "Fusion",
 											"description": "Modelo do carro"
 										},
-										"km": {
-											"type": "number",
-											"example": 30000,
-											"description": "Quilometragem do carro"
-										},
 										"year": {
 											"type": "number",
 											"example": 2019,
 											"description": "Ano de fabricação do carro"
+										},
+										"daily_price": {
+											"type": "number",
+											"example": 16.8,
+											"description": "Diária"
+										},
+										"km": {
+											"type": "number",
+											"example": 30000,
+											"description": "Quilometragem do carro"
 										},
 										"status": {
 											"type": "string",
@@ -1324,17 +1468,12 @@
 												"properties": {
 													"id": {
 														"type": "string",
-														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b",
+														"example": "89c00391-2d47-496c-8ca6-d560f3ed00a5",
 														"description": "Identificador único do item"
-													},
-													"car_id": {
-														"type": "string",
-														"example": "a1234567-89ab-cdef-0123-456789abcdef",
-														"description": "Identificador único do carro associado"
 													},
 													"item": {
 														"type": "string",
-														"example": "Airbag",
+														"example": "vidro eletrico",
 														"description": "Nome do item"
 													}
 												}

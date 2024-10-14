@@ -42,7 +42,7 @@ class CarService implements ICarService {
 		);
 
 		if (carExists) {
-			throw new NotFoundError('A car with this plate already exists');
+			throw new ConflictError('A car with this plate already exists');
 		}
 
 		const newCar: ICar = {
@@ -70,7 +70,7 @@ class CarService implements ICarService {
 		if (!car) {
 			throw new NotFoundError('Car not found');
 		}
-		console.log(car);
+
 		return car;
 	}
 
@@ -148,6 +148,10 @@ class CarService implements ICarService {
 			where,
 			order,
 		);
+
+		if (!cars) {
+			throw new NotFoundError('Cars not found');
+		}
 
 		const total_pages = Math.ceil(count / limit);
 		return { cars, count, total_pages, current_page: page };

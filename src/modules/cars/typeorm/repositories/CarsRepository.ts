@@ -19,6 +19,7 @@ export class CarsRepository implements ICarRepository {
 			where: {
 				id,
 			},
+			relations: ['items'],
 		});
 		if (!car) {
 			return null;

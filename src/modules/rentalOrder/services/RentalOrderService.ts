@@ -1,7 +1,5 @@
 import { ICustomersRepository } from '@/modules/customers/typeorm/repositories/interfaces/ICustomersRepository';
-import {
-	ICreateRentalOrder,
-} from '../typeorm/entities/interfaces/RentalOrderInterface';
+import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
 import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import RentalOrderRepository from '../typeorm/repositories/RentalOrderRepository';
 import { IRentalOrderService } from './interfaces/RentalOrderServiceInterface';
@@ -27,20 +25,29 @@ export default class RentalOrderService implements IRentalOrderService {
 		const customer = await this.customerRepository.findById(order.customer_id);
 		const car = await this.carRepository.findById(order.car_id);
 		const carOrders = await this.repository.findByCar(order.car_id);
-        const customerOrders = await this.repository.findByCustomer(order.customer_id);
+		const customerOrders = await this.repository.findByCustomer(
+			order.customer_id,
+		);
 
 		if (!customer) {
 			throw new NotFoundError('Customer not found.');
 		}
+
 		if (!car) {
 			throw new NotFoundError('Car not found.');
 		}
-        if (carOrders) {
-            throw new ApiError('Car cant be used. It is already in use', 400);
-        }
-        if (customerOrders) {
-            throw new ApiError('Cant create order because customer has an opened order already', 400);
-        }
+
+		if (carOrders) {
+			throw new ApiError('Car cant be used. It is already in use', 400);
+		}
+
+		if (customerOrders) {
+			throw new ApiError(
+				'Cant create order because customer has an opened order already',
+				400,
+			);
+		}
+
 		const newOrder = await this.repository.save(order);
 
 		return newOrder;
