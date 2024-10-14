@@ -78,7 +78,7 @@ class CarService implements ICarService {
 		const car = await this.findById(id);
 
 		if (!car) {
-			throw new NotFoundError('Car not found');
+			throw new NotFoundError('Car not found or already deleted');
 		}
 
 		const hasActiveRentalOrder =

@@ -1602,9 +1602,9 @@
 				}
 			},
 			"delete": {
-				"tags": ["User"],
+				"tags": ["Car"],
 				"description": "",
-				"summary": "Deleta um usuário por ID",
+				"summary": "Deleta um carro por ID",
 				"parameters": [
 					{
 						"name": "id",
@@ -1615,10 +1615,10 @@
 				],
 				"responses": {
 					"204": {
-						"description": "Usuário deletado com sucesso. Nenhum conteúdo retornado."
+						"description": "Carro deletado com sucesso. Nenhum conteúdo retornado."
 					},
 					"404": {
-						"description": "Usuário não encontrado",
+						"description": "Carro não encontrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1626,7 +1626,23 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "User not found"
+											"example": "Car not found or already deleted"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Carro não pode ser excluído",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car cannot be deleted, it is in an active or approved rental order"
 										}
 									}
 								}
