@@ -10,29 +10,39 @@ class RentalOrderRepository implements IRentalOrderRepository {
 	constructor() {
 		this.ormRepository = dbConnection.getRepository(RentalOrder);
 	}
+
 	public async findOrderStatusByCustomer(
 		customer_id: string,
 	): Promise<RentalOrder | null> {
 		const customer = await this.ormRepository.findOne({
 			where: { customer_id, status: In(['open']) },
 		});
+
 		return customer;
 	}
-	public async findOrderStatusByCar(car_id: string): Promise<RentalOrder | null> {
+
+	public async findOrderStatusByCar(
+		car_id: string,
+	): Promise<RentalOrder | null> {
 		const car = await this.ormRepository.findOne({
 			where: { car_id, status: In(['open', 'aproved']) },
 		});
+
 		return car;
 	}
+
 	public async findById(id: string): Promise<RentalOrder | null> {
 		const rentalOrder = await this.ormRepository.findOneBy({
 			id,
 		});
+
 		return rentalOrder;
 	}
+
 	public async save(order: ICreateRentalOrder): Promise<RentalOrder> {
 		const rentalOrder = this.ormRepository.create(order);
 		await this.ormRepository.save(rentalOrder);
+
 		return rentalOrder;
 	}
 
@@ -43,6 +53,7 @@ class RentalOrderRepository implements IRentalOrderRepository {
 				status: In(['open', 'aproved']),
 			},
 		});
+
 		return activeOrders.length > 0;
 	}
 
@@ -50,7 +61,7 @@ class RentalOrderRepository implements IRentalOrderRepository {
 		const rentalOrder = await this.ormRepository.findOneBy({ id });
 
 		if (!rentalOrder) {
-			throw new Error('Pedido não encontrado.');
+			return;
 		}
 
 		rentalOrder.status = 'canceled';

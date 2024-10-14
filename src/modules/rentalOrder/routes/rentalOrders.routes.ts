@@ -8,13 +8,12 @@ import { postOrderSchema } from './validators/RentalOrdersValidators';
 const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
-const rentalOrderService = new RentalOrderService();
 
-// ordersRouter.use(authenticate);
+ordersRouter.use(authenticate);
 
-// customersRouter.get('/');
+// ordersRouter.get('/');
 
-// customersRouter.get('/:id');
+// ordersRouter.get('/:id');
 
 ordersRouter.post(
 	'/',
@@ -35,17 +34,12 @@ ordersRouter.post(
 
 ordersRouter.delete('/:id', async (req: Request, res: Response) => {
 	const { id } = req.params;
-	try {
-		await ordersService.deleteById(id);
-		res.status(204).send();
-	} catch (error) {
-		console.log(error);
-		res.status(404).json({ error: error });
-	}
+
+	await ordersService.softDeleteById(id);
+
+	res.status(204).send();
 });
 
 //ordersRouter.put('/:id');
-
-//ordersRouter.delete('/:id',);
 
 export default ordersRouter;
