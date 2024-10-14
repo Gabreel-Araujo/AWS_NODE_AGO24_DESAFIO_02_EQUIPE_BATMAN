@@ -10,6 +10,7 @@ import NotFoundError from '@/http/errors/not-found-error';
 import { ApiError } from '@/http/errors/api-error';
 import RentalOrder from '../typeorm/entities/RentalOrder';
 import { UpdateResult } from 'typeorm';
+import { differenceInDays } from 'date-fns';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -63,46 +64,29 @@ export default class RentalOrderService implements IRentalOrderService {
 		if (rentalOrder.status !== 'aproved' && order.status === 'closed')
 			throw new ApiError('order can only be closed if it is aproved', 400);
 
-		if (
-			(order.status === 'closed' || order.status === 'canceled') &&
-			order.car_id
-		) {
-			const car = await this.carRepository.findById(order.car_id);
-
-			if (
-				order.status === 'closed' &&
-				order.end_date &&
-				order.end_date < new Date() &&
-				car
-			) {
-				const actualDate = new Date();
-				const lateFee =
-					((actualDate.getTime() - order.end_date.getTime()) /
-						(1000 * 60 * 60 * 24)) *
-					(2 * car.daily_price);
-				order.late_fee = lateFee;
-			}
-
-			order.total = this.calculateTotal(order as RentalOrder);
-		}
-
 		return await this.repository.update(id, order);
 	}
 
-	private calculateTotal(order: RentalOrder) {
-		const startDate = new Date(order.start_date);
-		const endDate =
-			order.status === 'closed'
-				? new Date(order.end_date)
-				: new Date(order.cancellation_date);
+	private async calculateTotal(
+		car_id: string,
+		start_date: Date,
+		end_date: Date,
+		rental_rate: number,
+		late_fee: number,
+		closing_date: Date,
+	) {
+		const car = await this.carRepository.findById(car_id);
+		if (!car) throw new NotFoundError('Car not found');
 
-		const dateBetweenInDays =
-			(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+		const startDate = new Date(start_date);
+		const endDate = new Date(end_date);
 
-		return (
-			order.car.daily_price * dateBetweenInDays +
-			order.rental_rate +
-			order.late_fee
-		);
+		const dateBetweenInDays = differenceInDays(endDate, startDate);
+		const dailyTotal = dateBetweenInDays * car.daily_price;
+
+		console.log("---------------------")
+		console.log(dateBetweenInDays, dailyTotal)
+
+		return dailyTotal + rental_rate + late_fee;
 	}
 }
