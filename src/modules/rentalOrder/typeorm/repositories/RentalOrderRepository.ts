@@ -1,9 +1,6 @@
 import { dbConnection } from '@/lib/typeorm';
 import { In, Repository } from 'typeorm';
-import {
-	ICreateRentalOrder,
-	IRentalOrder,
-} from '../entities/interfaces/RentalOrderInterface';
+import { ICreateRentalOrder } from '../entities/interfaces/RentalOrderInterface';
 import RentalOrder from '../entities/RentalOrder';
 import { IRentalOrderRepository } from './interfaces/IRentalOrderRepository';
 
@@ -13,7 +10,7 @@ class RentalOrderRepository implements IRentalOrderRepository {
 	constructor() {
 		this.ormRepository = dbConnection.getRepository(RentalOrder);
 	}
-	public async findByCustomer(
+	public async findOrderStatusByCustomer(
 		customer_id: string,
 	): Promise<RentalOrder | null> {
 		const customer = await this.ormRepository.findOne({
@@ -21,7 +18,7 @@ class RentalOrderRepository implements IRentalOrderRepository {
 		});
 		return customer;
 	}
-	public async findByCar(car_id: string): Promise<RentalOrder | null> {
+	public async findOrderStatusByCar(car_id: string): Promise<RentalOrder | null> {
 		const car = await this.ormRepository.findOne({
 			where: { car_id, status: In(['open', 'aproved']) },
 		});

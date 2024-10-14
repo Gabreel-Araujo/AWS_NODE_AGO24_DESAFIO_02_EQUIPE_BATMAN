@@ -16,3 +16,11 @@ export interface ICreateCustomer {
 	email: string;
 	phone_number: string;
 }
+
+export interface IUpdateCustomer {
+	name?: string;
+	birth?: Date;
+	cpf?: string;
+	email?: string;
+	phone_number?: string;
+}
