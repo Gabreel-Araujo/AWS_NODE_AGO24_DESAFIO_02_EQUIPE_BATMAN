@@ -6,6 +6,9 @@ export class Item {
 	@PrimaryGeneratedColumn('uuid')
 	id!: string;
 
+	@Column({ type: 'uuid' })
+	car_id!: string;
+
 	@Column({ type: 'varchar' })
 	item!: string;
 
