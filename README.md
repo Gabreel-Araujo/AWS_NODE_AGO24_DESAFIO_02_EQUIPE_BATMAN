@@ -22,18 +22,6 @@ Antes de começar, certifique-se de que você tem os seguintes softwares instala
 Siga os passos abaixo para clonar o repositório e configurar o projeto:
 
 1. **Clonar o repositório**
-
-   Abra o terminal e execute o seguinte comando:
-
-   ```bash
-   git clone https://github.com/Gabreel-Araujo/AWS_NODE_AGO24_DESAFIO_02_EQUIPE_BATMAN.git
-   cd AWS_NODE_AGO24_DESAFIO_02_EQUIPE_BATMAN>
-
-## Instruções de Instalação
-
-Siga os passos abaixo para clonar o repositório e configurar o projeto:
-
-1. **Clonar o repositório**
    Abra o terminal e execute o seguinte comando:
 
    ```bash
@@ -54,7 +42,7 @@ Renomeie os arquivos `.env.example` e `docker-compose.yml.example` removendo a e
 4. **Criar a instância do banco de dados**
 Execute o comando abaixo para iniciar o Docker e criar a instância do banco de dados:
 	 ```bash
-	  docker-compose up -d
+	  docker compose up -d
 	```
 5. **Executar migrations**
 Execute o seguinte comando para rodar as migrações e criar as tabelas:
