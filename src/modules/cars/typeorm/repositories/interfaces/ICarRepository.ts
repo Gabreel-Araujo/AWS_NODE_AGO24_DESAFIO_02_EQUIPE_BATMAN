@@ -1,4 +1,5 @@
-import { Cars, CarStatus } from '../../entities/Car';
+import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
+import { CarStatus } from '../../entities/Car';
 import { Item } from '../../entities/Items';
 
 export interface ICar {
@@ -17,9 +18,27 @@ export interface ICar {
 
 export interface ICarRepository {
 	save(car: ICar): Promise<ICar>;
-	createCarItems(
-		items: { id: string; car: ICar; item: string | Item }[],
-	): Promise<void>;
+	createCarItems(items: { car: ICar; item: string | Item }[]): Promise<void>;
 	findById(id: string): Promise<ICar | null>;
+	findAll(
+		skip: number,
+		take: number,
+		where: FindOptionsWhere<ICar>,
+		order: FindOptionsOrder<ICar>,
+	): Promise<[ICar[], number]>;
 	findByPlateAndStatus(plate: string, status: CarStatus): Promise<ICar | null>;
 }
+
+export type ISearchParams = {
+	status?: CarStatus | undefined;
+	plate?: string | undefined;
+	brand?: string | undefined;
+	model?: string | undefined;
+	km?: number | undefined;
+	fromYear?: number | undefined;
+	untilYear?: number | undefined;
+	sortBy?: ('km' | 'year' | 'daily_price')[] | undefined;
+	order?: string | undefined;
+	minDailyPrice?: number | undefined;
+	maxDailyPrice?: number | undefined;
+};

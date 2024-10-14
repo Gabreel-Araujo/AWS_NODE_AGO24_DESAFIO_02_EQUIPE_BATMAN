@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 import { Cars, CarStatus } from '../entities/Car';
 import { Item } from '../entities/Items';
 import { dbConnection } from '@/lib/typeorm';
@@ -24,6 +24,21 @@ export class CarsRepository implements ICarRepository {
 		}
 
 		return car;
+	}
+
+	async findAll(
+		skip: number,
+		take: number,
+		where: FindOptionsWhere<ICar>,
+		order: FindOptionsOrder<ICar>,
+	) {
+		return await this.ormRepository.findAndCount({
+			skip,
+			take,
+			where,
+			order,
+			relations: ['items'],
+		});
 	}
 
 	async findByPlateAndStatus(
