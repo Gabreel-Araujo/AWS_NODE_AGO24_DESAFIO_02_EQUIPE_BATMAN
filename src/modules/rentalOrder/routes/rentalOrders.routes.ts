@@ -5,6 +5,8 @@ import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderIn
 import RentalOrderService from '../services/RentalOrderService';
 import {
 	postOrderSchema,
+	updateOrderSchema,
+	validateCep,
 	queryParamsSchema,
 	getIdOrderSchema,
 } from './validators/RentalOrdersValidators';
@@ -13,7 +15,7 @@ const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
 
-ordersRouter.use(authenticate);
+//ordersRouter.use(authenticate);
 
 ordersRouter.get(
 	'/:id',
@@ -90,6 +92,50 @@ ordersRouter.delete(
 	},
 );
 
-//ordersRouter.put('/:id');
+ordersRouter.put(
+	'/:id',
+	validation(updateOrderSchema, 'body'),
+	async (req: Request, res: Response) => {
+		const {
+			status,
+			cep,
+			start_date,
+			end_date,
+			cancellation_date,
+			closing_date,
+		} = req.body;
+
+		const order: {
+			status?: string;
+			cep: string;
+			start_date: Date;
+			end_date: Date;
+			cancellation_date?: Date;
+			city?: string;
+			state?: string;
+			rental_rate?: number;
+			closing_date?: Date;
+		} = {
+			status,
+			cep,
+			start_date,
+			end_date,
+			cancellation_date,
+			closing_date,
+		};
+
+		if (cep) {
+			const { localidade, uf, rentalRate } = await validateCep(cep);
+			order.city = localidade;
+			order.state = uf;
+			order.rental_rate = rentalRate;
+		}
+
+		await ordersService.update(req.params.id, order);
+		res.status(204).send();
+	},
+);
+
+//ordersRouter.delete('/:id',);
 
 export default ordersRouter;

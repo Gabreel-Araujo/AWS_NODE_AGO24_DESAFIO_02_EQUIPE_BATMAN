@@ -1,5 +1,5 @@
 import { dbConnection } from '@/lib/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Repository, UpdateResult } from 'typeorm';
 import {
 	ICreateRentalOrder,
 	IRentalOrder,
@@ -186,6 +186,14 @@ class RentalOrderRepository implements IRentalOrderRepository {
 			data: transformedData,
 			total,
 		};
+	}
+
+	public async update(
+		id: string,
+		order: Partial<RentalOrder>,
+	): Promise<UpdateResult> {
+		const updatedCustomer = await this.ormRepository.update(id, order);
+		return updatedCustomer;
 	}
 }
 

@@ -1,3 +1,4 @@
+import { UpdateResult } from 'typeorm';
 import {
 	ICreateRentalOrder,
 	IRentalOrder,
@@ -16,4 +17,5 @@ export interface IRentalOrderRepository {
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		pagination: any,
 	): Promise<{ data: IRentalOrder[]; total: number }>;
+	update(id: string, order: Partial<RentalOrder>): Promise<UpdateResult>;
 }

@@ -12,6 +12,10 @@ import { CarsRepository } from '@/modules/cars/typeorm/repositories/CarsReposito
 import NotFoundError from '@/http/errors/not-found-error';
 import { ApiError } from '@/http/errors/api-error';
 import RentalOrder from '../typeorm/entities/RentalOrder';
+import { UpdateResult } from 'typeorm';
+import { differenceInDays, isAfter } from 'date-fns';
+import Cars from '@/modules/cars/typeorm/entities/Car';
+import ConflictError from '@/http/errors/conflict-error';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -91,5 +95,84 @@ export default class RentalOrderService implements IRentalOrderService {
 		}
 
 		return { data, total };
+	}
+
+	public async update(id: string, order: Partial<RentalOrder>) {
+		const rentalOrder = await this.repository.findById(id);
+
+		if (!rentalOrder) throw new NotFoundError('order not found');
+
+		if (rentalOrder.status !== 'open' && order.status === 'aproved')
+			throw new ApiError('order can only be approved if it is open', 400);
+
+		if (rentalOrder.status !== 'open' && order.status === 'canceled')
+			throw new ApiError('order can only be canceled if it is open', 400);
+
+		if (rentalOrder.status !== 'aproved' && order.status === 'closed')
+			throw new ApiError('order can only be closed if it is aproved', 400);
+
+		if (order.end_date && order.start_date && isAfter(new Date(order.start_date), new Date(order.end_date))) {
+			throw new ConflictError('End date order cannot be earlier than start date');
+		  }
+		
+		if (order.status === 'closed' && rentalOrder.car_id) {
+			const car = await this.carRepository.findById(rentalOrder.car_id);
+
+			if (!car) throw new NotFoundError('car not found');
+
+		
+			if (order.closing_date && car) {
+				const result = this.calculateTotal(
+					rentalOrder,
+					order.closing_date,
+					car as Cars,
+				);
+
+				if (result) {
+					order.total = result.total;
+					order.late_fee = result.lateFee;
+				}
+			}
+		}
+
+		return await this.repository.update(id, order);
+	}
+
+	private calculateLateFee(
+		endDate: Date,
+		closingDate: Date,
+		dailyPrice: number,
+	) {
+		const lateDays = differenceInDays(closingDate, endDate);
+
+		return lateDays > 0 ? lateDays * (2 * dailyPrice) : 0;
+	}
+
+	private calculateTotal(
+		order: RentalOrder,
+		closingDate: Date | undefined,
+		car: Cars,
+	) {
+		const startDate = new Date(order.start_date);
+		const endDate: Date = new Date(order.end_date);
+		let lateFee = 0;
+
+		if (order.end_date !== closingDate) {
+			if (!closingDate) return;
+			lateFee = this.calculateLateFee(endDate, closingDate, car.daily_price);
+		}
+
+		if (Number.isNaN(endDate.getTime())) {
+			throw new Error('Invalid end date or cancellation date');
+		}
+		const rentalDays = differenceInDays(endDate, startDate);
+
+		return {
+			total:
+				Number(car.daily_price) * Number(rentalDays) +
+				Number(order.rental_rate) +
+				Number(lateFee),
+			lateFee,
+		};
 	}
 }
