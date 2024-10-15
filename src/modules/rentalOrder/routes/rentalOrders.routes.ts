@@ -3,7 +3,10 @@ import validation from '@/http/middleware/validation';
 import { authenticate } from '@/http/middleware/auth';
 import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
 import RentalOrderService from '../services/RentalOrderService';
-import { postOrderSchema } from './validators/RentalOrdersValidators';
+import {
+	getIdOrderSchema,
+	postOrderSchema,
+} from './validators/RentalOrdersValidators';
 
 const ordersRouter = Router();
 
@@ -13,7 +16,17 @@ ordersRouter.use(authenticate);
 
 // ordersRouter.get('/');
 
-// ordersRouter.get('/:id');
+ordersRouter.get(
+	'/:id',
+	validation(getIdOrderSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		const order = await ordersService.findById(id);
+
+		res.status(200).json(order);
+	},
+);
 
 ordersRouter.post(
 	'/',

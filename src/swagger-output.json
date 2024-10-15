@@ -2280,5 +2280,204 @@
 			}
 		}
 	},
+	"definitions": {
+		"Authentication": {
+			"type": "object",
+			"required": ["email", "password"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"example": "teste@mail.com"
+				},
+				"password": {
+					"type": "string",
+					"example": "axsfsf23"
+				}
+			},
+			"xml": {
+				"name": "Authentication"
+			}
+		},
+		"User": {
+			"type": "object",
+			"required": ["fullName", "email", "password"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"fullName": {
+					"type": "string",
+					"example": "Teste da Silva"
+				},
+				"email": {
+					"type": "string",
+					"example": "teste@mail.com"
+				},
+				"password": {
+					"type": "string",
+					"example": "axsfsf23"
+				}
+			},
+			"xml": {
+				"name": "User"
+			}
+		},
+		"Customer": {
+			"type": "object",
+			"required": ["name", "email", "cpf", "birth", "phone_number"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"name": {
+					"type": "string",
+					"example": "Cliente da Silva"
+				},
+				"email": {
+					"type": "string",
+					"example": "cliente@mail.com"
+				},
+				"cpf": {
+					"type": "string",
+					"example": "08321323521"
+				},
+				"birth": {
+					"type": "string",
+					"example": "1990-10-05"
+				},
+				"phone_number": {
+					"type": "string",
+					"example": "48996748155"
+				}
+			},
+			"xml": {
+				"name": "Customer"
+			}
+		},
+		"Car": {
+			"type": "object",
+			"required": [
+				"plate",
+				"brand",
+				"model",
+				"km",
+				"daily_price",
+				"year",
+				"status"
+			],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"plate": {
+					"type": "string",
+					"example": "MAS1253"
+				},
+				"brand": {
+					"type": "string",
+					"example": "Ford"
+				},
+				"model": {
+					"type": "string",
+					"example": "Focus"
+				},
+				"km": {
+					"type": "number",
+					"example": 180000
+				},
+				"year": {
+					"type": "number",
+					"example": 2018
+				},
+				"status": {
+					"type": "string",
+					"example": "ativo"
+				},
+				"daily_price": {
+					"type": "number",
+					"example": 16.8
+				}
+			},
+			"xml": {
+				"name": "Car"
+			}
+		},
+		"Orders": {
+			"type": "object",
+			"required": ["car_id", "customer_id"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"customer_id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"car_id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"order_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"cep": {
+					"type": "string",
+					"example": "88790000"
+				},
+				"city": {
+					"type": "string",
+					"example": "Laguna"
+				},
+				"status": {
+					"type": "string",
+					"example": "ativo"
+				},
+				"state": {
+					"type": "string",
+					"example": "Santa Catarina"
+				},
+				"rental_rate": {
+					"type": "number",
+					"example": 0
+				},
+				"total": {
+					"type": "number",
+					"example": 100
+				},
+				"start_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"end_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"cancellation_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"closing_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"late_fee": {
+					"type": "number",
+					"example": 20
+				}
+			},
+			"xml": {
+				"name": "Order"
+			}
+		},
+		"externalDocs": {
+			"description": "Find out more about Swagger",
+			"url": "http://swagger.io"
+		}
+	},
 	"basepath": "/"
 }

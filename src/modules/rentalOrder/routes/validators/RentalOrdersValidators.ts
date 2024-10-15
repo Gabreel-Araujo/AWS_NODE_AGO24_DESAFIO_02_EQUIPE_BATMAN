@@ -8,3 +8,7 @@ export const postOrderSchema = z.object({
 		.string()
 		.uuid({ message: 'insert a valid id in car_id, must be uuid format' }),
 });
+
+export const getIdOrderSchema = z.object({
+	id: z.string().uuid({ message: 'insert a valid uuid' }),
+});

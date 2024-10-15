@@ -64,4 +64,14 @@ export default class RentalOrderService implements IRentalOrderService {
 
 		return deletedOrder;
 	}
+
+	public async findById(id: string): Promise<RentalOrder> {
+		const order = await this.repository.findById(id);
+
+		if (!order) {
+			throw new NotFoundError('Order not found');
+		}
+
+		return order;
+	}
 }
