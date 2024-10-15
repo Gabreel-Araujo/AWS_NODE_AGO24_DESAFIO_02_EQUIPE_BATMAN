@@ -2,9 +2,18 @@ import { Request, Response, Router } from 'express';
 import CarService from '../services/CarService';
 import { authenticate } from '@/http/middleware/auth';
 import validation from '@/http/middleware/validation';
-import { idCarSchema, postCarSchema } from './validators/CarValidator';
-import { ISearchParams } from '../typeorm/repositories/interfaces/ICarRepository';
+import {
+	idCarSchema,
+	postCarSchema,
+	putCarSchema,
+} from './validators/CarValidator';
+import {
+	ICar,
+	ISearchParams,
+	IUpdateCar,
+} from '../typeorm/repositories/interfaces/ICarRepository';
 import { CarStatus } from '../typeorm/entities/Car';
+import { Item } from '../typeorm/entities/Items';
 
 const carsRouter = Router();
 
@@ -115,5 +124,16 @@ carsRouter.delete(
 		res.status(204).send();
 	},
 );
+
+carsRouter.put('/:id', validation(putCarSchema, 'body'), async (req, res) => {
+	const { id } = req.params;
+	const { km, daily_price, status, plate, items } = req.body;
+
+	const car: IUpdateCar = { km, daily_price, status, plate, items };
+
+	const updatedCar = await carService.updateCar(id, car, items as string[]);
+
+	res.status(200).send(updatedCar);
+});
 
 export default carsRouter;

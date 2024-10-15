@@ -1,8 +1,13 @@
 import Cars, { CarStatus } from '../entities/Car';
-import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
+import {
+	FindOptionsOrder,
+	FindOptionsWhere,
+	Repository,
+	UpdateResult,
+} from 'typeorm';
 import { Item } from '../entities/Items';
 import { dbConnection } from '@/lib/typeorm';
-import { ICar, ICarRepository } from './interfaces/ICarRepository';
+import { ICar, ICarRepository, IUpdateCar } from './interfaces/ICarRepository';
 import NotFoundError from '@/http/errors/not-found-error';
 
 export class CarsRepository implements ICarRepository {
@@ -34,13 +39,13 @@ export class CarsRepository implements ICarRepository {
 		if (!car) {
 			throw new NotFoundError('Car not found');
 		}
-		if (car.status === CarStatus.INACTIVE) {
+		if (car.status === CarStatus.ERASED) {
 			throw new Error(
 				'Car is already marked as inactive and cannot be deleted again.',
 			);
 		}
 
-		car.status = CarStatus.INACTIVE;
+		car.status = CarStatus.ERASED;
 		car.updated_at = new Date();
 
 		await this.ormRepository.save(car);
@@ -91,5 +96,43 @@ export class CarsRepository implements ICarRepository {
 	): Promise<void> {
 		const newItems = this.itemRepository.create(items);
 		await this.itemRepository.save(newItems);
+	}
+
+	async updateCar(
+		id: string,
+		{ daily_price, km, plate, status }: IUpdateCar,
+		items: string[],
+	): Promise<ICar | null> {
+		const existingCar = await this.ormRepository.findOne({
+			where: {
+				id,
+			},
+		});
+
+		if (!existingCar) {
+			return null;
+		}
+
+		await this.ormRepository.update(id, { daily_price, km, plate, status });
+
+		if (items !== undefined) {
+			await this.itemRepository.delete({ car: existingCar });
+
+			const updatedItems = items.map((item) => {
+				return this.itemRepository.create({
+					item: item,
+					car: existingCar,
+				});
+			});
+
+			await this.itemRepository.save(updatedItems);
+		}
+
+		return await this.ormRepository.findOne({
+			where: {
+				id,
+			},
+			relations: ['items'],
+		});
 	}
 }
