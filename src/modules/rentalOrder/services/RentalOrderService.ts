@@ -1,5 +1,8 @@
 import { ICustomersRepository } from '@/modules/customers/typeorm/repositories/interfaces/ICustomersRepository';
-import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
+import {
+	ICreateRentalOrder,
+	IRentalOrder,
+} from '../typeorm/entities/interfaces/RentalOrderInterface';
 import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import RentalOrderRepository from '../typeorm/repositories/RentalOrderRepository';
 import { IRentalOrderService } from './interfaces/RentalOrderServiceInterface';
@@ -73,5 +76,20 @@ export default class RentalOrderService implements IRentalOrderService {
 		}
 
 		return order;
+	}
+
+	public async getAllOrders(
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		filters: any,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		pagination: any,
+	): Promise<{ data: IRentalOrder[]; total: number }> {
+		const { data, total } = await this.repository.findAll(filters, pagination);
+
+		if (data.length === 0) {
+			throw new NotFoundError('Nenhum pedido encontrado');
+		}
+
+		return { data, total };
 	}
 }

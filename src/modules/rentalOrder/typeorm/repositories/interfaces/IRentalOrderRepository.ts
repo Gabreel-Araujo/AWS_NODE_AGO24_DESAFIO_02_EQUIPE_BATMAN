@@ -10,4 +10,10 @@ export interface IRentalOrderRepository {
 	findById(id: string): Promise<RentalOrder | null>;
 	save(order: ICreateRentalOrder): Promise<RentalOrder>;
 	softDeleteById(id: string): Promise<void>;
+	findAll(
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		filters: any,
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		pagination: any,
+	): Promise<{ data: IRentalOrder[]; total: number }>;
 }
