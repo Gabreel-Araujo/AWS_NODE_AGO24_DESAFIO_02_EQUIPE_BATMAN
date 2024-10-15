@@ -1,7 +1,9 @@
 
 ![Logo](https://github.com/carolinecobucci/plant-ecommerce/raw/main/src/assets/compass%20uol%20header.jpeg)
 # CompassCar API 🚗
+[Página do Notion](https://www.notion.so/AWS_NODE_AGO24_DESAFIO_02_EQUIPE_BATMAN-118e688b2c0a80629135ec596477e4f2?pvs=4)
 
+  
 Esta API fornece funcionalidades para gerenciar uma locadora de carros, permitindo que os usuários realizem operações como:
 - **Autenticação**: Registro e login de usuários com diferentes níveis de acesso. 
 - **CRUD de Carros**: Adicionar, atualizar, excluir e listar veículos.
