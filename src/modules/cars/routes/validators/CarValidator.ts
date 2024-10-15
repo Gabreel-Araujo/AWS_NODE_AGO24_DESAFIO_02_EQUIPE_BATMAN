@@ -98,6 +98,7 @@ export const putCarSchema = z.object({
 		.number({
 			invalid_type_error: 'must be a number',
 		})
+		.min(0, { message: 'daily price cannot be negative' })
 		.optional(),
 
 	km: z

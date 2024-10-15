@@ -177,7 +177,7 @@ class CarService implements ICarService {
 	): Promise<ICar | null> {
 		const existingCar = await this.repository.findById(id);
 
-		if (!existingCar) {
+		if (!existingCar || existingCar.status === CarStatus.ERASED) {
 			throw new NotFoundError('car not found');
 		}
 

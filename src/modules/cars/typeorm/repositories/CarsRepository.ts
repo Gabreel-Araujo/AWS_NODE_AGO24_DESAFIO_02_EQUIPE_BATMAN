@@ -39,13 +39,13 @@ export class CarsRepository implements ICarRepository {
 		if (!car) {
 			throw new NotFoundError('Car not found');
 		}
-		if (car.status === CarStatus.INACTIVE) {
+		if (car.status === CarStatus.ERASED) {
 			throw new Error(
 				'Car is already marked as inactive and cannot be deleted again.',
 			);
 		}
 
-		car.status = CarStatus.INACTIVE;
+		car.status = CarStatus.ERASED;
 		car.updated_at = new Date();
 
 		await this.ormRepository.save(car);
