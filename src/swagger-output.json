@@ -1814,196 +1814,130 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "ativo | inativo | excluido"
+							"example": "open | aproved | closed | canceled"
 						},
-						"description": "Filtrar por status do carro"
+						"description": "Filtrar por status do pedido"
 					},
 					{
-						"name": "plate",
+						"name": "customer_cpf",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "MKF3123"
+							"example": "12345678900"
 						},
-						"description": "Filtra pela placa do carro"
+						"description": "Filtrar pelo CPF do cliente"
 					},
 					{
-						"name": "brand",
+						"name": "start_date",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "Ford"
+							"example": "2024-10-14T21:45:17.364Z"
 						},
-						"description": "Filtra pela marca do carro"
+						"description": "Filtrar por data de início do pedido"
 					},
 					{
-						"name": "model",
+						"name": "end_date",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "Focus"
+							"example": "2024-10-15T21:45:17.364Z"
 						},
-						"description": "Filtra pelo modelo do carro"
-					},
-					{
-						"name": "km",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string",
-							"example": "10.800"
-						},
-						"description": "Filtra pelo total em Kms do carro"
-					},
-					{
-						"name": "fromYear",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "number",
-							"example": 2014
-						},
-						"description": "Filtra os carros fabricados a partir do ano especificado"
-					},
-					{
-						"name": "untilYear",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "number",
-							"example": 2020
-						},
-						"description": "Filtra os carros fabricados até o ano especificado"
-					},
-					{
-						"name": "minDailyPrice",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "number",
-							"example": 25000
-						},
-						"description": "Filtra os carros com preço diário a partir do valor especificado"
-					},
-					{
-						"name": "maxDailyPrice",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "number",
-							"example": 40000
-						},
-						"description": "Filtra os carros com preço diário até o valor especificado"
-					},
-					{
-						"name": "order",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string",
-							"example": "ASC | DESC"
-						},
-						"description": "Ordem de classificação (ASC ou DESC)"
-					},
-					{
-						"name": "sortBy",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string",
-							"example": "year, km, daily_price"
-						},
-						"description": "Campo pelo qual a listagem será ordenada (year, km, daily_price)"
+						"description": "Filtrar por data de término do pedido"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Lista de carros retornada com sucesso",
+						"description": "Lista de pedidos retornada com sucesso",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"count": {
-											"type": "integer",
-											"example": 4
-										},
-										"total_pages": {
-											"type": "integer",
-											"example": 1
-										},
 										"total": {
 											"type": "integer",
-											"example": 100
+											"example": 1
 										},
-										"current_page": {
+										"currentPage": {
 											"type": "integer",
 											"example": 1
 										},
-										"cars": {
+										"totalPages": {
+											"type": "integer",
+											"example": 1
+										},
+										"data": {
 											"type": "array",
 											"items": {
 												"type": "object",
 												"properties": {
 													"id": {
 														"type": "string",
-														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+														"example": "e57e3a2d-0a16-4f8f-99be-64723bc1d396"
 													},
-													"plate": {
+													"customer_id": {
 														"type": "string",
-														"example": "MAS1453"
+														"example": "a8052f5b-abdc-48b0-aa52-e8eb64a5cd76"
 													},
-													"brand": {
+													"order_date": {
 														"type": "string",
-														"example": "Ford"
-													},
-													"model": {
-														"type": "string",
-														"example": "Focus"
-													},
-													"year": {
-														"type": "integer",
-														"example": 2018
-													},
-													"daily_price": {
-														"type": "number",
-														"example": 16.8
-													},
-													"km": {
-														"type": "number",
-														"example": 18000.0
+														"example": "2024-10-14T21:45:17.364Z"
 													},
 													"status": {
 														"type": "string",
-														"enum": ["ativo", "inativo", "excluído"],
-														"example": "inativo"
+														"example": "canceled"
 													},
-													"created_at": {
+													"cep": {
 														"type": "string",
-														"example": "2024-10-14T15:53:52.227Z"
+														"example": null
 													},
-													"updated_at": {
+													"city": {
 														"type": "string",
-														"example": "2024-10-14T16:50:17.119Z"
+														"example": null
 													},
-													"items": {
-														"type": "array",
-														"items": {
-															"type": "object",
-															"properties": {
-																"id": {
-																	"type": "string",
-																	"example": "fb901f0e-842b-44ca-8b87-f3309c94fe71"
-																},
-																"item": {
-																	"type": "string",
-																	"example": "vidro eletrico"
-																}
-															}
-														}
+													"state": {
+														"type": "string",
+														"example": null
+													},
+													"rental_rate": {
+														"type": "string",
+														"example": "0"
+													},
+													"total": {
+														"type": "string",
+														"example": "0"
+													},
+													"car_id": {
+														"type": "string",
+														"example": "3e2846a7-8d26-46ad-80ee-82029724a761"
+													},
+													"start_date": {
+														"type": "string",
+														"example": "2024-10-15T00:00:00Z",
+														"description": "Data de início do aluguel"
+													},
+													"end_date": {
+														"type": "string",
+														"example": "2024-10-20T00:00:00Z",
+														"description": "Data de término do aluguel"
+													},
+													"cancellation_date": {
+														"type": "string",
+														"example": "2024-10-20T00:00:00Z",
+														"description": "Data de cancelamento do pedido"
+													},
+													"closing_date": {
+														"type": "string",
+														"example": "2024-10-20T00:00:00Z",
+														"description": "Data de fechamento do pedido"
+													},
+													"late_fee": {
+														"type": "string",
+														"example": "0",
+														"description": "Taxa de atraso"
 													}
 												}
 											}
@@ -2014,7 +1948,7 @@
 						}
 					},
 					"404": {
-						"description": "Nenhum carro encontrado.",
+						"description": "Nenhum pedido encontrado.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -2022,7 +1956,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "Cars not found"
+											"example": "Any order found"
 										}
 									}
 								}

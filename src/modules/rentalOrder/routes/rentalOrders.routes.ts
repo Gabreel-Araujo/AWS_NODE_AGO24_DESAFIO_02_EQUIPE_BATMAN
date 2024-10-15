@@ -15,8 +15,6 @@ const ordersService = new RentalOrderService();
 
 ordersRouter.use(authenticate);
 
-// ordersRouter.get('/');
-
 ordersRouter.get(
 	'/:id',
 	validation(getIdOrderSchema, 'params'),
@@ -26,35 +24,6 @@ ordersRouter.get(
 		const order = await ordersService.findById(id);
 
 		res.status(200).json(order);
-	},
-);
-
-ordersRouter.post(
-	'/',
-	validation(postOrderSchema, 'body'),
-	async (req: Request, res: Response) => {
-		const { car_id, customer_id } = req.body;
-
-		const order: ICreateRentalOrder = {
-			car_id,
-			customer_id,
-		};
-
-		const createdOrder = await ordersService.create(order);
-
-		res.status(201).json({ id: createdOrder.id });
-	},
-);
-
-ordersRouter.delete(
-	'/:id',
-	validation(getIdOrderSchema),
-	async (req: Request, res: Response) => {
-		const { id } = req.params;
-
-		await ordersService.softDeleteById(id);
-
-		res.status(204).send();
 	},
 );
 
@@ -89,6 +58,35 @@ ordersRouter.get(
 			totalPages: Math.ceil(total / pagination.limit),
 			data,
 		});
+	},
+);
+
+ordersRouter.post(
+	'/',
+	validation(postOrderSchema, 'body'),
+	async (req: Request, res: Response) => {
+		const { car_id, customer_id } = req.body;
+
+		const order: ICreateRentalOrder = {
+			car_id,
+			customer_id,
+		};
+
+		const createdOrder = await ordersService.create(order);
+
+		res.status(201).json({ id: createdOrder.id });
+	},
+);
+
+ordersRouter.delete(
+	'/:id',
+	validation(getIdOrderSchema),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		await ordersService.softDeleteById(id);
+
+		res.status(204).send();
 	},
 );
 
