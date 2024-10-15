@@ -66,32 +66,23 @@ export default class RentalOrderService implements IRentalOrderService {
 		if (rentalOrder.status !== 'aproved' && order.status === 'closed')
 			throw new ApiError('order can only be closed if it is aproved', 400);
 
-		if (
-			(order.status === 'closed' || order.status === 'canceled') &&
-			rentalOrder.car_id
-		) {
+		if (order.status === 'closed' && rentalOrder.car_id) {
 			const car = await this.carRepository.findById(rentalOrder.car_id);
 
 			if (!car) throw new NotFoundError('car not found');
 
-			if (rentalOrder.closing_date && car) {
-				const lateFee = this.calculateLateFee(
-					rentalOrder.closing_date,
-					car.daily_price,
+			if (order.closing_date && car) {
+				const result = this.calculateTotal(
+					rentalOrder,
+					order.closing_date,
+					car as Cars,
 				);
-				order.late_fee = lateFee;
+
+				if (result) {
+					order.total = result.total;
+					order.late_fee = result.lateFee;
+				}
 			}
-
-			const { total, lateFee } = this.calculateTotal(
-				rentalOrder,
-				order.closing_date,
-				car as Cars,
-			);
-
-			order.total = total;
-			order.late_fee = lateFee;
-
-			console.log(order);
 		}
 
 		return await this.repository.update(id, order);
@@ -103,6 +94,7 @@ export default class RentalOrderService implements IRentalOrderService {
 		dailyPrice: number,
 	) {
 		const lateDays = differenceInDays(closingDate, endDate);
+
 		return lateDays > 0 ? lateDays * (2 * dailyPrice) : 0;
 	}
 
