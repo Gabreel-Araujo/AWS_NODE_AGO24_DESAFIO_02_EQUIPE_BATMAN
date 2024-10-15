@@ -1,6 +1,9 @@
 import { dbConnection } from '@/lib/typeorm';
 import { In, Repository } from 'typeorm';
-import { ICreateRentalOrder } from '../entities/interfaces/RentalOrderInterface';
+import {
+	ICreateRentalOrder,
+	IRentalOrder,
+} from '../entities/interfaces/RentalOrderInterface';
 import RentalOrder from '../entities/RentalOrder';
 import { IRentalOrderRepository } from './interfaces/IRentalOrderRepository';
 
@@ -104,11 +107,16 @@ class RentalOrderRepository implements IRentalOrderRepository {
 
 		const total = await query.getCount();
 
-		if (pagination && pagination.page && pagination.limit) {
+		if (pagination?.page && pagination?.limit) {
 			const page = Number(pagination.page);
 			const limit = Number(pagination.limit);
 
-			if (!isNaN(page) && page > 0 && !isNaN(limit) && limit > 0) {
+			if (
+				!Number.isNaN(page) &&
+				page > 0 &&
+				!Number.isNaN(limit) &&
+				limit > 0
+			) {
 				query.skip((page - 1) * limit).take(limit);
 			}
 		}
