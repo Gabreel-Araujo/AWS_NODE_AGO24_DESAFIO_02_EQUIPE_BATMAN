@@ -1508,7 +1508,7 @@
 				}
 			},
 			"put": {
-				"tags": ["User"],
+				"tags": ["Car"],
 				"description": "",
 				"summary": "Atualiza um usuário por ID",
 				"parameters": [
@@ -1516,7 +1516,12 @@
 						"name": "id",
 						"in": "path",
 						"required": true,
-						"type": "string"
+						"type": "string",
+						"schema": {
+							"type": "string",
+							"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+						},
+						"description": "ID do carro a ser atualizado"
 					}
 				],
 				"requestBody": {
@@ -1525,30 +1530,43 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"fullName": {
-										"type": "string",
-										"example": "Teste da Silva",
-										"description": "Nome completo do usuário"
+									"km": {
+										"type": "number",
+										"example": 5000,
+										"description": "Quilometragem do carro"
 									},
-									"email": {
-										"type": "string",
-										"example": "teste@mail.com",
-										"description": "E-mail do usuário"
+									"daily_price": {
+										"type": "number",
+										"example": 150,
+										"description": "Preço diário do carro"
 									},
-									"password": {
+									"status": {
 										"type": "string",
-										"example": "teste123",
-										"description": "Senha do usuário"
+										"example": "available",
+										"description": "Status do carro"
+									},
+									"plate": {
+										"type": "string",
+										"example": "ABC-1234",
+										"description": "Placa do carro"
+									},
+									"items": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"example": ["Air conditioning", "GPS"]
+										},
+										"description": "Itens adicionais do carro"
 									}
-								}
-							},
-							"required": []
+								},
+								"required": []
+							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
+						"description": "Carro atualizado com sucesso.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1556,31 +1574,41 @@
 									"properties": {
 										"id": {
 											"type": "string",
-											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+											"example": "30503c46-69da-424f-857a-d745a68ed4e0",
+											"description": "ID do carro"
 										},
-										"createdAt": {
-											"type": "string",
-											"example": "2024-10-11T19:55:11.499Z"
+										"km": {
+											"type": "number",
+											"example": 5000,
+											"description": "Quilometragem do carro"
 										},
-										"deletedAt": {
+										"daily_price": {
+											"type": "number",
+											"example": 150,
+											"description": "Preço diário do carro"
+										},
+										"status": {
 											"type": "string",
-											"example": null
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "Requisição inválida",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
+											"example": "available",
+											"description": "Status do carro"
+										},
+										"plate": {
 											"type": "string",
-											"example": "Dados inválidos"
+											"example": "ABC-1234",
+											"description": "Placa do carro"
+										},
+										"items": {
+											"type": "array",
+											"items": {
+												"type": "string",
+												"example": ["Air conditioning", "GPS"]
+											},
+											"description": "Itens adicionais do carro"
+										},
+										"updatedAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z",
+											"description": "Data de atualização do carro"
 										}
 									}
 								}
@@ -1588,7 +1616,7 @@
 						}
 					},
 					"404": {
-						"description": "Usuário não encontrado",
+						"description": "Carro não encontrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1596,7 +1624,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "User not found"
+											"example": "Car not found"
 										}
 									}
 								}
@@ -2078,7 +2106,7 @@
 			"put": {
 				"tags": ["Order"],
 				"description": "",
-				"summary": "Atualiza um usuário por ID",
+				"summary": "Atualiza um pedido por ID",
 				"parameters": [
 					{
 						"name": "id",
@@ -2093,52 +2121,49 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"fullName": {
-										"type": "string",
-										"example": "Teste da Silva",
-										"description": "Nome completo do usuário"
+									"status": {
+									  "type": "string",
+									  "example": "closed",
+									  "description": "Status do pedido"
 									},
-									"email": {
-										"type": "string",
-										"example": "teste@mail.com",
-										"description": "E-mail do usuário"
+									"cep": {
+									  "type": "string",
+									  "example": "12345-678",
+									  "description": "CEP do pedido"
 									},
-									"password": {
-										"type": "string",
-										"example": "teste123",
-										"description": "Senha do usuário"
-									}
-								}
-							},
-							"required": []
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"id": {
-											"type": "string",
-											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
-										},
-										"createdAt": {
-											"type": "string",
-											"example": "2024-10-11T19:55:11.499Z"
-										},
-										"deletedAt": {
-											"type": "string",
-											"example": null
-										}
+									"start_date": {
+									  "type": "string",
+									  "format": "date-time",
+									  "example": "2024-10-11T19:55:11.499Z",
+									  "description": "Data de início do pedido"
+									},
+									"end_date": {
+									  "type": "string",
+									  "format": "date-time",
+									  "example": "2024-10-12T19:55:11.499Z",
+									  "description": "Data de término do pedido"
+									},
+									"cancellation_date": {
+									  "type": "string",
+									  "format": "date-time",
+									  "example": "2024-10-13T19:55:11.499Z",
+									  "description": "Data de cancelamento do pedido"
+									},
+									"closing_date": {
+									  "type": "string",
+									  "format": "date-time",
+									  "example": "2024-10-14T19:55:11.499Z",
+									  "description": "Data de fechamento do pedido"
 									}
 								}
 							}
 						}
-					},
+					}
+				},
+				"responses": {
+					"204": {
+            			"description": "Pedido atualizado com sucesso."
+						},
 					"400": {
 						"description": "Requisição inválida",
 						"content": {
@@ -2148,7 +2173,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "Dados inválidos"
+											"example": "Invalid data"
 										}
 									}
 								}
@@ -2156,7 +2181,7 @@
 						}
 					},
 					"404": {
-						"description": "Usuário não encontrado",
+						"description": "Pedido não encontrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -2164,12 +2189,28 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "User not found"
+											"example": "Order not found"
 										}
 									}
 								}
 							}
 						}
+					},
+					"409": {
+            			"description": "Conflito de dados",
+            			"content": {
+              				"application/json": {
+                				"schema": {
+                  					"type": "object",
+                  					"properties": {
+                    					"message": {
+                      						"type": "string",
+                      						"example": "End date order cannot be earlier than start date"
+                    					}
+                  					}
+               		 			}
+              				}
+           				}
 					}
 				}
 			},
