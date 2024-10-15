@@ -23,6 +23,10 @@
 		{
 			"name": "Car",
 			"description": "Operations about car"
+		},
+		{
+			"name": "Order",
+			"description": "Operations about order"
 		}
 	],
 	"schemes": ["http"],
@@ -1038,7 +1042,7 @@
 			"post": {
 				"tags": ["Car"],
 				"summary": "Criar um novo carro",
-				"description": "Essa rota permite a criação de um novo usuário no sistema. Forneça um email único, nome completo e senha.",
+				"description": "Essa rota permite a criação de um novo carro no sistema.",
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -1046,30 +1050,68 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"fullName": {
+									"plate": {
 										"type": "string",
-										"example": "Teste da Silva",
-										"description": "Nome completo do usuário"
+										"example": "MKF3123",
+										"description": "Placa do carro"
 									},
-									"email": {
+									"brand": {
 										"type": "string",
-										"example": "teste@mail.com",
-										"description": "E-mail do usuário"
+										"example": "Ford",
+										"description": "Marca do carro"
 									},
-									"password": {
+									"model": {
 										"type": "string",
-										"example": "teste123",
-										"description": "Senha do usuário"
+										"example": "Fusion",
+										"description": "Modelo do carro"
+									},
+									"year": {
+										"type": "number",
+										"example": 2019,
+										"description": "Ano de fabricação do carro"
+									},
+									"daily_price": {
+										"type": "number",
+										"example": 300.0,
+										"description": "Preço diário de aluguel do carro"
+									},
+									"km": {
+										"type": "number",
+										"example": 30000,
+										"description": "Quilometragem do carro"
+									},
+									"status": {
+										"type": "string",
+										"enum": ["ativo", "inativo", "excluído"],
+										"example": "ativo",
+										"description": "Status do carro"
+									},
+									"items": {
+										"type": "array",
+										"items": {
+											"type": "string",
+											"example": "vidro eletrico",
+											"description": "Nome do item"
+										},
+										"description": "Lista de itens associados ao carro"
 									}
 								},
-								"required": ["email", "fullName", "password"]
+								"required": [
+									"plate",
+									"brand",
+									"model",
+									"year",
+									"daily_price",
+									"km",
+									"status"
+								]
 							}
 						}
 					}
 				},
 				"responses": {
 					"201": {
-						"description": "Usuário criado com sucesso",
+						"description": "Carro criado com sucesso",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1085,7 +1127,7 @@
 						}
 					},
 					"409": {
-						"description": "Email já registrado",
+						"description": "Carro já registrado",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1093,7 +1135,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "Email already registered"
+											"example": "A car with this plate already exists"
 										}
 									}
 								}
@@ -1103,9 +1145,9 @@
 				}
 			},
 			"get": {
-				"tags": ["User"],
-				"summary": "Listar todos os usuários",
-				"description": "Essa rota permite a listagem de todos os usuários no sistema.",
+				"tags": ["Car"],
+				"summary": "Listar todos os carros",
+				"description": "Essa rota permite a listagem de todos os carros no sistema.",
 				"parameters": [
 					{
 						"name": "page",
@@ -1128,34 +1170,104 @@
 						"description": "Número de itens por página"
 					},
 					{
-						"name": "name",
+						"name": "status",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "John Doe"
+							"example": "ativo | inativo | excluido"
 						},
-						"description": "Filtrar por nome completo do usuário"
+						"description": "Filtrar por status do carro"
 					},
 					{
-						"name": "email",
+						"name": "plate",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "john.doe@example.com"
+							"example": "MKF3123"
 						},
-						"description": "Filtrar por email do usuário"
+						"description": "Filtra pela placa do carro"
 					},
 					{
-						"name": "deleted",
+						"name": "brand",
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": "boolean",
-							"example": false
+							"type": "string",
+							"example": "Ford"
 						},
-						"description": "Filtrar usuários deletados"
+						"description": "Filtra pela marca do carro"
+					},
+					{
+						"name": "model",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "Focus"
+						},
+						"description": "Filtra pelo modelo do carro"
+					},
+					{
+						"name": "km",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "10.800"
+						},
+						"description": "Filtra pelo total em Kms do carro"
+					},
+					{
+						"name": "fromYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2014
+						},
+						"description": "Filtra os carros fabricados a partir do ano especificado"
+					},
+					{
+						"name": "untilYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2020
+						},
+						"description": "Filtra os carros fabricados até o ano especificado"
+					},
+					{
+						"name": "minDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 25000
+						},
+						"description": "Filtra os carros com preço diário a partir do valor especificado"
+					},
+					{
+						"name": "maxDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 40000
+						},
+						"description": "Filtra os carros com preço diário até o valor especificado"
+					},
+					{
+						"name": "order",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ASC | DESC"
+						},
+						"description": "Ordem de classificação (ASC ou DESC)"
 					},
 					{
 						"name": "sortBy",
@@ -1163,42 +1275,36 @@
 						"required": false,
 						"schema": {
 							"type": "string",
-							"example": "createdAt"
+							"example": "year, km, daily_price"
 						},
-						"description": "Campo para ordenar os resultados"
-					},
-					{
-						"name": "sortOrder",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "string",
-							"example": "ASC"
-						},
-						"description": "Ordem de classificação (ASC ou DESC)"
+						"description": "Campo pelo qual a listagem será ordenada (year, km, daily_price)"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Lista de usuários retornada com sucesso",
+						"description": "Lista de carros retornada com sucesso",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"page": {
+										"count": {
+											"type": "integer",
+											"example": 4
+										},
+										"total_pages": {
 											"type": "integer",
 											"example": 1
-										},
-										"limit": {
-											"type": "integer",
-											"example": 10
 										},
 										"total": {
 											"type": "integer",
 											"example": 100
 										},
-										"users": {
+										"current_page": {
+											"type": "integer",
+											"example": 1
+										},
+										"cars": {
 											"type": "array",
 											"items": {
 												"type": "object",
@@ -1207,21 +1313,58 @@
 														"type": "string",
 														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
 													},
-													"name": {
+													"plate": {
 														"type": "string",
-														"example": "John Doe"
+														"example": "MAS1453"
 													},
-													"email": {
+													"brand": {
 														"type": "string",
-														"example": "john.doe@example.com"
+														"example": "Ford"
 													},
-													"deletedAt": {
+													"model": {
 														"type": "string",
-														"example": null
+														"example": "Focus"
 													},
-													"createdAt": {
+													"year": {
+														"type": "integer",
+														"example": 2018
+													},
+													"daily_price": {
+														"type": "number",
+														"example": 16.8
+													},
+													"km": {
+														"type": "number",
+														"example": 18000.0
+													},
+													"status": {
 														"type": "string",
-														"example": "2024-10-11T19:55:11.499Z"
+														"enum": ["ativo", "inativo", "excluído"],
+														"example": "inativo"
+													},
+													"created_at": {
+														"type": "string",
+														"example": "2024-10-14T15:53:52.227Z"
+													},
+													"updated_at": {
+														"type": "string",
+														"example": "2024-10-14T16:50:17.119Z"
+													},
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"id": {
+																	"type": "string",
+																	"example": "fb901f0e-842b-44ca-8b87-f3309c94fe71"
+																},
+																"item": {
+																	"type": "string",
+																	"example": "vidro eletrico"
+																}
+															}
+														}
 													}
 												}
 											}
@@ -1231,8 +1374,8 @@
 							}
 						}
 					},
-					"400": {
-						"description": "Nenhum usuário encontrado.",
+					"404": {
+						"description": "Nenhum carro encontrado.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1240,7 +1383,7 @@
 									"properties": {
 										"message": {
 											"type": "string",
-											"example": "users not found"
+											"example": "Cars not found"
 										}
 									}
 								}
@@ -1291,15 +1434,20 @@
 											"example": "Fusion",
 											"description": "Modelo do carro"
 										},
-										"km": {
-											"type": "number",
-											"example": 30000,
-											"description": "Quilometragem do carro"
-										},
 										"year": {
 											"type": "number",
 											"example": 2019,
 											"description": "Ano de fabricação do carro"
+										},
+										"daily_price": {
+											"type": "number",
+											"example": 16.8,
+											"description": "Diária"
+										},
+										"km": {
+											"type": "number",
+											"example": 30000,
+											"description": "Quilometragem do carro"
 										},
 										"status": {
 											"type": "string",
@@ -1324,17 +1472,12 @@
 												"properties": {
 													"id": {
 														"type": "string",
-														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b",
+														"example": "89c00391-2d47-496c-8ca6-d560f3ed00a5",
 														"description": "Identificador único do item"
-													},
-													"car_id": {
-														"type": "string",
-														"example": "a1234567-89ab-cdef-0123-456789abcdef",
-														"description": "Identificador único do carro associado"
 													},
 													"item": {
 														"type": "string",
-														"example": "Airbag",
+														"example": "vidro eletrico",
 														"description": "Nome do item"
 													}
 												}
@@ -1463,9 +1606,9 @@
 				}
 			},
 			"delete": {
-				"tags": ["User"],
+				"tags": ["Car"],
 				"description": "",
-				"summary": "Deleta um usuário por ID",
+				"summary": "Deleta um carro por ID",
 				"parameters": [
 					{
 						"name": "id",
@@ -1476,7 +1619,607 @@
 				],
 				"responses": {
 					"204": {
-						"description": "Usuário deletado com sucesso. Nenhum conteúdo retornado."
+						"description": "Carro deletado com sucesso. Nenhum conteúdo retornado."
+					},
+					"404": {
+						"description": "Carro não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car not found or already deleted"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Carro não pode ser excluído",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car cannot be deleted, it is in an active or approved rental order"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/rental-order": {
+			"post": {
+				"tags": ["Order"],
+				"summary": "Criar um novo pedido",
+				"description": "Essa rota permite a criação de um novo pedido no sistema.",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"car_id": {
+										"type": "string",
+										"example": "3e2846a7-8d26-46ad-80ee-82029724a761",
+										"description": "ID do Carro"
+									},
+									"customer_id": {
+										"type": "string",
+										"example": "a8052f5b-abdc-48b0-aa52-e8eb64a5cd76",
+										"description": "ID do Cliente"
+									}
+								},
+								"required": ["car_id", "customer_id"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Pedido criado com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e57e3a2d-0a16-4f8f-99be-64723bc1d396"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404_CustomerNotFound": {
+						"description": "Cliente não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Customer not found"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404_CarNotFound": {
+						"description": "Carro não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car not found"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400_CarInUse": {
+						"description": "Carro já está em uso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Car can't be used. It is already in use"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400_CustomerOrderOpen": {
+						"description": "Cliente já possui uma ordem em aberto",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Can't create order because customer has an opened order already"
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Carro já registrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "A car with this plate already exists"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["Order"],
+				"summary": "Listar todos os pedidos",
+				"description": "Essa rota permite a listagem de todos os pedidos no sistema.",
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 1
+						},
+						"description": "Número da página para paginação"
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"example": 10
+						},
+						"description": "Número de itens por página"
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ativo | inativo | excluido"
+						},
+						"description": "Filtrar por status do carro"
+					},
+					{
+						"name": "plate",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "MKF3123"
+						},
+						"description": "Filtra pela placa do carro"
+					},
+					{
+						"name": "brand",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "Ford"
+						},
+						"description": "Filtra pela marca do carro"
+					},
+					{
+						"name": "model",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "Focus"
+						},
+						"description": "Filtra pelo modelo do carro"
+					},
+					{
+						"name": "km",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "10.800"
+						},
+						"description": "Filtra pelo total em Kms do carro"
+					},
+					{
+						"name": "fromYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2014
+						},
+						"description": "Filtra os carros fabricados a partir do ano especificado"
+					},
+					{
+						"name": "untilYear",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 2020
+						},
+						"description": "Filtra os carros fabricados até o ano especificado"
+					},
+					{
+						"name": "minDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 25000
+						},
+						"description": "Filtra os carros com preço diário a partir do valor especificado"
+					},
+					{
+						"name": "maxDailyPrice",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "number",
+							"example": 40000
+						},
+						"description": "Filtra os carros com preço diário até o valor especificado"
+					},
+					{
+						"name": "order",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "ASC | DESC"
+						},
+						"description": "Ordem de classificação (ASC ou DESC)"
+					},
+					{
+						"name": "sortBy",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "year, km, daily_price"
+						},
+						"description": "Campo pelo qual a listagem será ordenada (year, km, daily_price)"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de carros retornada com sucesso",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"count": {
+											"type": "integer",
+											"example": 4
+										},
+										"total_pages": {
+											"type": "integer",
+											"example": 1
+										},
+										"total": {
+											"type": "integer",
+											"example": 100
+										},
+										"current_page": {
+											"type": "integer",
+											"example": 1
+										},
+										"cars": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b"
+													},
+													"plate": {
+														"type": "string",
+														"example": "MAS1453"
+													},
+													"brand": {
+														"type": "string",
+														"example": "Ford"
+													},
+													"model": {
+														"type": "string",
+														"example": "Focus"
+													},
+													"year": {
+														"type": "integer",
+														"example": 2018
+													},
+													"daily_price": {
+														"type": "number",
+														"example": 16.8
+													},
+													"km": {
+														"type": "number",
+														"example": 18000.0
+													},
+													"status": {
+														"type": "string",
+														"enum": ["ativo", "inativo", "excluído"],
+														"example": "inativo"
+													},
+													"created_at": {
+														"type": "string",
+														"example": "2024-10-14T15:53:52.227Z"
+													},
+													"updated_at": {
+														"type": "string",
+														"example": "2024-10-14T16:50:17.119Z"
+													},
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"id": {
+																	"type": "string",
+																	"example": "fb901f0e-842b-44ca-8b87-f3309c94fe71"
+																},
+																"item": {
+																	"type": "string",
+																	"example": "vidro eletrico"
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Nenhum carro encontrado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Cars not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/rental-order/{id}": {
+			"get": {
+				"tags": ["Order"],
+				"summary": "Busca um pedido por ID",
+				"description": "",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "e6d7f7d3-4e32-42e3-837a-86753bcae83b",
+											"description": "Identificador único do carro"
+										},
+										"customer_id": {
+											"type": "string",
+											"example": "a8052f5b-abdc-48b0-aa52-e8eb64a5cd76",
+											"description": "Identificador único do cliente"
+										},
+										"car_id": {
+											"type": "string",
+											"example": "3e2846a7-8d26-46ad-80ee-82029724a761",
+											"description": "Identificador único do carro"
+										},
+										"cep": {
+											"type": "string",
+											"example": "88790000",
+											"description": "CEP da cidade/bairro"
+										},
+										"city": {
+											"type": "string",
+											"example": "Laguna",
+											"description": "Cidade localizada pelo CEP"
+										},
+										"state": {
+											"type": "string",
+											"example": 16.8,
+											"description": "Diária"
+										},
+										"rental_rate": {
+											"type": "number",
+											"example": 0,
+											"description": "Taxa de aluguel"
+										},
+										"total": {
+											"type": "string",
+											"example": "0",
+											"description": "Total do pedido"
+										},
+										"start_date": {
+											"type": "string",
+											"example": "2024-10-15T00:00:00Z",
+											"description": "Data de início do aluguel"
+										},
+										"end_date": {
+											"type": "string",
+											"example": "2024-10-20T00:00:00Z",
+											"description": "Data de término do aluguel"
+										},
+										"cancellation_date": {
+											"type": "string",
+											"example": "2024-10-20T00:00:00Z",
+											"description": "Data de cancelamento do pedido"
+										},
+										"closing_date": {
+											"type": "string",
+											"example": "2024-10-20T00:00:00Z",
+											"description": "Data de fechamento do pedido"
+										},
+										"late_fee": {
+											"type": "string",
+											"example": "0",
+											"description": "Taxa de atraso"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Pedido não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Order not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Order"],
+				"description": "",
+				"summary": "Atualiza um usuário por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"fullName": {
+										"type": "string",
+										"example": "Teste da Silva",
+										"description": "Nome completo do usuário"
+									},
+									"email": {
+										"type": "string",
+										"example": "teste@mail.com",
+										"description": "E-mail do usuário"
+									},
+									"password": {
+										"type": "string",
+										"example": "teste123",
+										"description": "Senha do usuário"
+									}
+								}
+							},
+							"required": []
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Usuário atualizado com sucesso. Se o corpo da requisição estiver vazio, nenhum dado será alterado.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"example": "30503c46-69da-424f-857a-d745a68ed4e0"
+										},
+										"createdAt": {
+											"type": "string",
+											"example": "2024-10-11T19:55:11.499Z"
+										},
+										"deletedAt": {
+											"type": "string",
+											"example": null
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Requisição inválida",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Dados inválidos"
+										}
+									}
+								}
+							}
+						}
 					},
 					"404": {
 						"description": "Usuário não encontrado",
@@ -1495,7 +2238,240 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"tags": ["Order"],
+				"description": "",
+				"summary": "Deleta um pedido por ID",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Pedido deletado com sucesso. Nenhum conteúdo retornado."
+					},
+					"404": {
+						"description": "Pedido não encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Order not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
+		}
+	},
+	"definitions": {
+		"Authentication": {
+			"type": "object",
+			"required": ["email", "password"],
+			"properties": {
+				"email": {
+					"type": "string",
+					"example": "teste@mail.com"
+				},
+				"password": {
+					"type": "string",
+					"example": "axsfsf23"
+				}
+			},
+			"xml": {
+				"name": "Authentication"
+			}
+		},
+		"User": {
+			"type": "object",
+			"required": ["fullName", "email", "password"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"fullName": {
+					"type": "string",
+					"example": "Teste da Silva"
+				},
+				"email": {
+					"type": "string",
+					"example": "teste@mail.com"
+				},
+				"password": {
+					"type": "string",
+					"example": "axsfsf23"
+				}
+			},
+			"xml": {
+				"name": "User"
+			}
+		},
+		"Customer": {
+			"type": "object",
+			"required": ["name", "email", "cpf", "birth", "phone_number"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"name": {
+					"type": "string",
+					"example": "Cliente da Silva"
+				},
+				"email": {
+					"type": "string",
+					"example": "cliente@mail.com"
+				},
+				"cpf": {
+					"type": "string",
+					"example": "08321323521"
+				},
+				"birth": {
+					"type": "string",
+					"example": "1990-10-05"
+				},
+				"phone_number": {
+					"type": "string",
+					"example": "48996748155"
+				}
+			},
+			"xml": {
+				"name": "Customer"
+			}
+		},
+		"Car": {
+			"type": "object",
+			"required": [
+				"plate",
+				"brand",
+				"model",
+				"km",
+				"daily_price",
+				"year",
+				"status"
+			],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"plate": {
+					"type": "string",
+					"example": "MAS1253"
+				},
+				"brand": {
+					"type": "string",
+					"example": "Ford"
+				},
+				"model": {
+					"type": "string",
+					"example": "Focus"
+				},
+				"km": {
+					"type": "number",
+					"example": 180000
+				},
+				"year": {
+					"type": "number",
+					"example": 2018
+				},
+				"status": {
+					"type": "string",
+					"example": "ativo"
+				},
+				"daily_price": {
+					"type": "number",
+					"example": 16.8
+				}
+			},
+			"xml": {
+				"name": "Car"
+			}
+		},
+		"Orders": {
+			"type": "object",
+			"required": ["car_id", "customer_id"],
+			"properties": {
+				"id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"customer_id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"car_id": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"order_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"cep": {
+					"type": "string",
+					"example": "88790000"
+				},
+				"city": {
+					"type": "string",
+					"example": "Laguna"
+				},
+				"status": {
+					"type": "string",
+					"example": "ativo"
+				},
+				"state": {
+					"type": "string",
+					"example": "Santa Catarina"
+				},
+				"rental_rate": {
+					"type": "number",
+					"example": 0
+				},
+				"total": {
+					"type": "number",
+					"example": 100
+				},
+				"start_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"end_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"cancellation_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"closing_date": {
+					"type": "string",
+					"example": "2024-10-14 18:45:17.364718"
+				},
+				"late_fee": {
+					"type": "number",
+					"example": 20
+				}
+			},
+			"xml": {
+				"name": "Order"
+			}
+		},
+		"externalDocs": {
+			"description": "Find out more about Swagger",
+			"url": "http://swagger.io"
 		}
 	},
 	"basepath": "/"

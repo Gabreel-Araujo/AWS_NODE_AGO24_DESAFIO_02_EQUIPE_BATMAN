@@ -100,7 +100,6 @@ export default class UserService implements UserServiceInterface {
 		options: QueryOptions,
 	): Promise<[User[], number]> {
 		const { page, limit, sortBy, sortOrder } = options;
-		console.log(filters);
 
 		const result = await this.repository.getAllUsers(
 			page,

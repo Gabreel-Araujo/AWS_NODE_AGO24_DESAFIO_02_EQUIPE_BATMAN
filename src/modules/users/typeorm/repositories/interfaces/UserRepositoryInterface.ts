@@ -9,9 +9,6 @@ export default interface UserRepositoryInterface {
 	findActiveUserByEmail: (
 		email: string,
 	) => Promise<UserDetailsInterface | null>;
-<<<<<<< HEAD
-	
-=======
 	findById: (id: string) => Promise<UserDetailsInterface | null>;
 	softDeleteUser: (id: string) => Promise<UserDetailsInterface | null>;
 	updateUser(
@@ -25,5 +22,4 @@ export default interface UserRepositoryInterface {
 		sortBy: string,
 		sortOrder: 'ASC' | 'DESC',
 	): Promise<[User[], number]>;
->>>>>>> 19cc7cfc5c41fb2f95cb551b0a025475285c80a1
 }

@@ -2,6 +2,7 @@ import { ICreateRentalOrder } from '../../typeorm/entities/interfaces/RentalOrde
 import RentalOrder from '../../typeorm/entities/RentalOrder';
 
 export interface IRentalOrderService {
-	save(customer: ICreateRentalOrder): Promise<RentalOrder>;
-	deleteById(id: string): Promise<void>;
+	softDeleteById(id: string): Promise<void>;
+	create(customer: ICreateRentalOrder): Promise<RentalOrder>;
+	findById(id: string): Promise<RentalOrder>;
 }

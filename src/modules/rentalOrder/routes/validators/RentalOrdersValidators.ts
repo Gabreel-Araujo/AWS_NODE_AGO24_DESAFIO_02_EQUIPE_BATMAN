@@ -24,3 +24,7 @@ export const queryParamsSchema = z.object({
 		.default('createdAt'),
 	sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
 });
+
+export const getIdOrderSchema = z.object({
+	id: z.string().uuid({ message: 'insert a valid uuid' }),
+});

@@ -6,22 +6,31 @@ import RentalOrderService from '../services/RentalOrderService';
 import {
 	postOrderSchema,
 	queryParamsSchema,
+	getIdOrderSchema,
 } from './validators/RentalOrdersValidators';
 
 const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
-const rentalOrderService = new RentalOrderService();
 
-//ordersRouter.use(authenticate);
+ordersRouter.use(authenticate);
 
-// customersRouter.get('/');
+// ordersRouter.get('/');
 
-// customersRouter.get('/:id');
+ordersRouter.get(
+	'/:id',
+	validation(getIdOrderSchema, 'params'),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		const order = await ordersService.findById(id);
+
+		res.status(200).json(order);
+	},
+);
 
 ordersRouter.post(
 	'/',
-	//authenticate,
 	validation(postOrderSchema, 'body'),
 	async (req: Request, res: Response) => {
 		const { car_id, customer_id } = req.body;
@@ -31,24 +40,28 @@ ordersRouter.post(
 			customer_id,
 		};
 
-		const createdOrder = await ordersService.save(order);
+		const createdOrder = await ordersService.create(order);
 
 		res.status(201).json({ id: createdOrder.id });
 	},
 );
 
-ordersRouter.delete('/:id', async (req: Request, res: Response) => {
-	const { id } = req.params;
-	try {
-		await ordersService.deleteById(id);
+ordersRouter.delete(
+	'/:id',
+	validation(getIdOrderSchema),
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		await ordersService.softDeleteById(id);
+
 		res.status(204).send();
-	} catch (error) {
-		console.log(error);
-		res.status(404).json({ error: error });
-	}
-});
-ordersRouter.get('/', validation(queryParamsSchema), async (req, res) => {
-	try {
+	},
+);
+
+ordersRouter.get(
+	'/',
+	validation(queryParamsSchema),
+	async (req: Request, res: Response) => {
 		const filters = {
 			status: req.query.status,
 			customer_cpf: req.query.customer_cpf,
@@ -65,23 +78,20 @@ ordersRouter.get('/', validation(queryParamsSchema), async (req, res) => {
 			limit: Number.parseInt(req.query.limit as string) || 10,
 		};
 
-		const { data, total } = await rentalOrderService.getAllOrders(
+		const { data, total } = await ordersService.getAllOrders(
 			filters,
 			pagination,
 		);
+
 		res.status(200).json({
 			total,
 			currentPage: pagination.page,
 			totalPages: Math.ceil(total / pagination.limit),
 			data,
 		});
-	} catch (error) {
-		console.log(error);
-		res.status(404).json({ message: 'Orders not found' });
-	}
-});
-//ordersRouter.put('/:id');
+	},
+);
 
-//ordersRouter.delete('/:id',);
+//ordersRouter.put('/:id');
 
 export default ordersRouter;
