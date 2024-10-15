@@ -1,6 +1,4 @@
-import { dbConnection } from './../../../../lib/typeorm/index';
-import { ICustomersRepository } from './interfaces/ICustomersRepository';
-import { SearchParams } from './interfaces/ICustomersRepository';
+import ConflictError from '@/http/errors/conflict-error';
 import { IsNull, Repository, UpdateResult } from 'typeorm';
 import Customer from '../entities/Customer';
 import {
@@ -8,7 +6,9 @@ import {
 	ICustomer,
 	IUpdateCustomer,
 } from '../entities/interfaces/CustomerInterface';
-import ConflictError from '@/http/errors/conflict-error';
+import { dbConnection } from './../../../../lib/typeorm/index';
+import { ICustomersRepository } from './interfaces/ICustomersRepository';
+import { SearchParams } from './interfaces/ICustomersRepository';
 
 class CustomersRepository implements ICustomersRepository {
 	private ormRepository: Repository<Customer>;

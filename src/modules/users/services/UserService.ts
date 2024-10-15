@@ -1,14 +1,14 @@
 import ConflictError from '@/http/errors/conflict-error';
+import NotFoundError from '@/http/errors/not-found-error';
 import bcrypt from 'bcryptjs';
+import User from '../typeorm/entities/User';
 import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../typeorm/entities/interfaces/UserInterface';
+import UserRepository from '../typeorm/repositories/UserRepository';
 import type UserRepositoryInterface from '../typeorm/repositories/interfaces/UserRepositoryInterface';
 import type UserServiceInterface from './interfaces/UserServiceInterface';
-import UserRepository from '../typeorm/repositories/UserRepository';
-import NotFoundError from '@/http/errors/not-found-error';
-import User from '../typeorm/entities/User';
 
 export interface QueryOptions {
 	page: number;

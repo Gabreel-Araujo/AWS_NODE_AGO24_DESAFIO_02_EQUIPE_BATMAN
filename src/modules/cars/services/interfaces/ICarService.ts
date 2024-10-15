@@ -1,8 +1,8 @@
+import { Item } from '../../typeorm/entities/Items';
 import {
 	ICar,
 	ISearchParams,
 } from '../../typeorm/repositories/interfaces/ICarRepository';
-import { Item } from '../../typeorm/entities/Items';
 
 export interface ICarService {
 	createCar(

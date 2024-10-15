@@ -1,8 +1,8 @@
+import User from '../../entities/User';
 import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../../entities/interfaces/UserInterface';
-import User from '../../entities/User';
 
 export default interface UserRepositoryInterface {
 	save: (user: CreateUserInterface) => Promise<UserDetailsInterface>;

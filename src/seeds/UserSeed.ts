@@ -1,5 +1,5 @@
-import bcrypt from 'bcryptjs';
 import User from '@/modules/users/typeorm/entities/User';
+import bcrypt from 'bcryptjs';
 import { DataSource } from 'typeorm';
 
 export const UserSeed = async (dataSource: DataSource) => {

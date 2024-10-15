@@ -1,14 +1,13 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
 	Column,
-	OneToMany,
 	CreateDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
-import { Item } from './Items';
 import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
-
+import { Item } from './Items';
 
 export enum CarStatus {
 	ACTIVE = 'ativo',

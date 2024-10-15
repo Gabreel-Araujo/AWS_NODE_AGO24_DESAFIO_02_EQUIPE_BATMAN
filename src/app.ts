@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import cors from 'cors';
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import errorMiddleware from './http/middleware/error';
 import routes from './http/routes';
-import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger-output.json';
 
 export const app = express();

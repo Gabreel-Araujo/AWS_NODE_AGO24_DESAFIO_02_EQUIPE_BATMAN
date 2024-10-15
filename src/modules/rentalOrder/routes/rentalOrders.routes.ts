@@ -1,14 +1,14 @@
-import { Request, Response, Router } from 'express';
-import validation from '@/http/middleware/validation';
 import { authenticate } from '@/http/middleware/auth';
-import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
+import validation from '@/http/middleware/validation';
+import { Request, Response, Router } from 'express';
 import RentalOrderService from '../services/RentalOrderService';
+import { ICreateRentalOrder } from '../typeorm/entities/interfaces/RentalOrderInterface';
 import {
+	getIdOrderSchema,
 	postOrderSchema,
+	queryParamsSchema,
 	updateOrderSchema,
 	validateCep,
-	queryParamsSchema,
-	getIdOrderSchema,
 } from './validators/RentalOrdersValidators';
 
 const ordersRouter = Router();
@@ -135,7 +135,5 @@ ordersRouter.put(
 		res.status(204).send();
 	},
 );
-
-//ordersRouter.delete('/:id',);
 
 export default ordersRouter;

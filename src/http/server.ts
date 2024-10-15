@@ -3,8 +3,8 @@ import 'express-async-errors';
 import { app } from '@/app';
 import { env } from '@/env';
 import { dbConnection } from '@/lib/typeorm';
-import { UserSeed } from '@/seeds/UserSeed';
 import { CustomerSeed } from '@/seeds/CustomerSeed';
+import { UserSeed } from '@/seeds/UserSeed';
 
 async function startServer() {
 	try {

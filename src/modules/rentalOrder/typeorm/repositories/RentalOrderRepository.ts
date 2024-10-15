@@ -1,10 +1,10 @@
 import { dbConnection } from '@/lib/typeorm';
 import { In, Repository, UpdateResult } from 'typeorm';
+import RentalOrder from '../entities/RentalOrder';
 import {
 	ICreateRentalOrder,
 	IRentalOrder,
 } from '../entities/interfaces/RentalOrderInterface';
-import RentalOrder from '../entities/RentalOrder';
 import { IRentalOrderRepository } from './interfaces/IRentalOrderRepository';
 
 class RentalOrderRepository implements IRentalOrderRepository {

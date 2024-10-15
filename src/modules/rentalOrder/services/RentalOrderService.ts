@@ -1,21 +1,21 @@
+import { ApiError } from '@/http/errors/api-error';
+import ConflictError from '@/http/errors/conflict-error';
+import NotFoundError from '@/http/errors/not-found-error';
+import Cars from '@/modules/cars/typeorm/entities/Car';
+import { CarsRepository } from '@/modules/cars/typeorm/repositories/CarsRepository';
+import { ICarRepository } from '@/modules/cars/typeorm/repositories/interfaces/ICarRepository';
+import CustomersRepository from '@/modules/customers/typeorm/repositories/CustomerRepository';
 import { ICustomersRepository } from '@/modules/customers/typeorm/repositories/interfaces/ICustomersRepository';
+import { differenceInDays, isAfter } from 'date-fns';
+import { UpdateResult } from 'typeorm';
+import RentalOrder from '../typeorm/entities/RentalOrder';
 import {
 	ICreateRentalOrder,
 	IRentalOrder,
 } from '../typeorm/entities/interfaces/RentalOrderInterface';
-import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import RentalOrderRepository from '../typeorm/repositories/RentalOrderRepository';
+import { IRentalOrderRepository } from '../typeorm/repositories/interfaces/IRentalOrderRepository';
 import { IRentalOrderService } from './interfaces/RentalOrderServiceInterface';
-import CustomersRepository from '@/modules/customers/typeorm/repositories/CustomerRepository';
-import { ICarRepository } from '@/modules/cars/typeorm/repositories/interfaces/ICarRepository';
-import { CarsRepository } from '@/modules/cars/typeorm/repositories/CarsRepository';
-import NotFoundError from '@/http/errors/not-found-error';
-import { ApiError } from '@/http/errors/api-error';
-import RentalOrder from '../typeorm/entities/RentalOrder';
-import { UpdateResult } from 'typeorm';
-import { differenceInDays, isAfter } from 'date-fns';
-import Cars from '@/modules/cars/typeorm/entities/Car';
-import ConflictError from '@/http/errors/conflict-error';
 
 export default class RentalOrderService implements IRentalOrderService {
 	private repository: IRentalOrderRepository;
@@ -111,16 +111,21 @@ export default class RentalOrderService implements IRentalOrderService {
 		if (rentalOrder.status !== 'aproved' && order.status === 'closed')
 			throw new ApiError('order can only be closed if it is aproved', 400);
 
-		if (order.end_date && order.start_date && isAfter(new Date(order.start_date), new Date(order.end_date))) {
-			throw new ConflictError('End date order cannot be earlier than start date');
-		  }
-		
+		if (
+			order.end_date &&
+			order.start_date &&
+			isAfter(new Date(order.start_date), new Date(order.end_date))
+		) {
+			throw new ConflictError(
+				'End date order cannot be earlier than start date',
+			);
+		}
+
 		if (order.status === 'closed' && rentalOrder.car_id) {
 			const car = await this.carRepository.findById(rentalOrder.car_id);
 
 			if (!car) throw new NotFoundError('car not found');
 
-		
 			if (order.closing_date && car) {
 				const result = this.calculateTotal(
 					rentalOrder,

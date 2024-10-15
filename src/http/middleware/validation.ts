@@ -1,5 +1,5 @@
-import { ZodSchema, ZodError } from 'zod';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { ZodError, ZodSchema } from 'zod';
 
 const ALLOWED_FIELDS = {
 	params: 'params',

@@ -1,7 +1,7 @@
-import { Request, Response, Router } from 'express';
-import AuthService from '../services/AuthService';
-import jwt from 'jsonwebtoken';
 import { env } from '@/env';
+import { Request, Response, Router } from 'express';
+import jwt from 'jsonwebtoken';
+import AuthService from '../services/AuthService';
 
 const authRoute = Router();
 

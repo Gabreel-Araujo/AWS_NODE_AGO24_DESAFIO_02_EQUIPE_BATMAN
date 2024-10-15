@@ -1,9 +1,9 @@
-import type AuthServiceInterface from '@/modules/users/services/interfaces/AuthServiceInterface';
-import bcrypt from 'bcryptjs';
-import UserRepositoryInterface from '../typeorm/repositories/interfaces/UserRepositoryInterface';
-import UserRepository from '../typeorm/repositories/UserRepository';
 import UnauthorizedError from '@/http/errors/unauthorized-error';
 import ValidationError from '@/http/errors/validation-error';
+import type AuthServiceInterface from '@/modules/users/services/interfaces/AuthServiceInterface';
+import bcrypt from 'bcryptjs';
+import UserRepository from '../typeorm/repositories/UserRepository';
+import UserRepositoryInterface from '../typeorm/repositories/interfaces/UserRepositoryInterface';
 
 export default class AuthService implements AuthServiceInterface {
 	private repository: UserRepositoryInterface;

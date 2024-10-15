@@ -1,11 +1,11 @@
+import { dbConnection } from '@/lib/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import User from '../entities/User';
 import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../entities/interfaces/UserInterface';
 import type UserRepositoryInterface from './interfaces/UserRepositoryInterface';
-import User from '../entities/User';
-import { dbConnection } from '@/lib/typeorm';
 
 export default class UserRepository implements UserRepositoryInterface {
 	private ormRepository: Repository<User>;

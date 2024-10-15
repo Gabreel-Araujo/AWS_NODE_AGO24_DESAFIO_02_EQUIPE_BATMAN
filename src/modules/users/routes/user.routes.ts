@@ -1,4 +1,5 @@
 import { authenticate } from '@/http/middleware/auth';
+import validation from '@/http/middleware/validation';
 import { Request, Response, Router } from 'express';
 import UserService from '../services/UserService';
 import {
@@ -7,7 +8,6 @@ import {
 	putUserSchema,
 	queryParamsSchema,
 } from './validators/UserValidators';
-import validation from '@/http/middleware/validation';
 
 const userRoute = Router();
 

@@ -1,14 +1,14 @@
-import Cars, { CarStatus } from '../entities/Car';
+import NotFoundError from '@/http/errors/not-found-error';
+import { dbConnection } from '@/lib/typeorm';
 import {
 	FindOptionsOrder,
 	FindOptionsWhere,
 	Repository,
 	UpdateResult,
 } from 'typeorm';
+import Cars, { CarStatus } from '../entities/Car';
 import { Item } from '../entities/Items';
-import { dbConnection } from '@/lib/typeorm';
 import { ICar, ICarRepository, IUpdateCar } from './interfaces/ICarRepository';
-import NotFoundError from '@/http/errors/not-found-error';
 
 export class CarsRepository implements ICarRepository {
 	private ormRepository: Repository<Cars>;

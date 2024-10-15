@@ -1,5 +1,5 @@
-import { DataSource } from 'typeorm';
 import Customer from '@/modules/customers/typeorm/entities/Customer';
+import { DataSource } from 'typeorm';
 
 export const CustomerSeed = async (dataSource: DataSource) => {
 	const customerRepository = dataSource.getRepository(Customer);

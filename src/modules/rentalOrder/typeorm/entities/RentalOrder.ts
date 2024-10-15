@@ -1,13 +1,13 @@
-import Customer from '../../../customers/typeorm/entities/Customer';
-import Car from '../../../cars/typeorm/entities/Car';
 import {
-	Entity,
-	PrimaryGeneratedColumn,
 	Column,
-	ManyToOne,
-	JoinColumn,
 	CreateDateColumn,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
+import Car from '../../../cars/typeorm/entities/Car';
+import Customer from '../../../customers/typeorm/entities/Customer';
 
 @Entity('rental_orders')
 class RentalOrder {

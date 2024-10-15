@@ -1,4 +1,3 @@
-import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
 import {
 	Column,
 	CreateDateColumn,
@@ -7,6 +6,7 @@ import {
 	OneToMany,
 	PrimaryGeneratedColumn,
 } from 'typeorm';
+import RentalOrder from '../../../rentalOrder/typeorm/entities/RentalOrder';
 
 @Entity('customers')
 class Customer {

@@ -1,8 +1,8 @@
+import User from '../../typeorm/entities/User';
 import type {
 	CreateUserInterface,
 	UserDetailsInterface,
 } from '../../typeorm/entities/interfaces/UserInterface';
-import User from '../../typeorm/entities/User';
 import { QueryOptions } from '../UserService';
 
 export default interface UserServiceInterface {

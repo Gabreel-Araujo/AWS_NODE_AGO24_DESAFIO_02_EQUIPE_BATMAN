@@ -1,15 +1,15 @@
+import NotFoundError from '@/http/errors/not-found-error';
+import ValidationError from '@/http/errors/validation-error';
 import {
 	ICreateCustomer,
 	ICustomer,
 	IUpdateCustomer,
 } from '../typeorm/entities/interfaces/CustomerInterface';
-import { ICustomerService } from './interfaces/CustomerServiceInterface';
-import NotFoundError from '@/http/errors/not-found-error';
-import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import CustomersRepository from '../typeorm/repositories/CustomerRepository';
-import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
-import ValidationError from '@/http/errors/validation-error';
+import { ICustomersRepository } from '../typeorm/repositories/interfaces/ICustomersRepository';
 import { CustomerPaginationServiceInterface } from './interfaces/CustomerPaginationServiceInterface';
+import { ICustomerService } from './interfaces/CustomerServiceInterface';
+import { SearchParamsInterface } from './interfaces/SearchParamsInterface';
 
 export default class CustomerService implements ICustomerService {
 	private repository: ICustomersRepository;

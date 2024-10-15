@@ -1,19 +1,19 @@
+import { authenticate } from '@/http/middleware/auth';
+import validation from '@/http/middleware/validation';
 import { Request, Response, Router } from 'express';
 import CustomerService from '../services/CustomerService';
 import { SearchParamsInterface } from '../services/interfaces/SearchParamsInterface';
-import validation from '@/http/middleware/validation';
-import {
-	getCustomerIdSchema,
-	patchCustomerParamsSchema,
-	getCustomerQuerySchema,
-	postCustomerSchema,
-	putCustomerBodySchema,
-} from './validators/CustomerValidator';
-import { authenticate } from '@/http/middleware/auth';
 import {
 	ICreateCustomer,
 	IUpdateCustomer,
 } from '../typeorm/entities/interfaces/CustomerInterface';
+import {
+	getCustomerIdSchema,
+	getCustomerQuerySchema,
+	patchCustomerParamsSchema,
+	postCustomerSchema,
+	putCustomerBodySchema,
+} from './validators/CustomerValidator';
 
 const customersRouter = Router();
 

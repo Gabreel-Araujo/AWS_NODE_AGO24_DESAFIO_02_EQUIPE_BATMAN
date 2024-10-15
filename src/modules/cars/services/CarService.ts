@@ -1,11 +1,5 @@
-import { ICarPagination, ICarService } from './interfaces/ICarService';
-import {
-	ICar,
-	ICarRepository,
-	IUpdateCar,
-} from '../typeorm/repositories/interfaces/ICarRepository';
+import ConflictError from '@/http/errors/conflict-error';
 import NotFoundError from '@/http/errors/not-found-error';
-import { CarsRepository } from '../typeorm/repositories/CarsRepository';
 import RentalOrderRepository from '@/modules/rentalOrder/typeorm/repositories/RentalOrderRepository';
 import {
 	Between,
@@ -15,9 +9,15 @@ import {
 	Like,
 	MoreThanOrEqual,
 } from 'typeorm';
-import { Item } from '../typeorm/entities/Items';
 import { CarStatus } from '../typeorm/entities/Car';
-import ConflictError from '@/http/errors/conflict-error';
+import { Item } from '../typeorm/entities/Items';
+import { CarsRepository } from '../typeorm/repositories/CarsRepository';
+import {
+	ICar,
+	ICarRepository,
+	IUpdateCar,
+} from '../typeorm/repositories/interfaces/ICarRepository';
+import { ICarPagination, ICarService } from './interfaces/ICarService';
 
 class CarService implements ICarService {
 	private repository: ICarRepository;
