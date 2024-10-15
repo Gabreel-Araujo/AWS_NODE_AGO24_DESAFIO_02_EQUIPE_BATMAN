@@ -15,7 +15,7 @@ const ordersRouter = Router();
 
 const ordersService = new RentalOrderService();
 
-//ordersRouter.use(authenticate);
+ordersRouter.use(authenticate);
 
 ordersRouter.get(
 	'/:id',
