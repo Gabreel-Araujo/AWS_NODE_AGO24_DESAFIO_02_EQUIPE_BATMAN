@@ -100,9 +100,9 @@ export class CarsRepository implements ICarRepository {
 
 	async updateCar(
 		id: string,
-		car: IUpdateCar,
-		items: Item[],
-	): Promise<IUpdateCar | null> {
+		{ daily_price, km, plate, status }: IUpdateCar,
+		items: string[],
+	): Promise<ICar | null> {
 		const existingCar = await this.ormRepository.findOne({
 			where: {
 				id,
@@ -113,27 +113,20 @@ export class CarsRepository implements ICarRepository {
 			return null;
 		}
 
-		Object.assign(existingCar, car);
+		await this.ormRepository.update(id, { daily_price, km, plate, status });
 
-		await this.ormRepository.save(existingCar);
+		if (items !== undefined) {
+			await this.itemRepository.delete({ car: existingCar });
 
-		await this.itemRepository.delete({ car: existingCar });
-
-		const updatedItems = items.map((item) => {
-			const newItem = this.itemRepository.create({
-				...item,
-				car: existingCar,
+			const updatedItems = items.map((item) => {
+				return this.itemRepository.create({
+					item: item,
+					car: existingCar,
+				});
 			});
 
-			if (!newItem.car) {
-				console.log('car id is missing for item: ', newItem);
-				newItem.car = existingCar;
-			}
-			return newItem;
-		});
-
-		console.log(updatedItems);
-		await this.itemRepository.save(updatedItems);
+			await this.itemRepository.save(updatedItems);
+		}
 
 		return await this.ormRepository.findOne({
 			where: {

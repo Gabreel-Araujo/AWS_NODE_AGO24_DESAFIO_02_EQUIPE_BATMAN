@@ -2,8 +2,13 @@ import { Request, Response, Router } from 'express';
 import CarService from '../services/CarService';
 import { authenticate } from '@/http/middleware/auth';
 import validation from '@/http/middleware/validation';
-import { idCarSchema, postCarSchema } from './validators/CarValidator';
 import {
+	idCarSchema,
+	postCarSchema,
+	putCarSchema,
+} from './validators/CarValidator';
+import {
+	ICar,
 	ISearchParams,
 	IUpdateCar,
 } from '../typeorm/repositories/interfaces/ICarRepository';
@@ -120,13 +125,13 @@ carsRouter.delete(
 	},
 );
 
-carsRouter.put('/:id', async (req, res) => {
+carsRouter.put('/:id', validation(putCarSchema, 'body'), async (req, res) => {
 	const { id } = req.params;
 	const { km, daily_price, status, plate, items } = req.body;
 
 	const car: IUpdateCar = { km, daily_price, status, plate, items };
 
-	const updatedCar = await carService.updateCar(id, car, items as Item[]);
+	const updatedCar = await carService.updateCar(id, car, items as string[]);
 
 	res.status(200).send(updatedCar);
 });

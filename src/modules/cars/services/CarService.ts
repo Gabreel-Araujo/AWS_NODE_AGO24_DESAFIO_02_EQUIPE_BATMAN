@@ -172,9 +172,9 @@ class CarService implements ICarService {
 
 	async updateCar(
 		id: string,
-		car: IUpdateCar,
-		items: Item[],
-	): Promise<IUpdateCar | null> {
+		car: Partial<IUpdateCar>,
+		items: string[],
+	): Promise<ICar | null> {
 		const existingCar = await this.repository.findById(id);
 
 		if (!existingCar) {

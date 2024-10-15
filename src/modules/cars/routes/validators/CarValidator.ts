@@ -80,3 +80,61 @@ export const postCarSchema = z.object({
 			message: 'duplicate items are not allowed',
 		}),
 });
+
+export const putCarSchema = z.object({
+	plate: z
+		.string({
+			required_error: 'plate is required',
+			invalid_type_error: 'must be a string',
+		})
+		.min(7)
+		.max(7)
+		.refine((plate) => plate.trim() !== '', {
+			message: 'plate cannot be null',
+		})
+		.optional(),
+
+	daily_price: z
+		.number({
+			invalid_type_error: 'must be a number',
+		})
+		.optional(),
+
+	km: z
+		.number({
+			invalid_type_error: 'must be a number',
+		})
+		.int({
+			message: 'must be an interger',
+		})
+		.default(0)
+		.optional(),
+
+	status: z
+		.enum(['ativo', 'inativo'], {
+			invalid_type_error: 'Status must be either active or inactive',
+		})
+		.optional(),
+
+	items: z
+		.array(
+			z
+				.string({
+					required_error: 'item is required',
+					invalid_type_error: 'must be a string',
+				})
+				.refine((item) => item.trim() !== '', {
+					message: 'item cannot be null',
+				}),
+		)
+		.nonempty({
+			message: 'one item is required',
+		})
+		.max(5, {
+			message: 'maximum five items',
+		})
+		.refine((items) => new Set(items).size === items.length, {
+			message: 'duplicate items are not allowed',
+		})
+		.optional(),
+});
