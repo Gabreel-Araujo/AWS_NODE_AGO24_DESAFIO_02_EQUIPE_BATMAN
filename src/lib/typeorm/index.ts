@@ -1,15 +1,18 @@
 import { DataSource } from 'typeorm';
-import { env } from '../../env';
+import path from 'node:path';
+import User from '@/modules/users/typeorm/entities/User';
+import Customer from '@/modules/customers/typeorm/entities/Customer';
+import Cars from '@/modules/cars/typeorm/entities/Car';
+import { Item } from '@/modules/cars/typeorm/entities/Items';
+import RentalOrder from '@/modules/rentalOrder/typeorm/entities/RentalOrder';
 
 export const dbConnection = new DataSource({
-	type: 'postgres',
-	host: env.HOST,
-	port: env.DB_PORT,
-	username: env.DB_USER,
-	password: env.DB_PASSWORD,
-	database: env.DB_NAME,
-	entities: ['src/modules/*/typeorm/entities/*.ts'],
+	type: 'sqlite',
+	database: path.resolve(__dirname, '../../../db/mydb.sqlite'),
+	entities: [User, Customer, Cars, Item, RentalOrder],
 	logging: true,
-	synchronize: false,
-	migrations: ['src/lib/typeorm/migrations/*.ts'],
+	synchronize: true,
+	migrations: ['build/lib/typeorm/migrations/*.js'],
 });
+
+// entities 'build/modules/*/typeorm/entities/*.js'

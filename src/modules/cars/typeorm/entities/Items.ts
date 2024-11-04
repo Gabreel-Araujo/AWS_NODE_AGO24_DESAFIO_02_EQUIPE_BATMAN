@@ -15,6 +15,9 @@ export class Item {
 	@Column({ type: 'varchar' })
 	item!: string;
 
+	@Column('uuid') 
+	car_id!: string;
+
 	@ManyToOne(
 		() => Cars,
 		(car) => car.items,

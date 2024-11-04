@@ -38,8 +38,8 @@ export default class Cars {
 	km!: number;
 
 	@Column({
-		type: 'enum',
-		enum: CarStatus,
+		type: 'varchar',
+		length: 10,
 		default: CarStatus.ACTIVE,
 	})
 	status!: CarStatus;

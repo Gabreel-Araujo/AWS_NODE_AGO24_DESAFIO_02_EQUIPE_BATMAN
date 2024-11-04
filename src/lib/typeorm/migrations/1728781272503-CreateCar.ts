@@ -2,8 +2,6 @@ import { type MigrationInterface, type QueryRunner, Table } from 'typeorm';
 
 export class CreateProduct1728428244601 implements MigrationInterface {
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-
 		await queryRunner.createTable(
 			new Table({
 				name: 'cars',
@@ -46,8 +44,8 @@ export class CreateProduct1728428244601 implements MigrationInterface {
 					},
 					{
 						name: 'status',
-						type: 'enum',
-						enum: ['ativo', 'inativo', 'excluído'],
+						type: 'varchar',
+						length: "10",
 						default: "'ativo'",
 						isNullable: false,
 					},

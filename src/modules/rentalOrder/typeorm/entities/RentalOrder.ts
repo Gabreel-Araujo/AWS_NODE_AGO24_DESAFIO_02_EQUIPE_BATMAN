@@ -16,7 +16,7 @@ class RentalOrder {
 
 	@ManyToOne(
 		() => Customer,
-		(customer) => customer,
+		(customer) => customer.rentalOrders,
 	)
 	@JoinColumn({ name: 'customer_id' })
 	customer: Customer;
@@ -28,8 +28,8 @@ class RentalOrder {
 	order_date: Date;
 
 	@Column({
-		type: 'enum',
-		enum: ['open', 'aproved', 'closed', 'canceled'],
+		type: 'varchar',
+		length: 20,
 		default: 'open',
 	})
 	status: string;
@@ -42,35 +42,7 @@ class RentalOrder {
 
 	@Column({
 		type: 'varchar',
-		enum: [
-			'AC',
-			'AL',
-			'AP',
-			'AM',
-			'BA',
-			'CE',
-			'DF',
-			'ES',
-			'GO',
-			'MA',
-			'MT',
-			'MS',
-			'MG',
-			'PA',
-			'PB',
-			'PR',
-			'PE',
-			'PI',
-			'RJ',
-			'RN',
-			'RS',
-			'RO',
-			'RR',
-			'SC',
-			'SP',
-			'SE',
-			'TO',
-		],
+		length: 2,
 		default: null,
 	})
 	state: string;
@@ -83,7 +55,7 @@ class RentalOrder {
 
 	@ManyToOne(
 		() => Car,
-		(car) => car,
+		(car) => car.rentalOrders,
 	)
 	@JoinColumn({ name: 'car_id' })
 	car: Car;

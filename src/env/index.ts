@@ -2,13 +2,8 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 const envSchema = z.object({
-	NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
+	NODE_ENV: z.enum(['dev', 'test', 'production']).default('production'),
 	PORT: z.coerce.number().default(3000),
-	HOST: z.string().default('localhost'),
-	DB_PORT: z.coerce.number().default(5432),
-	DB_USER: z.string().default('docker'),
-	DB_PASSWORD: z.string().default('docker'),
-	DB_NAME: z.string().default('apicompasscar'),
 	SECRET_KEY: z.string().default('secret'),
 });
 

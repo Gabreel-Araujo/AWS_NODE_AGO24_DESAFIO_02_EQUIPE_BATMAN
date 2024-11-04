@@ -24,6 +24,6 @@ export default class User implements UserDetailsInterface {
 	@CreateDateColumn()
 	createdAt: Date;
 
-	@Column({ type: 'timestamp', nullable: true, default: null })
+	@Column({ type: 'datetime', nullable: true, default: null })
 	deletedAt: Date | null;
 }
